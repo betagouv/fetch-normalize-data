@@ -1,0 +1,33 @@
+{
+  "extends": ["airbnb", "prettier"],
+  "parser": "babel-eslint",
+  "settings": {},
+  "env": {
+    "jest": true,
+    "node": true,
+    "mocha": true,
+    "browser": true,
+    "jasmine": true
+  },
+  "globals": {
+    "fixture": true
+  },
+  "rules": {
+    "import/no-extraneous-dependencies": [2, {
+      "devDependencies": true,
+      "optionalDependencies": false,
+      "peerDependencies": false
+    }],
+    "jsx-a11y/aria-role": 1,
+    "jsx-a11y/click-events-have-key-events": 1,
+    "jsx-a11y/label-has-for": 0,
+    "jsx-a11y/no-static-element-interactions": 1,
+    "jsx-a11y/no-noninteractive-element-interactions": 1,
+    "no-param-reassign": 1,
+    "no-underscore-dangle": [2, { "allow": ["__modifiers__"] }],
+    "no-restricted-syntax": 1,
+    "prefer-destructuring": 1,
+    "sort-keys": [1, "asc", { "caseSensitive": true, "natural": false }],
+    "sort-vars": [1, { "ignoreCase": true }]
+  }
+}

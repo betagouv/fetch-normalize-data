@@ -1,0 +1,10 @@
+
+.DS_store
+.git
+lib/
+node_modules/
+
+npm-debug.log
+
+.idea/
+*.iml

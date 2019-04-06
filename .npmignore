@@ -1,0 +1,4 @@
+.circleci/
+doc/
+examples/
+src/
