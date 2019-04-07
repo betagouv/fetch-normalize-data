@@ -7,7 +7,7 @@ export async function fetchData(url, config = {}) {
 
   const fetchResult = await fetch(url, fetchConfig)
 
-  const fetchDataResult = getFetchDataResult(fetchResult)
+  const fetchDataResult = await getFetchDataResult(fetchResult)
 
   return fetchDataResult
 }

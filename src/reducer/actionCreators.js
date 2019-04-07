@@ -1,7 +1,8 @@
 import {
   ASSIGN_DATA,
   MERGE_DATA,
-  RESET_DATA
+  RESET_DATA,
+  SET_DATA
 } from './actions'
 import { getTypeSuffixFromConfig } from './getTypeSuffixFromConfig'
 import { getConfigWithDefaultValues } from '../fetch'
@@ -33,6 +34,11 @@ export const requestData = (config = {}) => {
 
 export const resetData = () => ({
   type: RESET_DATA,
+})
+
+export const setData = patch => ({
+  patch,
+  type: SET_DATA
 })
 
 export const successData = (payload = {}, config = {}) => ({
