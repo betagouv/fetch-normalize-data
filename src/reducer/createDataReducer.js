@@ -22,8 +22,8 @@ export const createDataReducer = (initialState = {}) => {
     }
 
     if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
-      const updatedState = getSuccessState(state, action)
-      return Object.assign({}, state, updatedState)
+      const nextState = getSuccessState(state, action)
+      return Object.assign({}, state, nextState)
     }
 
     return state

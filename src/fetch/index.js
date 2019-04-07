@@ -1,4 +1,5 @@
 export * from './fetchData'
+export * from './fetchToSuccessOrFailData'
 export * from './getConfigWithDefaultValues'
 export * from './getFetchConfig'
 export * from './getFetchDataResult'
