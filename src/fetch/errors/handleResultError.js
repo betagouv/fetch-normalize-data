@@ -1,4 +1,4 @@
-import { failData } from '../../reducer'
+import { failData } from '../../reducer/actionCreators'
 
 export const GLOBAL_RESULT_ERROR = 'Result returned by the server is not at the good json format'
 

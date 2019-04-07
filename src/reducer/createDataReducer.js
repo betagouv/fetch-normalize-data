@@ -1,6 +1,6 @@
 import { ASSIGN_DATA, MERGE_DATA, RESET_DATA } from './actions'
 import { getSuccessState } from './getSuccessState'
-import { getNormalizedMergedState } from '../normalize'
+import { getNormalizedMergedState } from '../normalize/getNormalizedMergedState'
 
 export const createDataReducer = (initialState = {}) => {
   const reducer = (
