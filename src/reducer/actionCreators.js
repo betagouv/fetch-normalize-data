@@ -5,7 +5,7 @@ import {
   SET_DATA
 } from './actions'
 import { getTypeSuffixFromConfig } from './getTypeSuffixFromConfig'
-import { getConfigWithDefaultValues } from '../fetch'
+import { getConfigWithDefaultValues } from '../fetch/getConfigWithDefaultValues'
 
 export const assignData = patch => ({
   patch,

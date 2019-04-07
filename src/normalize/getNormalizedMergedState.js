@@ -2,7 +2,6 @@ import { getClonedResolvedDataWithUniqIds } from './getClonedResolvedDataWithUni
 import { getMergedData } from './getMergedData'
 import { normalize } from './normalize'
 
-
 export function getNormalizedMergedState(state, patch, config = {}) {
   const isMergingArray =
     typeof config.isMergingArray === 'undefined' ? true : config.isMergingArray

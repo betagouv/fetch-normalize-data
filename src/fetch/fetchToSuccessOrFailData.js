@@ -8,7 +8,7 @@ import { getConfigWithDefaultValues } from './getConfigWithDefaultValues'
 import { getUrlFromConfig } from './getUrlFromConfig'
 import { handleApiSuccess } from './handleApiSuccess'
 import { isSuccessStatus } from './status'
-import { failData, successData } from '../normalize'
+import { failData, successData } from '../normalize/actionCreators'
 
 export async function fetchToSuccessOrFailData(
   reducer,
@@ -43,7 +43,7 @@ export async function fetchToSuccessOrFailData(
 
   } catch (error) {
     Object.assign(config, { ok: false, status: 500 })
-    
+
     handleServerError(reducer, error, config)
   }
 }
