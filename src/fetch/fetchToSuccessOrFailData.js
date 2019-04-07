@@ -8,7 +8,7 @@ import { getConfigWithDefaultValues } from './getConfigWithDefaultValues'
 import { getUrlFromConfig } from './getUrlFromConfig'
 import { handleApiSuccess } from './handleApiSuccess'
 import { isSuccessStatus } from './status'
-import { failData, successData } from '../normalize/actionCreators'
+import { failData, successData } from '../reducer/actionCreators'
 
 export async function fetchToSuccessOrFailData(
   reducer,
