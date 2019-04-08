@@ -84,8 +84,6 @@ console.log(nextState)
 
 We have:
 
-
-
 ```javascript
 {
   authors: [
@@ -95,9 +93,7 @@ We have:
 }
 ```
 
-## Usage with config
-
-### Merge
+### Usage with config
 
 config of getNormalizedMergedState can have:
 
@@ -111,4 +107,47 @@ config of getNormalizedMergedState can have:
 
 ## Fetch usage
 
-## Reducer usage 
+### fetchData
+
+| name | type | example | isRequired | default | description |
+| -- | -- | -- | -- | -- | -- |
+| apiPath | `string` | `/foos` | no | `undefined` | apiPath will be join with rootUrl to build the request url |
+| handleFail | `function(state, action)` | TBP | no | `undefined` | callback called if request has failed |
+| handleSuccess | `function(state, action)` | TBP | no | `undefined` | callback called if request is a success |
+| method | `STRING` | `POST` | no | 'GET' | http method for the request |
+| stateKey | `string` | `foos` | no | `<computed from apiPath or url>` | key into the `store.getState().data.<stateKey>` where normalized merged or deleted data will be applied |
+| url | `string` | `https://momarx.com/foos` | no | `undefined` | total url of the request that will be used if apiPath is not used |
+
+## Reducer usage
+
+fetch-normalize-data can play mainly with 3 types of actions:
+  - `REQUEST_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)`
+  - `SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)`
+  - `FAIL_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)`
+
+The action creator requestData is almost the only one you will need
+to use for fetching data at mount time or at event mutation time.
+
+### requestData
+
+You can play with actions, but you need a special installation given the async action handler you take in your app:
+
+See for example an example with https://github.com/betagouv/redux-saga-data, but global use is like:
+
+```
+import { requestData } from 'fetch-normalize-data'
+
+const config = {
+  apiPath: '/foos',
+  normalizer: {
+    'bar': {
+      stateKey: 'bars'
+    }
+  }
+}
+
+store.dispatch(requestData(config))
+```
+
+where config is all the possible config parameters you can find in
+config of `getNormalizedMergedState` or in the config of `fetchData`.
