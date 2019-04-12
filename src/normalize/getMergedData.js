@@ -25,6 +25,7 @@ export function getMergedData (nextData, previousData, config) {
       previousIndex === -1 ? mergedData.length : previousIndex
 
     let datum
+
     if (isMutatingDatum) {
       datum = Object.assign(
           {},

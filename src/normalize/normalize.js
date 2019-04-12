@@ -35,13 +35,17 @@ export function normalizeDataAtItem (data, datumKey, stateKey, config) {
 
 // MUTATING FUNCTION
 export function normalizeData (data, config) {
-  const { isMergingDatum, isMutatingDatum, normalizer } = config
+  const {
+    isMergingDatum: globalIsMergingDatum,
+    isMutatingDatum: globalIsMutatingDatum,
+    normalizer
+  } = config
 
   const reshapedNormalizer = getReshapedNormalizer(normalizer)
 
   Object.keys(normalizer)
         .forEach(datumKey => {
-          const { stateKey } = reshapedNormalizer[datumKey]
+          const { isMergingDatum, isMutatingDatum, stateKey } = reshapedNormalizer[datumKey]
           const subNormalizer = reshapedNormalizer[datumKey].normalizer || {}
 
           const subConfig = Object.assign(
@@ -49,13 +53,13 @@ export function normalizeData (data, config) {
             config,
             {
               isMergingDatum:
-                typeof subNormalizer.isMergingDatum !== 'undefined'
-                  ? subNormalizer.isMergingDatum
-                  : isMergingDatum,
+                typeof isMergingDatum !== 'undefined'
+                  ? isMergingDatum
+                  : globalIsMergingDatum,
               isMutatingDatum:
-                typeof subNormalizer.isMutatingDatum !== 'undefined'
-                  ? subNormalizer.isMutatingDatum
-                  : isMutatingDatum,
+                typeof isMutatingDatum !== 'undefined'
+                  ? isMutatingDatum
+                  : globalIsMutatingDatum,
               normalizer: { [stateKey]: { normalizer: subNormalizer, stateKey } }
             }
           )
