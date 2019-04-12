@@ -12,14 +12,15 @@ export function getReshapedNormalizer (normalizer) {
             }
             reshapedNormalizer[datumKey].normalizer = stateKeyOrObj.normalizer
 
+            reshapedNormalizer[datumKey].isMergingDatum = stateKeyOrObj.isMergingDatum
+            reshapedNormalizer[datumKey].isMutatingDatum = stateKeyOrObj.isMutatingDatum
+            
             reshapedNormalizer[datumKey].stateKey = stateKeyOrObj.stateKey
               ? stateKeyOrObj.stateKey
               : datumKey
 
           } else {
-
             reshapedNormalizer[datumKey].stateKey = stateKeyOrObj
-
           }
         })
 
