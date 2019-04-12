@@ -56,5 +56,5 @@
     "test": "yarn jest --env=jsdom ./src",
     "watch": "nodemon --watch src --exec \"npm run compile\""
   },
-  "version": "1.0.0"
+  "version": "1.1.0"
 }
