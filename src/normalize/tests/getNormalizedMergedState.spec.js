@@ -42,14 +42,14 @@ describe('src | getNormalizedMergedState', () => {
       const patch = {
         books: [{ id: 1, text: "you foo" }]
       }
-      const expectedNextState = {
-        books: [{ id: 0, text: "my foo" }, { id: 1, text: "you foo" }]
-      }
 
       // when
       const nextState = getNormalizedMergedState(state, patch)
 
       // then
+      const expectedNextState = {
+        books: [{ id: 0, text: "my foo" }, { id: 1, text: "you foo" }]
+      }
       expect(nextState).toMatchObject(expectedNextState)
       expect(Object.is(nextState, state)).toBe(false)
       expect(Object.is(nextState.foos, state.books)).toBe(false)
@@ -69,17 +69,17 @@ describe('src | getNormalizedMergedState', () => {
           { id: 1, text: "you foo" }
         ]
       }
+
+      // when
+      const nextState = getNormalizedMergedState(state, patch)
+
+      // then
       const expectedNextState = {
         books: [
           { id: 0, text: "my refreshed foo" },
           { id: 1, text: "you foo" }
         ]
       }
-
-      // when
-      const nextState = getNormalizedMergedState(state, patch)
-
-      // then
       expect(nextState).toMatchObject(expectedNextState)
       expect(Object.is(nextState, state)).toBe(false)
       expect(Object.is(nextState.foos, state.books)).toBe(false)
@@ -98,15 +98,15 @@ describe('src | getNormalizedMergedState', () => {
         const patch = {
           books: [{ id: 1, text: "you foo" }]
         }
-        const expectedNextState = {
-          books: [{ id: 1, text: "you foo" }]
-        }
         const config = { isMergingArray: false }
 
         // when
         const nextState = getNormalizedMergedState(state, patch, config)
 
         // then
+        const expectedNextState = {
+          books: [{ id: 1, text: "you foo" }]
+        }
         expect(nextState).toMatchObject(expectedNextState)
         expect(Object.is(nextState, state)).toBe(false)
         expect(Object.is(nextState.foos, state.books)).toBe(false)
@@ -123,18 +123,18 @@ describe('src | getNormalizedMergedState', () => {
         const patch = {
           books: [{ id: 1, text: "you foo" }]
         }
-        const expectedNextState = {
-          books: [
-            { id: 0, text: "my foo" },
-            { id: 1, text: "you foo" }
-          ]
-        }
         const config = { isMutatingArray: false }
 
         // when
         const nextState = getNormalizedMergedState(state, patch, config)
 
         // then
+        const expectedNextState = {
+          books: [
+            { id: 0, text: "my foo" },
+            { id: 1, text: "you foo" }
+          ]
+        }
         expect(nextState).toMatchObject(expectedNextState)
         expect(Object.is(nextState, state)).toBe(false)
         expect(Object.is(nextState.books, state.books)).toBe(true)
@@ -157,6 +157,11 @@ describe('src | getNormalizedMergedState', () => {
           ]
         }
         const config = { isMergingDatum: true }
+
+        // when
+        const nextState = getNormalizedMergedState(state, patch, config)
+
+        // then
         const expectedNextState = {
           books: [
             {
@@ -168,11 +173,6 @@ describe('src | getNormalizedMergedState', () => {
             { id: 1, text: "you foo" }
           ]
         }
-
-        // when
-        const nextState = getNormalizedMergedState(state, patch, config)
-
-        // then
         expect(nextState).toMatchObject(expectedNextState)
         expect(Object.is(nextState, state)).toBe(false)
         expect(Object.is(nextState.foos, state.books)).toBe(false)
@@ -195,6 +195,11 @@ describe('src | getNormalizedMergedState', () => {
           ]
         }
         const config = { isMergingDatum: true, isMutatingDatum: true }
+
+        // when
+        const nextState = getNormalizedMergedState(state, patch, config)
+
+        // then
         const expectedNextState = {
           books: [
             {
@@ -206,11 +211,6 @@ describe('src | getNormalizedMergedState', () => {
             { id: 1, text: "you foo" }
           ]
         }
-
-        // when
-        const nextState = getNormalizedMergedState(state, patch, config)
-
-        // then
         expect(nextState).toMatchObject(expectedNextState)
         expect(Object.is(nextState, state)).toBe(false)
         expect(Object.is(nextState.foos, state.books)).toBe(false)
@@ -243,21 +243,6 @@ describe('src | getNormalizedMergedState', () => {
           }
         ]
       }
-      const expectedNextState = {
-        authors: [
-          { id: 0, name: "John Marxou" },
-          { id: 1, name: "Edmond Frostan" }
-        ],
-        books: [
-          { authorId: 0, id: 0, title: "My foo" },
-          { authorId: 1, id: 1, title: "Your noise" }
-        ],
-        paragraphs: [
-          { bookId: 0, id: 0, text: "My foo is lovely."},
-          { bookId: 0, id: 1, text: "But I prefer fee." },
-          { bookId: 1, id: 3, text: "Your noise is kind of a rock."}
-        ]
-      }
       const config = {
         normalizer: {
           books: {
@@ -274,6 +259,21 @@ describe('src | getNormalizedMergedState', () => {
       const nextState = getNormalizedMergedState(state, patch, config)
 
       // then
+      const expectedNextState = {
+        authors: [
+          { id: 0, name: "John Marxou" },
+          { id: 1, name: "Edmond Frostan" }
+        ],
+        books: [
+          { authorId: 0, id: 0, title: "My foo" },
+          { authorId: 1, id: 1, title: "Your noise" }
+        ],
+        paragraphs: [
+          { bookId: 0, id: 0, text: "My foo is lovely."},
+          { bookId: 0, id: 1, text: "But I prefer fee." },
+          { bookId: 1, id: 3, text: "Your noise is kind of a rock."}
+        ]
+      }
       expect(nextState).toMatchObject(expectedNextState)
     })
 
@@ -328,38 +328,14 @@ describe('src | getNormalizedMergedState', () => {
                 bookId: 1,
                 id: 3,
                 tags: [
-                  { id: 2, label: "un cap", paragraphId: 3 },
-                  { id: 3, label: "une péninsule", paragraphId: 3 }
+                  { id: 1, label: "un cap", paragraphId: 3 },
+                  { id: 2, label: "une péninsule", paragraphId: 3 }
                 ],
                 text: "Your noise is kind of a rock."
               }
             ],
             title: "Your noise"
           }
-        ]
-      }
-      const expectedNextState = {
-        authors: [
-          { id: 0, name: "John Marxou", placeId: 0 },
-          { id: 1, name: "Edmond Frostan", placeId: 1 }
-        ],
-        books: [
-          { authorId: 0, id: 0, title: "My foo" },
-          { authorId: 1, id: 1, title: "Your noise" }
-        ],
-        paragraphs: [
-          { bookId: 0, id: 0, text: "My foo is lovely."},
-          { bookId: 0, id: 1, text: "But I prefer fee." },
-          { bookId: 1, id: 3, text: "Your noise is kind of a rock."}
-        ],
-        places: [
-          { address: "11, rue de la Potalerie", city: "Paris", id: 0 },
-          { address: "10, rue de Venise", city: "Vannes", id: 1 }
-        ],
-        tags: [
-          { id: 0, label: "WTF", paragraphId: 0 },
-          { id: 2, label: "un cap", paragraphId: 3 },
-          { id: 3, label: "une péninsule", paragraphId: 3 }
         ]
       }
       const config = {
@@ -388,7 +364,151 @@ describe('src | getNormalizedMergedState', () => {
       const nextState = getNormalizedMergedState(state, patch, config)
 
       // then
+      const expectedNextState = {
+        authors: [
+          { id: 0, name: "John Marxou", placeId: 0 },
+          { id: 1, name: "Edmond Frostan", placeId: 1 }
+        ],
+        books: [
+          { authorId: 0, id: 0, title: "My foo" },
+          { authorId: 1, id: 1, title: "Your noise" }
+        ],
+        paragraphs: [
+          { bookId: 0, id: 0, text: "My foo is lovely."},
+          { bookId: 0, id: 1, text: "But I prefer fee." },
+          { bookId: 1, id: 3, text: "Your noise is kind of a rock."}
+        ],
+        places: [
+          { address: "11, rue de la Potalerie", city: "Paris", id: 0 },
+          { address: "10, rue de Venise", city: "Vannes", id: 1 }
+        ],
+        tags: [
+          { id: 0, label: "WTF", paragraphId: 0 },
+          { id: 1, label: "un cap", paragraphId: 3 },
+          { id: 2, label: "une péninsule", paragraphId: 3 }
+        ]
+      }
       expect(nextState).toMatchObject(expectedNextState)
     })
+
+    it('normalize entities at deep levels with deep isMergingDatum', () => {
+      // given
+      const state = {
+        authors: [
+          {
+            id: 0,
+            name: "John Marxou",
+            placeId: 0
+          }
+        ],
+        books: [{
+          authorId: 0,
+          id: 0,
+          text: "my foo",
+          title: "My foo"
+        }],
+        paragraphs: [
+          {
+            bookId: 0,
+            id: 0,
+            text: "My foo is lovely."
+          },
+          {
+            bookId: 0,
+            id: 1,
+            text: "But I prefer fee."
+          }
+        ],
+        places: [
+          { address: "11, rue de la Potalerie", city: "Paris", id: 0 }
+        ],
+        tags: [
+          { id: 1, label: "WTF", paragraphId: 0, remainingKey: "I should stay !" }
+        ]
+      }
+      const patch = {
+        books: [
+          {
+            author: {
+              id: 1,
+              name: "Edmond Frostan",
+              place: { address: "10, rue de Venise", city: "Vannes", id: 1 },
+              placeId: 1,
+            },
+            authorId: 1,
+            id: 1,
+            paragraphs: [
+              {
+                bookId: 1,
+                id: 3,
+                tags: [
+                  { id: 1, label: "NEW WTF", paragraphId: 3 },
+                  { id: 2, label: "un cap", paragraphId: 3 },
+                  { id: 3, label: "une péninsule", paragraphId: 3 }
+                ],
+                text: "Your noise is kind of a rock."
+              }
+            ],
+            title: "Your noise"
+          }
+        ]
+      }
+      const config = {
+        normalizer: {
+          books: {
+            normalizer: {
+              author: {
+                normalizer: {
+                  place: "places"
+                },
+                stateKey: "authors",
+              },
+              paragraphs: {
+                normalizer: {
+                  tags: {
+                    isMergingDatum: true,
+                    stateKey: "tags"
+                  }
+                },
+                stateKey: "paragraphs",
+              }
+            },
+            stateKey: 'books'
+          }
+        }
+      }
+
+      // when
+      const nextState = getNormalizedMergedState(state, patch, config)
+
+      // then
+      const expectedNextState = {
+        authors: [
+          { id: 0, name: "John Marxou", placeId: 0 },
+          { id: 1, name: "Edmond Frostan", placeId: 1 }
+        ],
+        books: [
+          { authorId: 0, id: 0, title: "My foo" },
+          { authorId: 1, id: 1, title: "Your noise" }
+        ],
+        paragraphs: [
+          { bookId: 0, id: 0, text: "My foo is lovely."},
+          { bookId: 0, id: 1, text: "But I prefer fee." },
+          { bookId: 1, id: 3, text: "Your noise is kind of a rock."}
+        ],
+        places: [
+          { address: "11, rue de la Potalerie", city: "Paris", id: 0 },
+          { address: "10, rue de Venise", city: "Vannes", id: 1 }
+        ],
+        tags: [
+          { id: 1, label: "NEW WTF", paragraphId: 3, remainingKey: "I should stay !" },
+          { id: 2, label: "un cap", paragraphId: 3 },
+          { id: 3, label: "une péninsule", paragraphId: 3 }
+        ]
+      }
+      expect(nextState).toMatchObject(expectedNextState)
+    })
+
+
   })
 })
