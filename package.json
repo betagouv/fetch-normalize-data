@@ -39,7 +39,7 @@
     "reducer",
     "state"
   ],
-  "license": "Mozilla Public License",
+  "license": "MPL-2.0",
   "main": "lib/index.js",
   "name": "fetch-normalize-data",
   "private": false,
