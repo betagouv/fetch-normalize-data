@@ -25,11 +25,14 @@ export function getClonedResolvedDatumWithId(datum, index, config) {
 }
 
 export function getClonedResolvedDataWithUniqIds (data, config) {
-  const { getDatumIdValue } = config
+  const getDatumIdValue = config.getDatumIdValue || getDefaultDatumIdValue
   const unifyConfig = Object.assign({ data }, config)
 
+  const dataWithResolvedDatumWithId = data.map((datum, index) =>
+    getClonedResolvedDatumWithId(datum, index, unifyConfig))
+
   return uniqBy(
-    data.map((datum, index) => getClonedResolvedDatumWithId(datum, index, unifyConfig)),
+    dataWithResolvedDatumWithId,
     // UNIFY BY ID
     // (BECAUSE DEEPEST NORMALIZED DATA CAN RETURN ARRAY OF SAME ELEMENTS)
     getDatumIdValue
