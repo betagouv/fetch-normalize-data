@@ -1,9 +1,4 @@
-<h1>
-  <img src="https://raw.githubusercontent.com/betagouv/fetch-normalize-data/master/icon.png" height=60 title="made by @cecilesnips" style="vertical-align: middle;"/>
-  <span>
-    fetch-normalize-data
-  </span>
-</h1>
+<img alt="fetch-normalize-data logo" src="https://raw.githubusercontent.com/betagouv/fetch-normalize-data/master/icon.png" height=60/>
 
 A library to obtain a state of normalized data. Special fetch and reducer helpers are also provided in the export.
 
