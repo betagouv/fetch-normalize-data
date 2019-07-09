@@ -1,4 +1,9 @@
-# fetch-normalize-data
+<h1>
+  <img class="logo" src="https://raw.githubusercontent.com/betagouv/redux-saga--data/master/icon.png" height=60 title="made by @cecilesnips" style="vertical-align: middle;"/>	  <img src="https://raw.githubusercontent.com/betagouv/redux-saga-data/master/icon.png" height=60 title="made by @cecilesnips" style="vertical-align: middle;"/>
+  <span>	  <span>
+    fetch-normalize-data
+  </span>
+</h1>
 
 A library to obtain a state of normalized data. Special fetch and reducer helpers are also provided in the export.
 
