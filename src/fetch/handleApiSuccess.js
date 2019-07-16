@@ -5,11 +5,11 @@ export function handleApiSuccess (reducer, payload, config) {
   const state = { data }
   const { handleSuccess } = config
 
-  dispatch(successData(payload, config))
-
   if (handleSuccess) {
     handleSuccess(state, { config, payload })
   }
+
+  dispatch(successData(payload, config))
 }
 
 export default handleApiSuccess
