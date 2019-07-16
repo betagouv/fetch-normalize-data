@@ -1,6 +1,6 @@
-import { getClonedResolvedDataWithUniqIds } from './getClonedResolvedDataWithUniqIds'
-import { getMergedData } from './getMergedData'
-import { normalize } from './normalize'
+import getClonedResolvedDataWithUniqIds from './getClonedResolvedDataWithUniqIds'
+import getMergedData from './getMergedData'
+import normalize from './normalize'
 
 export function getNormalizedMergedState(state, patch, config = {}) {
   const isMergingArray =

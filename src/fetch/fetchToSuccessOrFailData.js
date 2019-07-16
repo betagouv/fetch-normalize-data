@@ -4,9 +4,9 @@ import {
   handleServerError
 } from './errors'
 import { fetchData } from './fetchData'
-import { getConfigWithDefaultValues } from './getConfigWithDefaultValues'
-import { getUrlFromConfig } from './getUrlFromConfig'
-import { handleApiSuccess } from './handleApiSuccess'
+import getConfigWithDefaultValues from './getConfigWithDefaultValues'
+import getUrlFromConfig from './getUrlFromConfig'
+import handleApiSuccess from './handleApiSuccess'
 import { isSuccessStatus } from './status'
 
 export async function fetchToSuccessOrFailData(

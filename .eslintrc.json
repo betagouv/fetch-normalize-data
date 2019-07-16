@@ -18,6 +18,7 @@
       "optionalDependencies": false,
       "peerDependencies": false
     }],
+    "import/no-named-as-default": 0,
     "jsx-a11y/aria-role": 1,
     "jsx-a11y/click-events-have-key-events": 1,
     "jsx-a11y/label-has-for": 0,

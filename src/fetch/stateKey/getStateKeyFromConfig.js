@@ -1,5 +1,5 @@
-import { getStateKeyFromApiPath } from './getStateKeyFromApiPath'
-import { getStateKeyFromUrl } from './getStateKeyFromUrl'
+import getStateKeyFromApiPath from './getStateKeyFromApiPath'
+import getStateKeyFromUrl from './getStateKeyFromUrl'
 
 export function getStateKeyFromConfig(config) {
   const { apiPath, url } = config

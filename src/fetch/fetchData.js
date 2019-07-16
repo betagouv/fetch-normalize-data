@@ -1,5 +1,5 @@
-import { getFetchConfig } from './getFetchConfig'
-import { getFetchDataResult } from './getFetchDataResult'
+import getFetchConfig from './getFetchConfig'
+import getFetchDataResult from './getFetchDataResult'
 
 export async function fetchData(url, config = {}) {
 

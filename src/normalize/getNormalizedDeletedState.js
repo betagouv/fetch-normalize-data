@@ -1,4 +1,4 @@
-import { getClonedResolvedDataWithUniqIds } from './getClonedResolvedDataWithUniqIds'
+import getClonedResolvedDataWithUniqIds from './getClonedResolvedDataWithUniqIds'
 import { getDefaultDatumIdValue } from './utils'
 
 export function getNormalizedDeletedState (state, patch, config) {

@@ -1,6 +1,6 @@
 // no-param-reassign is done on purpose
 /* eslint-disable no-param-reassign */
-import { getReshapedNormalizer } from './getReshapedNormalizer'
+import getReshapedNormalizer from './getReshapedNormalizer'
 
 // MUTATING FUNCTION
 export function normalizeDataAtItem (data, datumKey, stateKey, config) {
