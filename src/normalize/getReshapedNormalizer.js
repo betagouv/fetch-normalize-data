@@ -6,11 +6,15 @@ export function getReshapedNormalizer (normalizer) {
           reshapedNormalizer[datumKey] = {}
 
           if (typeof stateKeyOrObj !== 'string') {
-            
+
             reshapedNormalizer[datumKey].normalizer = stateKeyOrObj.normalizer
 
+            reshapedNormalizer[datumKey].isMergingArray = stateKeyOrObj.isMergingArray
+            reshapedNormalizer[datumKey].isMutatingDatum = stateKeyOrObj.isMutatingDatum
             reshapedNormalizer[datumKey].isMergingDatum = stateKeyOrObj.isMergingDatum
             reshapedNormalizer[datumKey].isMutatingDatum = stateKeyOrObj.isMutatingDatum
+
+            reshapedNormalizer[datumKey].resolve = stateKeyOrObj.resolve
 
             reshapedNormalizer[datumKey].stateKey = stateKeyOrObj.stateKey
               ? stateKeyOrObj.stateKey
