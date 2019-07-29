@@ -1,6 +1,9 @@
 .circleci/
-doc/
-examples/
 src/
-
+.eslintrc.json
+.prettierrc.json
+jest-transformer.js
+jest.config.js
 icon.png
+precommit.sh
+yarn.lock
