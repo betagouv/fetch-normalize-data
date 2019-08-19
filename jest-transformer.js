@@ -11,8 +11,7 @@ const config = {
       {
         modules: false
       }
-    ],
-    "@babel/react"
+    ]
   ]
 };
 module.exports = require("babel-jest").createTransformer(config);

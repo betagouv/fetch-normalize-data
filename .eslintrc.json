@@ -1,16 +1,11 @@
 {
   "extends": ["airbnb", "prettier"],
   "parser": "babel-eslint",
-  "settings": {},
   "env": {
-    "jest": true,
-    "node": true,
-    "mocha": true,
     "browser": true,
-    "jasmine": true
-  },
-  "globals": {
-    "fixture": true
+    "es6": true,
+    "jest": true,
+    "node": true
   },
   "rules": {
     "import/no-extraneous-dependencies": [2, {
