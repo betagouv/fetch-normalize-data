@@ -16,9 +16,6 @@
     "jest/prefer-expect-assertions": "off",
     "jest/prefer-inline-snapshots": "off",
     "no-var": "error",
-    "react/forbid-component-props": "off",
-    "react/no-set-state": "off",
-    "react/static-property-placement": "off",
     "semi": ["error", "never"]
   }
 }
