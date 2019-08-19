@@ -25,7 +25,6 @@
     "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/plugin-proposal-decorators": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
-    "@babel/preset-react": "^7.0.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^7.2.3",
@@ -41,7 +40,6 @@
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-prettier": "^2.6.2",
-    "eslint-plugin-react": "^7.1.0",
     "husky": "^3.0.3",
     "jest": "^24.9.0",
     "nodemon": "^1.11.0",
@@ -50,7 +48,6 @@
   "scripts": {
     "compile": "rm -rf lib && babel --plugins transform-class-properties,transform-object-rest-spread --presets env -d lib/ --ignore tests src/",
     "postinstall": "if [ -d \"src/\" ]; then npm run compile; fi",
-    "precommit": "./precommit.sh",
     "prettier": "prettier-eslint --write 'src/**/*.js'",
     "prepublish": "npm run compile",
     "test": "yarn jest --env=jsdom ./src",
