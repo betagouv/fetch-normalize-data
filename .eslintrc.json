@@ -1,5 +1,9 @@
 {
-  "extends": ["airbnb", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:import/errors",
+    "plugin:jest/all"
+  ],
   "parser": "babel-eslint",
   "env": {
     "browser": true,
@@ -8,22 +12,13 @@
     "node": true
   },
   "rules": {
-    "import/no-extraneous-dependencies": [2, {
-      "devDependencies": true,
-      "optionalDependencies": false,
-      "peerDependencies": false
-    }],
-    "import/no-named-as-default": 0,
-    "jsx-a11y/aria-role": 1,
-    "jsx-a11y/click-events-have-key-events": 1,
-    "jsx-a11y/label-has-for": 0,
-    "jsx-a11y/no-static-element-interactions": 1,
-    "jsx-a11y/no-noninteractive-element-interactions": 1,
-    "no-param-reassign": 1,
-    "no-underscore-dangle": [2, { "allow": ["__modifiers__"] }],
-    "no-restricted-syntax": 1,
-    "prefer-destructuring": 1,
-    "sort-keys": [1, "asc", { "caseSensitive": true, "natural": false }],
-    "sort-vars": [1, { "ignoreCase": true }]
+    "jest/no-hooks": "off",
+    "jest/prefer-expect-assertions": "off",
+    "jest/prefer-inline-snapshots": "off",
+    "no-var": "error",
+    "react/forbid-component-props": "off",
+    "react/no-set-state": "off",
+    "react/static-property-placement": "off",
+    "semi": ["error", "never"]
   }
 }
