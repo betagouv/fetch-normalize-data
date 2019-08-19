@@ -1,10 +1,5 @@
 const config = {
   babelrc: false,
-  plugins: [
-    ["@babel/plugin-proposal-decorators", { legacy: true }],
-    ["@babel/plugin-proposal-class-properties", { loose: true }],
-    "transform-es2015-modules-commonjs"
-  ],
   presets: [
     [
       "@babel/env",
@@ -12,6 +7,12 @@ const config = {
         modules: false
       }
     ]
+  ],
+  plugins: [
+    ["@babel/plugin-proposal-decorators", { legacy: true }],
+    ["@babel/plugin-proposal-class-properties", { loose: true }],
+    "transform-es2015-modules-commonjs"
   ]
-};
-module.exports = require("babel-jest").createTransformer(config);
+}
+
+module.exports = require("babel-jest").createTransformer(config)
