@@ -1,10 +1,10 @@
-import getClonedResolvedDataWithUniqIds from './getClonedResolvedDataWithUniqIds'
-import getMergedData from './getMergedData'
-import normalize from './normalize'
+import getProcessedData from "./getProcessedData"
+import getMergedData from "./getMergedData"
+import normalize from "./normalize"
 
 export function getNormalizedMergedState(state, patch, config = {}) {
   const isMergingArray =
-    typeof config.isMergingArray === 'undefined' ? true : config.isMergingArray
+    typeof config.isMergingArray === "undefined" ? true : config.isMergingArray
 
   const nextState = config.nextState || {}
 
@@ -18,7 +18,7 @@ export function getNormalizedMergedState(state, patch, config = {}) {
       return
     }
 
-    let nextData = getClonedResolvedDataWithUniqIds(patchData, config)
+    let nextData = getProcessedData(patchData, config)
 
     function doWithNormalizedPatch(normalizedPatch, normalizerConfig) {
       const subNormalizedMergedState = getNormalizedMergedState(
@@ -39,7 +39,6 @@ export function getNormalizedMergedState(state, patch, config = {}) {
     nextState[patchKey] = nextData
   })
 
-  // return
   return nextState
 }
 

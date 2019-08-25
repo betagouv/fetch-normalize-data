@@ -1,15 +1,22 @@
 import {
   ASSIGN_DATA,
+  DELETE_DATA,
   MERGE_DATA,
   RESET_DATA,
   SET_DATA
-} from './actions'
-import getTypeSuffixFromConfig from './getTypeSuffixFromConfig'
-import getConfigWithDefaultValues from '../fetch/getConfigWithDefaultValues'
+} from "./actions"
+import getTypeSuffixFromConfig from "./getTypeSuffixFromConfig"
+import getConfigWithDefaultValues from "../fetch/getConfigWithDefaultValues"
 
 export const assignData = patch => ({
   patch,
-  type: ASSIGN_DATA,
+  type: ASSIGN_DATA
+})
+
+export const deleteData = (patch, config = {}) => ({
+  config,
+  patch,
+  type: DELETE_DATA
 })
 
 export const mergeData = (patch, config = {}) => ({
@@ -33,7 +40,7 @@ export const requestData = (config = {}) => {
 }
 
 export const resetData = () => ({
-  type: RESET_DATA,
+  type: RESET_DATA
 })
 
 export const setData = patch => ({
