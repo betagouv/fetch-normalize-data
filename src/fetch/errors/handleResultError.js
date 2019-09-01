@@ -1,8 +1,9 @@
-import { failData } from '../../reducer/actionCreators'
+import { failData } from "../../reducer/actionCreators"
 
-export const GLOBAL_RESULT_ERROR = 'Result returned by the server is not at the good json format'
+export const GLOBAL_RESULT_ERROR =
+  "Result returned by the server is not at the good json format"
 
-export function handleResultError (reducer, config) {
+export function handleResultError(reducer, config) {
   const [data, dispatch] = reducer
   const state = { data }
   const { handleFail } = config
@@ -20,8 +21,6 @@ export function handleResultError (reducer, config) {
   if (handleFail) {
     handleFail(state, { config, payload })
   }
-
-  throw Error(errors)
 }
 
 export default handleResultError
