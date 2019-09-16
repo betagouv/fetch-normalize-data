@@ -47,6 +47,7 @@
   },
   "scripts": {
     "compile": "rm -rf lib && babel --plugins transform-class-properties,transform-object-rest-spread --presets env -d lib/ --ignore tests src/",
+    "format:js": "prettier-eslint --write './src/**/*.{js,jsx}'",
     "postinstall": "if [ -d \"src/\" ]; then npm run compile; fi",
     "prettier": "prettier-eslint --write 'src/**/*.js'",
     "prepublish": "npm run compile",
