@@ -51,7 +51,7 @@
     "postinstall": "if [ -d \"src/\" ]; then npm run compile; fi",
     "prettier": "prettier-eslint --write 'src/**/*.js'",
     "prepublish": "npm run compile",
-    "test": "yarn jest --env=jsdom",
+    "test": "yarn jest --env=jsdom ./src",
     "watch": "nodemon --watch src --exec \"npm run compile\""
   },
   "husky": {
