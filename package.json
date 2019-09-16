@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "lodash.uniqby": "^4.7.0",
+    "re-reselect": "^3.4.0",
+    "reselect": "^3.0.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

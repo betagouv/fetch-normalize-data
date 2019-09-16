@@ -26,41 +26,21 @@ describe("src | createDataReducer", () => {
       const bars = [
         {
           id: "AE",
-          __ACTIVITIES__: [
-            {
-              createdAt: "2017-02-14T12:51:48.000Z",
-              tag: "TO_BE_DELETED"
-            }
-          ]
+          __ACTIVITIES__: ["TO_BE_DELETED"]
         },
         {
           id: "BF",
-          __ACTIVITIES__: [
-            {
-              createdAt: "2017-02-14T12:51:48.000Z",
-              tag: undefined
-            }
-          ]
+          __ACTIVITIES__: ["/bars"]
         }
       ]
       const foos = [
         {
           id: "AE",
-          __ACTIVITIES__: [
-            {
-              createdAt: "2017-02-14T12:51:48.000Z",
-              tag: "TO_BE_DELETED"
-            }
-          ]
+          __ACTIVITIES__: ["TO_BE_DELETED"]
         },
         {
           id: "BF",
-          __ACTIVITIES__: [
-            {
-              createdAt: "2017-02-14T12:51:48.000Z",
-              tag: "TO_BE_DELETED"
-            }
-          ]
+          __ACTIVITIES__: ["TO_BE_DELETED"]
         }
       ]
       const rootReducer = combineReducers({
@@ -80,12 +60,7 @@ describe("src | createDataReducer", () => {
         bars: [
           {
             id: "BF",
-            __ACTIVITIES__: [
-              {
-                createdAt: "2017-02-14T12:51:48.000Z",
-                tag: undefined
-              }
-            ]
+            __ACTIVITIES__: ["/bars"]
           }
         ],
         foos: []

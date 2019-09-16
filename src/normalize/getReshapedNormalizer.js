@@ -5,6 +5,7 @@ export function getReshapedNormalizer(normalizer) {
     reshapedNormalizer[datumKey] = {}
 
     if (typeof stateKeyOrObj !== "string") {
+      reshapedNormalizer[datumKey].activityTag = stateKeyOrObj.activityTag
       reshapedNormalizer[datumKey].apiPath = stateKeyOrObj.apiPath
       reshapedNormalizer[datumKey].method = stateKeyOrObj.method
 
@@ -22,8 +23,6 @@ export function getReshapedNormalizer(normalizer) {
       reshapedNormalizer[datumKey].stateKey = stateKeyOrObj.stateKey
         ? stateKeyOrObj.stateKey
         : datumKey
-
-      reshapedNormalizer[datumKey].tag = stateKeyOrObj.tag
     } else {
       reshapedNormalizer[datumKey].stateKey = stateKeyOrObj
     }
