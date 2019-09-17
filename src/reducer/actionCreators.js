@@ -25,9 +25,9 @@ export const mergeData = (patch, config = {}) => ({
   type: MERGE_DATA
 })
 
-export const failData = (payload = {}, config = {}) => ({
+export const failData = (result = {}, config = {}) => ({
   config,
-  payload,
+  result,
   type: `FAIL_DATA_${getTypeSuffixFromConfig(config)}`
 })
 
@@ -48,8 +48,8 @@ export const setData = patch => ({
   type: SET_DATA
 })
 
-export const successData = (payload = {}, config = {}) => ({
+export const successData = (result = {}, config = {}) => ({
   config,
-  payload,
+  result,
   type: `SUCCESS_DATA_${getTypeSuffixFromConfig(config)}`
 })
