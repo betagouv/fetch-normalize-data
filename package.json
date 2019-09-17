@@ -1,7 +1,7 @@
 {
   "name": "fetch-normalize-data",
   "description": "A library to obtain a state of normalized data. Special fetch and reducer helpers are also provided in the export.",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "private": false,
   "main": "lib/index.js",
   "license": "MPL-2.0",
@@ -18,6 +18,8 @@
   },
   "dependencies": {
     "lodash.uniqby": "^4.7.0",
+    "re-reselect": "^3.4.0",
+    "reselect": "^3.0.1",
     "uuid": "^3.3.2"
   },
   "devDependencies": {
@@ -40,10 +42,12 @@
     "jest": "^24.9.0",
     "jest-environment-jsdom": "^24.5.0",
     "nodemon": "^1.11.0",
-    "prettier-eslint-cli": "^5.0.0"
+    "prettier-eslint-cli": "^5.0.0",
+    "redux": "^4.0.4"
   },
   "scripts": {
     "compile": "rm -rf lib && babel --plugins transform-class-properties,transform-object-rest-spread --presets env -d lib/ --ignore tests src/",
+    "format:js": "prettier-eslint --write './src/**/*.{js,jsx}'",
     "postinstall": "if [ -d \"src/\" ]; then npm run compile; fi",
     "prettier": "prettier-eslint --write 'src/**/*.js'",
     "prepublish": "npm run compile",
