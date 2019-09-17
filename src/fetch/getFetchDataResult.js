@@ -3,24 +3,30 @@ import {
   successStatusCodesWithoutDataAndDatum
 } from "./status"
 
-export async function getFetchDataResult(fetchResult) {
+export const GLOBAL_RESULT_ERROR =
+  "Result returned by the server is not at the good json format"
+
+export async function getFetchDataResult(fetchResult, config) {
+  const globalResultError = config.globalResultError || GLOBAL_RESULT_ERROR
   const { ok, status } = fetchResult
+
+  const headers = {}
+  fetchResult.headers.forEach((value, key) => {
+    headers[key] = value
+  })
+
   const fetchDataResult = {
+    headers,
     ok,
     payload: {},
     status
   }
 
   if (successStatusCodesWithDataOrDatum.includes(status)) {
-    if (window.cordova) {
-      window.cordova.plugins.CookieManagementPlugin.flush()
-    }
-
-    // warn
     if (!fetchResult.json) {
       fetchDataResult.payload.errors = [
         {
-          global: ["Le serveur ne renvoit pas de la donnée au bon format"]
+          global: [globalResultError]
         }
       ]
       return fetchDataResult
@@ -43,7 +49,7 @@ export async function getFetchDataResult(fetchResult) {
   if (!fetchResult.json) {
     fetchDataResult.payload.errors = [
       {
-        global: ["Le serveur ne renvoit pas de la donnée au bon format"]
+        global: [globalResultError]
       }
     ]
     return fetchDataResult

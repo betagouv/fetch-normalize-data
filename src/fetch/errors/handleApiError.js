@@ -1,14 +1,14 @@
 import { failData } from "../../reducer/actionCreators"
 
-export function handleApiError(reducer, payload, config) {
+export function handleApiError(reducer, result, config) {
   const [data, dispatch] = reducer
   const state = { data }
   const { handleFail } = config
 
-  dispatch(failData(payload, config))
+  dispatch(failData(result, config))
 
   if (handleFail) {
-    handleFail(state, { config, payload })
+    handleFail(state, { config, result })
   }
 }
 

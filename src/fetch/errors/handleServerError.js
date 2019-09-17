@@ -16,12 +16,17 @@ export function handleServerError(reducer, error, config) {
       data: [String(error)]
     }
   ]
-  const payload = { errors }
 
-  dispatch(failData(payload, config))
+  const result = {
+    errors,
+    ok: false,
+    status: 500
+  }
+
+  dispatch(failData(result, config))
 
   if (handleFail) {
-    handleFail(state, { config, payload })
+    handleFail(state, { config, result })
   }
 }
 
