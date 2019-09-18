@@ -19,8 +19,8 @@ export function getPatchFromStateKeyAndPayload(stateKey, payload) {
 }
 
 export const getSuccessState = (state, action) => {
-  const { config, result } = action
-  const { status, payload } = result
+  const { config, payload } = action
+  const { status } = payload
   const { method, normalizer } = config
 
   const stateKey = getStateKeyFromConfig(config)
