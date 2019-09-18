@@ -1,14 +1,14 @@
-import getFetchConfig from "./getFetchConfig"
-import getFetchDataResult from "./getFetchDataResult"
+import getInit from "./getInit"
+import getPayload from "./getPayload"
 
 export async function fetchData(url, config = {}) {
-  const fetchConfig = getFetchConfig(config)
+  const fetchConfig = getInit(config)
 
-  const fetchResult = await fetch(url, fetchConfig)
+  const result = await fetch(url, fetchConfig)
 
-  const fetchDataResult = await getFetchDataResult(fetchResult, fetchConfig)
+  const payload = await getPayload(result, fetchConfig)
 
-  return fetchDataResult
+  return payload
 }
 
 export default fetchData

@@ -2,19 +2,19 @@ import uuid from 'uuid'
 
 const { NAME, VERSION } = process.env
 
-export function getFetchConfig(config) {
+export function getInit(config) {
   const {
     body,
     method,
     token
   } = config
 
-  const fetchConfig = {
+  const init = {
     credentials: 'include',
     method,
   }
 
-  fetchConfig.headers = {
+  init.headers = {
     AppName: NAME,
     AppVersion: VERSION,
     'X-Request-ID': uuid(),
@@ -35,26 +35,26 @@ export function getFetchConfig(config) {
     }
 
     if (!isFormDataBody) {
-      Object.assign(fetchConfig.headers, {
+      Object.assign(init.headers, {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       })
     }
 
-    fetchConfig.body =
-      fetchConfig.headers['Content-Type'] === 'application/json'
+    init.body =
+      init.headers['Content-Type'] === 'application/json'
         ? JSON.stringify(body || {})
         : body
   }
 
   if (token) {
-    if (!fetchConfig.headers) {
-      fetchConfig.headers = {}
+    if (!init.headers) {
+      init.headers = {}
     }
-    fetchConfig.headers.Authorization = `Bearer ${token}`
+    init.headers.Authorization = `Bearer ${token}`
   }
 
-  return fetchConfig
+  return init
 }
 
-export default getFetchConfig
+export default getInit

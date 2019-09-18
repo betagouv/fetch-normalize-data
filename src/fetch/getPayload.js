@@ -6,57 +6,55 @@ import {
 export const GLOBAL_RESULT_ERROR =
   "Result returned by the server is not at the good json format"
 
-export async function getFetchDataResult(fetchResult, config) {
+export async function getPayload(result, config) {
   const globalResultError = config.globalResultError || GLOBAL_RESULT_ERROR
-  const { ok, status } = fetchResult
+  const { ok, status } = result
 
   const headers = {}
-  fetchResult.headers.forEach((value, key) => {
+  result.headers.forEach((value, key) => {
     headers[key] = value
   })
-
-  const fetchDataResult = {
+  const payload = {
     headers,
     ok,
-    payload: {},
     status
   }
 
   if (successStatusCodesWithDataOrDatum.includes(status)) {
-    if (!fetchResult.json) {
-      fetchDataResult.payload.errors = [
+    if (!result.json) {
+      payload.errors = [
         {
           global: [globalResultError]
         }
       ]
-      return fetchDataResult
+      return payload
     }
 
-    const dataOrDatum = await fetchResult.json()
+    const dataOrDatum = await result.json()
     if (Array.isArray(dataOrDatum)) {
-      fetchDataResult.payload.data = dataOrDatum
+      payload.data = dataOrDatum
     } else if (typeof dataOrDatum === "object") {
-      fetchDataResult.payload.datum = dataOrDatum
+      payload.datum = dataOrDatum
     }
 
-    return fetchDataResult
+    return payload
   }
 
   if (successStatusCodesWithoutDataAndDatum.includes(status)) {
-    return fetchDataResult
+    return payload
   }
 
-  if (!fetchResult.json) {
-    fetchDataResult.payload.errors = [
+  if (!result.json) {
+    payload.errors = [
       {
         global: [globalResultError]
       }
     ]
-    return fetchDataResult
+    return payload
   }
 
-  fetchDataResult.payload.errors = await fetchResult.json()
-  return fetchDataResult
+  payload.errors = await result.json()
+  return payload
 }
 
-export default getFetchDataResult
+export default getPayload

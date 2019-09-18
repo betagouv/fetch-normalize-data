@@ -16,16 +16,16 @@ export async function fetchToSuccessOrFailData(
   const fetchDataMethod = config.fetchData || fetchData
 
   try {
-    const result = await fetchDataMethod(url, config)
+    const payload = await fetchDataMethod(url, config)
 
-    const isSuccess = isSuccessStatus(result.status)
+    const isSuccess = isSuccessStatus(payload.status)
     if (isSuccess) {
-      handleApiSuccess(reducer, result, config)
+      handleApiSuccess(reducer, payload, config)
       return
     }
 
-    if (result.payload.errors) {
-      handleApiError(reducer, result, config)
+    if (payload.errors) {
+      handleApiError(reducer, payload, config)
     }
   } catch (error) {
     handleServerError(reducer, error, config)
