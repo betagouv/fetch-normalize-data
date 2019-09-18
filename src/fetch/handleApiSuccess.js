@@ -1,15 +1,15 @@
 import { successData } from "../reducer/actionCreators"
 
-export function handleApiSuccess(reducer, result, config) {
+export function handleApiSuccess(reducer, payload, config) {
   const [data, dispatch] = reducer
   const state = { data }
   const { handleSuccess } = config
 
   if (handleSuccess) {
-    handleSuccess(state, { config, result })
+    handleSuccess(state, { config, payload })
   }
 
-  dispatch(successData(result, config))
+  dispatch(successData(payload, config))
 }
 
 export default handleApiSuccess
