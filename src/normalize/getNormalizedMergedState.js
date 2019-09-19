@@ -1,10 +1,10 @@
-import getProcessedData from "./getProcessedData"
-import getMergedData from "./getMergedData"
-import normalize from "./normalize"
+import getProcessedData from './getProcessedData'
+import getMergedData from './getMergedData'
+import normalize from './normalize'
 
 export function getNormalizedMergedState(state, patch, config = {}) {
   const isMergingArray =
-    typeof config.isMergingArray === "undefined" ? true : config.isMergingArray
+    typeof config.isMergingArray === 'undefined' ? true : config.isMergingArray
 
   const nextState = config.nextState || {}
 

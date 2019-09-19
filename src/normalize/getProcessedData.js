@@ -1,6 +1,6 @@
-import uniqBy from "lodash.uniqby"
+import uniqBy from 'lodash.uniqby'
 
-import { getDefaultDatumIdKey, getDefaultDatumIdValue } from "./utils"
+import { getDefaultDatumIdKey, getDefaultDatumIdValue } from './utils'
 
 export function getProcessedDatum(datum, index, config) {
   const { apiPath, data, resolve } = config

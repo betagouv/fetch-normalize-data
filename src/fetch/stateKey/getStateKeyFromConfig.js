@@ -4,7 +4,8 @@ import getStateKeyFromUrl from './getStateKeyFromUrl'
 export function getStateKeyFromConfig(config) {
   const { apiPath, url } = config
 
-  const stateKey = config.stateKey ||
+  const stateKey =
+    config.stateKey ||
     (apiPath && getStateKeyFromApiPath(apiPath)) ||
     (url && getStateKeyFromUrl(url))
 

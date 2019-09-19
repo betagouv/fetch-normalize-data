@@ -3,11 +3,7 @@ import uuid from 'uuid'
 const { NAME, VERSION } = process.env
 
 export function getInit(config) {
-  const {
-    body,
-    method,
-    token
-  } = config
+  const { body, method, token } = config
 
   const init = {
     credentials: 'include',
@@ -27,7 +23,9 @@ export function getInit(config) {
       const fileValue = Object.values(body).find(value => value instanceof File)
       if (fileValue) {
         const formData = new FormData()
-        Object.keys(formatBody).forEach(key => formData.append(key, formatBody[key]))
+        Object.keys(formatBody).forEach(key =>
+          formData.append(key, formatBody[key])
+        )
         formatBody = formData
 
         isFormDataBody = true
