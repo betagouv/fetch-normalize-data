@@ -1,5 +1,5 @@
-import getInit from "./getInit"
-import getPayload from "./getPayload"
+import getInit from './getInit'
+import getPayload from './getPayload'
 
 export async function fetchData(url, config = {}) {
   const fetchConfig = getInit(config)

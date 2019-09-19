@@ -1,6 +1,6 @@
-import createCachedSelector from "re-reselect"
+import createCachedSelector from 're-reselect'
 
-const mapArgsToCacheKey = (state, key, id) => `${key || ""}${id || ""}`
+const mapArgsToCacheKey = (state, key, id) => `${key || ''}${id || ''}`
 
 export const selectEntityByKeyAndId = createCachedSelector(
   (state, key) => state.data[key],

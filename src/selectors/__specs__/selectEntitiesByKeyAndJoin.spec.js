@@ -1,20 +1,20 @@
-import selectEntitiesByKeyAndJoin from "../selectEntitiesByKeyAndJoin"
+import selectEntitiesByKeyAndJoin from '../selectEntitiesByKeyAndJoin'
 
-describe("selectEntitiesByKeyAndJoin", () => {
-  describe("when datum is not here", () => {
-    it("should return empty list", () => {
+describe('selectEntitiesByKeyAndJoin', () => {
+  describe('when datum is not here', () => {
+    it('should return empty list', () => {
       // given
       const state = {
         data: {
           bars: [],
-          foos: []
-        }
+          foos: [],
+        },
       }
 
       // when
-      const result = selectEntitiesByKeyAndJoin(state, "foos", {
-        key: "barId",
-        value: "CG"
+      const result = selectEntitiesByKeyAndJoin(state, 'foos', {
+        key: 'barId',
+        value: 'CG',
       })
 
       // then
@@ -22,71 +22,71 @@ describe("selectEntitiesByKeyAndJoin", () => {
     })
   })
 
-  describe("when datum is here", () => {
-    it("should return the datum for one item in join", () => {
+  describe('when datum is here', () => {
+    it('should return the datum for one item in join', () => {
       // given
       const selectedFoos = [
         {
-          barId: "CG",
-          id: "AE"
+          barId: 'CG',
+          id: 'AE',
         },
         {
-          barId: "CG",
-          id: "BF"
-        }
+          barId: 'CG',
+          id: 'BF',
+        },
       ]
       const state = {
         data: {
-          bars: [{ id: "CG" }],
+          bars: [{ id: 'CG' }],
           foos: [
             ...selectedFoos,
             {
-              id: "JK"
-            }
-          ]
-        }
+              id: 'JK',
+            },
+          ],
+        },
       }
 
       // when
-      const result = selectEntitiesByKeyAndJoin(state, "foos", {
-        key: "barId",
-        value: "CG"
+      const result = selectEntitiesByKeyAndJoin(state, 'foos', {
+        key: 'barId',
+        value: 'CG',
       })
 
       // then
       expect(result).toStrictEqual(selectedFoos)
     })
 
-    it("should return the datum for two items in join", () => {
+    it('should return the datum for two items in join', () => {
       // given
       const selectedFoos = [
         {
-          barId: "CG",
-          id: "AE",
-          isActive: true
+          barId: 'CG',
+          id: 'AE',
+          isActive: true,
         },
         {
-          barId: "CG",
-          id: "BF",
-          isActive: true
-        }
+          barId: 'CG',
+          id: 'BF',
+          isActive: true,
+        },
       ]
       const state = {
         data: {
-          bars: [{ id: "CG" }],
+          bars: [{ id: 'CG' }],
           foos: [
             ...selectedFoos,
             {
-              id: "JK"
-            }
-          ]
-        }
+              id: 'JK',
+            },
+          ],
+        },
       }
 
       // when
-      const result = selectEntitiesByKeyAndJoin(state, "foos", {
-        key: "barId",
-        value: "CG"
+      const result = selectEntitiesByKeyAndJoin(state, 'foos', {
+        key: 'barId',
+        value: 'CG',
       })
 
       // then

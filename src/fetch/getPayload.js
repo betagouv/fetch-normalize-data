@@ -1,10 +1,10 @@
 import {
   successStatusCodesWithDataOrDatum,
-  successStatusCodesWithoutDataAndDatum
-} from "./status"
+  successStatusCodesWithoutDataAndDatum,
+} from './status'
 
 export const GLOBAL_RESULT_ERROR =
-  "Result returned by the server is not at the good json format"
+  'Result returned by the server is not at the good json format'
 
 export async function getPayload(result, config) {
   const globalResultError = config.globalResultError || GLOBAL_RESULT_ERROR
@@ -17,15 +17,15 @@ export async function getPayload(result, config) {
   const payload = {
     headers,
     ok,
-    status
+    status,
   }
 
   if (successStatusCodesWithDataOrDatum.includes(status)) {
     if (!result.json) {
       payload.errors = [
         {
-          global: [globalResultError]
-        }
+          global: [globalResultError],
+        },
       ]
       return payload
     }
@@ -33,7 +33,7 @@ export async function getPayload(result, config) {
     const dataOrDatum = await result.json()
     if (Array.isArray(dataOrDatum)) {
       payload.data = dataOrDatum
-    } else if (typeof dataOrDatum === "object") {
+    } else if (typeof dataOrDatum === 'object') {
       payload.datum = dataOrDatum
     }
 
@@ -47,8 +47,8 @@ export async function getPayload(result, config) {
   if (!result.json) {
     payload.errors = [
       {
-        global: [globalResultError]
-      }
+        global: [globalResultError],
+      },
     ]
     return payload
   }

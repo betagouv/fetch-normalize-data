@@ -1,7 +1,7 @@
-export function getDefaultDatumIdKey () {
+export function getDefaultDatumIdKey() {
   return 'id'
 }
 
-export function getDefaultDatumIdValue (datum, index) {
+export function getDefaultDatumIdValue(datum, index) {
   return datum.id || index
 }

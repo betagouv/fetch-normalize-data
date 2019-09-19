@@ -4,7 +4,7 @@ export function getReshapedNormalizer(normalizer) {
     const stateKeyOrObj = normalizer[datumKey]
     reshapedNormalizer[datumKey] = {}
 
-    if (typeof stateKeyOrObj !== "string") {
+    if (typeof stateKeyOrObj !== 'string') {
       reshapedNormalizer[datumKey].activityTag = stateKeyOrObj.activityTag
       reshapedNormalizer[datumKey].apiPath = stateKeyOrObj.apiPath
       reshapedNormalizer[datumKey].method = stateKeyOrObj.method

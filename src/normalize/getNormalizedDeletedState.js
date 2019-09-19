@@ -1,5 +1,5 @@
-import getProcessedData from "./getProcessedData"
-import { getDefaultDatumIdValue } from "./utils"
+import getProcessedData from './getProcessedData'
+import { getDefaultDatumIdValue } from './utils'
 
 export function getNormalizedDeletedState(state, patch, config) {
   const getDatumIdValue = config.getDatumIdValue || getDefaultDatumIdValue

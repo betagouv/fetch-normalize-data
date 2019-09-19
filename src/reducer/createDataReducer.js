@@ -1,8 +1,8 @@
-import { ASSIGN_DATA, DELETE_DATA, MERGE_DATA, RESET_DATA } from "./actions"
-import getSuccessState from "./getSuccessState"
-import getDeletedPatchByActivityTag from "./getDeletedPatchByActivityTag"
-import getNormalizedDeletedState from "../normalize/getNormalizedDeletedState"
-import getNormalizedMergedState from "../normalize/getNormalizedMergedState"
+import { ASSIGN_DATA, DELETE_DATA, MERGE_DATA, RESET_DATA } from './actions'
+import getSuccessState from './getSuccessState'
+import getDeletedPatchByActivityTag from './getDeletedPatchByActivityTag'
+import getNormalizedDeletedState from '../normalize/getNormalizedDeletedState'
+import getNormalizedMergedState from '../normalize/getNormalizedMergedState'
 
 export const createDataReducer = (initialState = {}) => {
   const reducer = (state = initialState, action) => {

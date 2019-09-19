@@ -1,6 +1,6 @@
-import { failData } from "../../reducer/actionCreators"
+import { failData } from '../../reducer/actionCreators'
 
-export const GLOBAL_SERVER_ERROR = "Server error. Try to to refresh the page."
+export const GLOBAL_SERVER_ERROR = 'Server error. Try to to refresh the page.'
 
 export function handleServerError(reducer, error, config) {
   const [data, dispatch] = reducer
@@ -10,17 +10,17 @@ export function handleServerError(reducer, error, config) {
 
   const errors = [
     {
-      global: [globalServerError]
+      global: [globalServerError],
     },
     {
-      data: [String(error)]
-    }
+      data: [String(error)],
+    },
   ]
 
   const payload = {
     errors,
     ok: false,
-    status: 500
+    status: 500,
   }
 
   dispatch(failData(payload, config))
