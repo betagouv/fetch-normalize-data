@@ -8,7 +8,8 @@ export function handleApiError(reducer, payload, config) {
   dispatch(failData(payload, config))
 
   if (handleFail) {
-    handleFail(state, { config, payload })
+    const action = { config, payload }
+    handleFail(state, action)
   }
 }
 

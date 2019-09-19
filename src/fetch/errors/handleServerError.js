@@ -26,7 +26,8 @@ export function handleServerError(reducer, error, config) {
   dispatch(failData(payload, config))
 
   if (handleFail) {
-    handleFail(state, { config, payload })
+    const action = { config, payload }
+    handleFail(state, action)
   }
 }
 
