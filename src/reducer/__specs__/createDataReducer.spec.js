@@ -1,7 +1,7 @@
 import { combineReducers, createStore } from 'redux'
 
 import createDataReducer from '../createDataReducer'
-import { assignData, deleteData, resetData } from '../actionCreators'
+import { assignData, deleteData, reinitializeData } from '../actionCreators'
 
 Date.now = jest.spyOn(Date, 'now').mockImplementation(() => 1487076708000)
 
@@ -9,12 +9,12 @@ describe('src | createDataReducer', () => {
   describe('when RESET_DATA', () => {
     it('should reset data with no excludes', () => {
       // given
-      const initialState = { foos : [{ id: 'AE' }]}
+      const initialState = { bars: [{ id: 'FF' }], foos: [{ id: 'AE' }], totos: [{ id: 'DD' }]}
       const rootReducer = combineReducers({ data: createDataReducer(initialState) })
       const store = createStore(rootReducer)
 
       // when
-      store.dispatch(resetData())
+      store.dispatch(reinitializeData())
 
       // then
       expect(store.getState().data).toStrictEqual(initialState)
@@ -22,15 +22,16 @@ describe('src | createDataReducer', () => {
 
     it('should reset data with excludes', () => {
       // given
-      const initialState = { bars: [{ id: 'FF' }], foos: [{ id: 'AE' }], totos: [{ id: 'DD' }]}
+      const initialState = { bars: [], foos: [{ id: 'AE' }], totos: [{ id: 'DD1' }]}
       const rootReducer = combineReducers({ data: createDataReducer(initialState) })
       const store = createStore(rootReducer)
+      store.dispatch(assignData({ bars: [{ id: 'FF' }], foos: [], totos: [{ id: 'DD1' }, { id: 'DD2' }]}))
 
       // when
-      store.dispatch(resetData({ excludes: ['bars', 'totos'] }))
+      store.dispatch(reinitializeData({ excludes: ['bars', 'totos'] }))
 
       // then
-      expect(store.getState().data).toStrictEqual({ foos : [{ id: 'AE' }]})
+      expect(store.getState().data).toStrictEqual({ bars: [{ id: 'FF' }], foos: [{ id: 'AE' }], totos: [{ id: 'DD1' }, { id: 'DD2' }]})
     })
   })
 

@@ -2,7 +2,7 @@ import {
   ASSIGN_DATA,
   DELETE_DATA,
   MERGE_DATA,
-  RESET_DATA,
+  REINITIALIZE_DATA,
   SET_DATA,
 } from './actions'
 import getTypeSuffixFromConfig from './getTypeSuffixFromConfig'
@@ -39,9 +39,9 @@ export const requestData = (config = {}) => {
   }
 }
 
-export const resetData = (config = {}) => ({
+export const reinitializeData = (config = {}) => ({
   config,
-  type: RESET_DATA,
+  type: REINITIALIZE_DATA,
 })
 
 export const setData = patch => ({
