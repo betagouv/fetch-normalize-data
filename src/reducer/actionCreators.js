@@ -39,7 +39,8 @@ export const requestData = (config = {}) => {
   }
 }
 
-export const resetData = () => ({
+export const resetData = (config = {}) => ({
+  config,
   type: RESET_DATA,
 })
 
