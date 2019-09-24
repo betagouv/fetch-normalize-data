@@ -1,5 +1,5 @@
-import { ASSIGN_DATA, DELETE_DATA, MERGE_DATA, RESET_DATA } from './actions'
-import resetState from './resetState'
+import { ASSIGN_DATA, DELETE_DATA, MERGE_DATA, REINITIALIZE_DATA } from './actions'
+import reinitializeState from './reinitializeState'
 import getSuccessState from './getSuccessState'
 import getDeletedPatchByActivityTag from './getDeletedPatchByActivityTag'
 import getNormalizedDeletedState from '../normalize/getNormalizedDeletedState'
@@ -29,8 +29,9 @@ export const createDataReducer = (initialState = {}) => {
       return Object.assign({}, state, nextState)
     }
 
-    if (action.type === RESET_DATA) {
-      return resetState(
+    if (action.type === REINITIALIZE_DATA) {
+      return reinitializeState(
+        state,
         initialState,
         action.config
       )
