@@ -29,6 +29,10 @@ export const getSuccessState = (state, action) => {
     return Object.assign({}, state)
   }
 
+  if (!stateKey) {
+    return state
+  }
+
   const patch = getPatchFromStateKeyAndPayload(stateKey, payload)
 
   const normalizerConfig = Object.assign({ normalizer }, config)
