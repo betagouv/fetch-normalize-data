@@ -1,4 +1,4 @@
-export function getStateKeyFromApiPath(apiPath) {
+function getStateKeyFromApiPath(apiPath) {
   return apiPath
     .replace(/^\/|\/$/g, '')
     .split('?')[0]

@@ -4,8 +4,7 @@ const reinitializeState = (state, initialState, config) => {
   return Object.keys(initialState).reduce((resetState, currentStateKey) => {
     if (!config.excludes.includes(currentStateKey)) {
       resetState[currentStateKey] = initialState[currentStateKey]
-    }
-    else {
+    } else {
       resetState[currentStateKey] = state[currentStateKey]
     }
 
