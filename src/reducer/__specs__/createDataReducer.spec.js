@@ -127,14 +127,15 @@ describe('src | createDataReducer', () => {
 
   describe('when SUCCESS_DATA', () => {
     it('should merge a patch inside the state with apiPath', () => {
+      // given
       const initialState = { bars: [] }
       const rootReducer = combineReducers({
         data: createDataReducer(initialState),
       })
       const store = createStore(rootReducer)
+      const foos = [{ id: 'AE' }]
 
       // when
-      const foos = [{ id: 'AE' }]
       store.dispatch(
         successData(
           { data: foos, status: 200 },
@@ -154,14 +155,15 @@ describe('src | createDataReducer', () => {
     })
 
     it('should not merge a patch when stateKey is null', () => {
+      // given
       const initialState = { bars: [] }
       const rootReducer = combineReducers({
         data: createDataReducer(initialState),
       })
       const store = createStore(rootReducer)
+      const foos = [{ id: 'AE' }]
 
       // when
-      const foos = [{ id: 'AE' }]
       store.dispatch(
         successData(
           { data: foos, status: 200 },
