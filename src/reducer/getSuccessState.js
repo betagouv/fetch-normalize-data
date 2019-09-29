@@ -29,7 +29,7 @@ export const getSuccessState = (state, action) => {
     return Object.assign({}, state)
   }
 
-  if (!stateKey) {
+  if (!stateKey) return state
     return state
   }
 
