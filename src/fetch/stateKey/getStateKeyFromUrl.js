@@ -1,6 +1,6 @@
 import getStateKeyFromApiPath from './getStateKeyFromApiPath'
 
-export function getStateKeyFromUrl(url) {
+function getStateKeyFromUrl(url) {
   const apiPath = url
     .split('/')
     .slice(3)

@@ -1,4 +1,9 @@
-import { ASSIGN_DATA, DELETE_DATA, MERGE_DATA, REINITIALIZE_DATA } from './actions'
+import {
+  ASSIGN_DATA,
+  DELETE_DATA,
+  MERGE_DATA,
+  REINITIALIZE_DATA,
+} from './actions'
 import reinitializeState from './reinitializeState'
 import getSuccessState from './getSuccessState'
 import getDeletedPatchByActivityTag from './getDeletedPatchByActivityTag'
@@ -30,11 +35,7 @@ export const createDataReducer = (initialState = {}) => {
     }
 
     if (action.type === REINITIALIZE_DATA) {
-      return reinitializeState(
-        state,
-        initialState,
-        action.config
-      )
+      return reinitializeState(state, initialState, action.config)
     }
 
     if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {

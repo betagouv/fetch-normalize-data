@@ -30,8 +30,6 @@ export const getSuccessState = (state, action) => {
   }
 
   if (!stateKey) return state
-    return state
-  }
 
   const patch = getPatchFromStateKeyAndPayload(stateKey, payload)
 
@@ -45,12 +43,9 @@ export const getSuccessState = (state, action) => {
     }
   }
 
-  const nextState =
-    method === 'DELETE'
-      ? getNormalizedDeletedState(state, patch, normalizerConfig)
-      : getNormalizedMergedState(state, patch, normalizerConfig)
-
-  return nextState
+  return method === 'DELETE'
+    ? getNormalizedDeletedState(state, patch, normalizerConfig)
+    : getNormalizedMergedState(state, patch, normalizerConfig)
 }
 
 export default getSuccessState
