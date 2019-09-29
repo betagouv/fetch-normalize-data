@@ -8,7 +8,7 @@ export function getStateKeyFromConfig(config) {
     return
   }
 
-  const stateKey =
+  return
     config.stateKey ||
     (apiPath && getStateKeyFromApiPath(apiPath)) ||
     (url && getStateKeyFromUrl(url))
