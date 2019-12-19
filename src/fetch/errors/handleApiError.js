@@ -1,10 +1,12 @@
 import { failData } from '../../reducer/actionCreators'
+import { API_ERROR } from './error_codes'
 
 export function handleApiError(reducer, payload, config) {
   const [data, dispatch] = reducer
   const state = { data }
   const { handleFail } = config
 
+  payload['error_type'] = API_ERROR
   dispatch(failData(payload, config))
 
   if (handleFail) {
