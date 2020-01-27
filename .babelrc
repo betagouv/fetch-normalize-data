@@ -1,0 +1,4 @@
+{
+  "ignore": ["src/**/__specs__"],
+  "presets": ["@babel/preset-env"]
+}

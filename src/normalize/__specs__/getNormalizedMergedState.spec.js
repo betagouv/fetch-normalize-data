@@ -1,5 +1,3 @@
-import 'babel-polyfill'
-
 import { getNormalizedMergedState } from '../getNormalizedMergedState'
 
 describe('src | getNormalizedMergedState', () => {
@@ -47,7 +45,10 @@ describe('src | getNormalizedMergedState', () => {
 
       // then
       const expectedNextState = {
-        books: [{ id: 0, text: 'my foo' }, { id: 1, text: 'you foo' }],
+        books: [
+          { id: 0, text: 'my foo' },
+          { id: 1, text: 'you foo' },
+        ],
       }
       expect(nextState).toStrictEqual(expectedNextState)
       expect(Object.is(nextState, state)).toBe(false)
@@ -126,7 +127,10 @@ describe('src | getNormalizedMergedState', () => {
 
         // then
         const expectedNextState = {
-          books: [{ id: 0, text: 'my foo' }, { id: 1, text: 'you foo' }],
+          books: [
+            { id: 0, text: 'my foo' },
+            { id: 1, text: 'you foo' },
+          ],
         }
         expect(nextState).toStrictEqual(expectedNextState)
         expect(Object.is(nextState, state)).toBe(false)
