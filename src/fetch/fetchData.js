@@ -1,6 +1,6 @@
+import { errorTimeoutStatusCode } from './errors/error_codes'
 import getInit from './getInit'
 import getPayload from './getPayload'
-
 
 export async function fetchData(url, config = {}) {
   const { fetchTimeout } = config
@@ -12,9 +12,8 @@ export async function fetchData(url, config = {}) {
   if (fetchTimeout) {
     const timeoutPromise = new Promise(resolve => setTimeout(
         () => resolve({
-          json: new Promise(resolve => resolve(['server timeout response'])),
           ok: false,
-          status: 408
+          status: errorTimeoutStatusCode
         })), fetchTimeout)
     result = await Promise.race([fetchPromise, timeoutPromise])
   } else {

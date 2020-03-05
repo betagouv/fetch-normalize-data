@@ -1,3 +1,5 @@
+export const errorTimeoutStatusCode = 408
+
 export const successStatusCodesWithDataOrDatum = [
   200,
   201,
@@ -10,11 +12,17 @@ export const successStatusCodesWithDataOrDatum = [
   210,
   226,
 ]
+
 export const successStatusCodesWithoutDataAndDatum = [204]
+
 
 export function isSuccessStatus(status) {
   return (
     successStatusCodesWithDataOrDatum.includes(status) ||
     successStatusCodesWithoutDataAndDatum.includes(status)
   )
+}
+
+export function isTimeoutStatus(status) {
+  return status === errorTimeoutStatusCode
 }
