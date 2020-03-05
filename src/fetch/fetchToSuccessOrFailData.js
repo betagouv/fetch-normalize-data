@@ -29,7 +29,7 @@ export async function fetchToSuccessOrFailData(
     }
 
     const isTimeout = isTimeoutStatus(payload.status)
-    if (isTimeout)
+    if (isTimeout) {
       handleTimeoutError(reducer, payload, config)
       return
     }
