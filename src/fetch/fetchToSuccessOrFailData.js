@@ -1,4 +1,8 @@
-import { handleApiError, handleServerError } from './errors'
+import {
+  handleApiError,
+  handleServerError,
+  handleTimeoutError
+} from './errors'
 import { fetchData } from './fetchData'
 import getConfigWithDefaultValues from './getConfigWithDefaultValues'
 import getUrlFromConfig from './getUrlFromConfig'
@@ -21,6 +25,12 @@ export async function fetchToSuccessOrFailData(
     const isSuccess = isSuccessStatus(payload.status)
     if (isSuccess) {
       handleApiSuccess(reducer, payload, config)
+      return
+    }
+
+    const isTimeout = isTimeoutStatus(payload.status)
+    if (isTimeout)
+      handleTimeoutError(reducer, payload, config)
       return
     }
 
