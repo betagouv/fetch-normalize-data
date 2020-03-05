@@ -1,5 +1,6 @@
-import { failData } from '../../reducer/actionCreators'
 import { API_ERROR } from './error_codes'
+import { failData } from '../../reducer/actionCreators'
+
 
 export function handleApiError(reducer, payload, config) {
   const [data, dispatch] = reducer
