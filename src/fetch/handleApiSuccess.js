@@ -1,8 +1,7 @@
 import { successData } from '../reducer/actionCreators'
 
 export function handleApiSuccess(reducer, payload, config) {
-  const [data, dispatch] = reducer
-  const state = { data }
+  const [state, dispatch] = reducer
   const { handleSuccess } = config
 
   dispatch(successData(payload, config))
