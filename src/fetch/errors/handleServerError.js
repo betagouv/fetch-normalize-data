@@ -4,8 +4,7 @@ import { SERVER_ERROR } from './error_codes'
 export const GLOBAL_SERVER_ERROR = 'Server error. Try to to refresh the page.'
 
 export function handleServerError(reducer, error, config) {
-  const [data, dispatch] = reducer
-  const state = { data }
+  const { dispatch, getState } = reducer
   const { handleFail } = config
   const globalServerError = config.globalServerError || GLOBAL_SERVER_ERROR
 
@@ -29,7 +28,7 @@ export function handleServerError(reducer, error, config) {
 
   if (handleFail) {
     const action = { config, payload }
-    handleFail(state, action)
+    handleFail(getState(), action)
   }
 }
 
