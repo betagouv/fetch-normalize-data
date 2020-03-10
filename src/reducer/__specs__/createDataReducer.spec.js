@@ -58,7 +58,7 @@ describe('src | createDataReducer', () => {
       const store = createStore(rootReducer)
 
       // when
-      store.dispatch(deleteData(null, { tags: ['TO_BE_DELETED'] }))
+      store.dispatch(deleteData(null, { activityTags: ['TO_BE_DELETED'] }))
 
       // then
       const state = store.getState().data
