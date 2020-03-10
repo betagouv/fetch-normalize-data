@@ -4,22 +4,18 @@ import {
   successStatusCodesWithoutDataAndDatum,
 } from './status'
 
-
 export const GLOBAL_RESULT_ERROR =
   'Result returned by the server is not at the good json format'
 
-
 export const TIMEOUT_RESULT_ERROR =
   'Server did not respond within the specified timeout interval'
-
 
 export async function getPayload(result, config) {
   const globalResultError = config.globalResultError || GLOBAL_RESULT_ERROR
   const timeoutResultError = config.timeoutResultError || TIMEOUT_RESULT_ERROR
   const { ok, status } = result
+  const headers = { ...result.headers }
 
-  const headers = {}
-  result.headers.forEach((value, key) => { headers[key] = value })
   const payload = { headers, ok, status }
 
   if (errorTimeoutStatusCode === status) {
@@ -28,8 +24,8 @@ export async function getPayload(result, config) {
         global: [globalResultError],
       },
       {
-        timeout: [timeoutResultError]
-      }
+        timeout: [timeoutResultError],
+      },
     ]
     return payload
   }
