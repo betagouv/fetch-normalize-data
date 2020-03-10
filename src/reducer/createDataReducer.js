@@ -18,7 +18,7 @@ export const createDataReducer = (initialState = {}) => {
 
     if (action.type === DELETE_DATA) {
       let patch = action.patch || state
-      if (action.config.tags) {
+      if (action.config.activityTags) {
         patch = getDeletedPatchByActivityTag(patch, action.config.activityTags)
       }
       const nextState = getNormalizedDeletedState(state, patch, action.config)
