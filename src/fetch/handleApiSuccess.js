@@ -5,10 +5,11 @@ export function handleApiSuccess(reducer, payload, config) {
   const state = { data }
   const { handleSuccess } = config
 
-  dispatch(successData(payload, config))
+  const successAction = successData(payload, config)
+  dispatch(successAction)
 
   if (handleSuccess) {
-    const action = { config, payload }
+    const action = { config, payload, type: successAction.type }
     handleSuccess(state, action)
   }
 }

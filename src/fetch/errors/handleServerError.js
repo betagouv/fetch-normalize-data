@@ -1,5 +1,5 @@
 import { failData } from '../../reducer/actionCreators'
-import { SERVER_ERROR } from './error_codes'
+import { SERVER_ERROR } from './errorCodes'
 
 export const GLOBAL_SERVER_ERROR = 'Server error. Try to to refresh the page.'
 
@@ -19,16 +19,17 @@ export function handleServerError(reducer, error, config) {
   ]
 
   const payload = {
+    error_type: SERVER_ERROR,
     errors,
     ok: false,
     status: 500,
-    error_type: SERVER_ERROR,
   }
 
-  dispatch(failData(payload, config))
+  const failAction = failData(payload, config)
+  dispatch(failAction)
 
   if (handleFail) {
-    const action = { config, payload }
+    const action = { config, payload, type: failAction.type }
     handleFail(state, action)
   }
 }
