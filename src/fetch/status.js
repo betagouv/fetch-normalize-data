@@ -15,14 +15,13 @@ export const successStatusCodesWithDataOrDatum = [
 
 export const successStatusCodesWithoutDataAndDatum = [204]
 
-
-export function isSuccessStatus(status) {
+export const isSuccessStatus = status => {
   return (
     successStatusCodesWithDataOrDatum.includes(status) ||
     successStatusCodesWithoutDataAndDatum.includes(status)
   )
 }
 
-export function isTimeoutStatus(status) {
+export const isTimeoutStatus = status => {
   return status === errorTimeoutStatusCode
 }
