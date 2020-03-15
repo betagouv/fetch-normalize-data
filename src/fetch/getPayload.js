@@ -14,7 +14,10 @@ export async function getPayload(result, config) {
   const globalResultError = config.globalResultError || GLOBAL_RESULT_ERROR
   const timeoutResultError = config.timeoutResultError || TIMEOUT_RESULT_ERROR
   const { ok, status } = result
-  const headers = { ...result.headers }
+  const headers = {}
+  result.headers.forEach((value, key) => {
+    headers[key] = value
+  })
 
   const payload = { headers, ok, status }
 
