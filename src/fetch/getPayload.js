@@ -15,9 +15,11 @@ export async function getPayload(result, config) {
   const timeoutResultError = config.timeoutResultError || TIMEOUT_RESULT_ERROR
   const { ok, status } = result
   const headers = {}
-  result.headers.forEach((value, key) => {
-    headers[key] = value
-  })
+  if (result.headers) {
+    Object.keys(result.headers).forEach(key => {
+      headers[key] = result.headers[key]
+    })
+  }
 
   const payload = { headers, ok, status }
 
