@@ -14,6 +14,7 @@ export async function fetchData(url, config = {}) {
       setTimeout(
         () =>
           resolve({
+            headers: {},
             ok: false,
             status: errorTimeoutStatusCode,
           }),
