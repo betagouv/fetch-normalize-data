@@ -11,12 +11,10 @@ export async function fetchData(url, config = {}) {
   let result
   if (fetchTimeout) {
     const timeoutPromise = new Promise(resolve =>
-      setTimeout(() => {
-        const response = new Response()
-        response.ok = false
-        response.status = errorTimeoutStatusCode
-        resolve(response)
-      }, fetchTimeout)
+      setTimeout(
+        () => resolve(new Response(null, { status: errorTimeoutStatusCode })),
+        fetchTimeout
+      )
     )
     result = await Promise.race([timeoutPromise, fetchPromise])
   } else {
