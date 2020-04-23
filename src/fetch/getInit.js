@@ -16,7 +16,7 @@ export function getInit(config) {
     'X-Request-ID': uuid(),
   }
 
-  if (method !== 'GET' && method !== 'DELETE') {
+  if (method !== 'GET') {
     let formatBody = body
     let isFormDataBody = formatBody instanceof FormData
     if (formatBody && !isFormDataBody) {
