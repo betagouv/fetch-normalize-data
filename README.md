@@ -2,6 +2,8 @@
 
 A library to obtain a state of normalized data. Special fetch and reducer helpers are also provided in the export.
 
+An implementation with a redux-thunk context is [here](https://github.com/betagouv/redux-thunk-data), [there](https://github.com/betagouv/redux-thunk-data) for redux-saga. You can see also a poc with only a React Context (redux free) at [this](https://github.com/betagouv/react-hook-data). Also, see this [post](https://medium.com/pass-culture/2-an-open-source-app-94d9de8d6eee) for a presentation based on the pass culture project.
+
 [![CircleCI](https://circleci.com/gh/betagouv/fetch-normalize-data/tree/master.svg?style=svg)](https://circleci.com/gh/betagouv/fetch-normalize-data/tree/master)
 [![npm version](https://img.shields.io/npm/v/fetch-normalize-data.svg?style=flat-square)](https://npmjs.org/package/fetch-normalize-data)
 
