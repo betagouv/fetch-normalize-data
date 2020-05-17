@@ -8,7 +8,9 @@ import {
   successData,
 } from '../actionCreators'
 
+
 Date.now = jest.spyOn(Date, 'now').mockImplementation(() => 1487076708000)
+
 
 describe('src | createDataReducer', () => {
   describe('when ASSIGN_DATA', () => {

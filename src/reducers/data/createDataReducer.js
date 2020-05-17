@@ -7,8 +7,10 @@ import {
 import reinitializeState from './reinitializeState'
 import getSuccessState from './getSuccessState'
 import getDeletedPatchByActivityTag from './getDeletedPatchByActivityTag'
-import getNormalizedDeletedState from '../normalize/getNormalizedDeletedState'
-import getNormalizedMergedState from '../normalize/getNormalizedMergedState'
+
+import getNormalizedDeletedState from '../../normalize/getNormalizedDeletedState'
+import getNormalizedMergedState from '../../normalize/getNormalizedMergedState'
+
 
 export const createDataReducer = (initialState = {}) => {
   const reducer = (state = initialState, action) => {

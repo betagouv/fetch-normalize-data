@@ -1,0 +1,1 @@
+export const DELETE_REQUEST = 'DELETE_REQUEST'
