@@ -1,4 +1,4 @@
-import { DELETE_REQUEST } from './actions'
+import { DELETE_REQUESTS } from './actions'
 
 const arrayErrorsToErrorsByName = errors =>
   Object.values(errors).reduce((acc, error) => ({ ...acc, ...error }), {})
@@ -60,7 +60,7 @@ export const createRequestsReducer = (initialState = {}) => {
       return { ...state, ...nextState }
     }
 
-    if (action.type === DELETE_REQUEST) {
+    if (action.type === DELETE_REQUESTS) {
       const nextState = { [action.key]: undefined }
       return { ...state, ...nextState }
     }

@@ -1,6 +1,6 @@
-import { DELETE_REQUEST } from './actions'
+import { DELETE_REQUESTS } from './actions'
 
-export const deleteRequest = key => ({
+export const deleteRequests = key => ({
   key,
-  type: DELETE_REQUEST,
+  type: DELETE_REQUESTS,
 })

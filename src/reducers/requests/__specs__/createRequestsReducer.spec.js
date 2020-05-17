@@ -3,7 +3,7 @@ import { combineReducers, createStore } from 'redux'
 import { failData, requestData, successData } from '../../data/actionCreators'
 
 import createRequestsReducer from '../createRequestsReducer'
-import { deleteRequest } from '../actionCreators'
+import { deleteRequests } from '../actionCreators'
 
 const mockNowDate = 1487076708000
 Date.now = jest.spyOn(Date, 'now').mockImplementation(() => mockNowDate)
@@ -93,7 +93,7 @@ describe('src | createRequestsReducer', () => {
       const store = createStore(rootReducer)
 
       // when
-      store.dispatch(deleteRequest('/foos'))
+      store.dispatch(deleteRequests('/foos'))
 
       // then
       expect(store.getState().requests['/foos']).toBeUndefined()
