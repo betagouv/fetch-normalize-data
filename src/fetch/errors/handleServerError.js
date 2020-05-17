@@ -1,4 +1,4 @@
-import { failData } from '../../reducer/actionCreators'
+import { failData } from '../../reducers/data/actionCreators'
 import { SERVER_ERROR } from './errorCodes'
 
 export const GLOBAL_SERVER_ERROR = 'Server error. Try to to refresh the page.'

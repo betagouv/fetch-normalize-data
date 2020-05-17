@@ -1,4 +1,4 @@
-import { successData } from '../reducer/actionCreators'
+import { successData } from '../reducers/data/actionCreators'
 
 export function handleApiSuccess(reducer, payload, config) {
   const [data, dispatch] = reducer

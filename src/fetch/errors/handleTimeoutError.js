@@ -1,5 +1,5 @@
 import { TIMEOUT_ERROR } from './errorCodes'
-import { failData } from '../../reducer/actionCreators'
+import { failData } from '../../reducers/data/actionCreators'
 
 export function handleTimeoutError(reducer, payload, config) {
   const [data, dispatch] = reducer
