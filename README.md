@@ -134,7 +134,7 @@ to use for fetching data at mount time or at event mutation time.
 
 You can play with actions, but you need a special installation given the async action handler you take in your app:
 
-See for example an example with https://github.com/betagouv/redux-saga-data, but global use is like:
+See for example an example with https://github.com/betagouv/redux-thunk-data, but global use is like:
 
 ```
 import { requestData } from 'fetch-normalize-data'
