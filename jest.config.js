@@ -4,6 +4,7 @@ module.exports = {
   },
   setupFiles: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'jest-environment-jsdom-global',
+  testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
   testURL: 'http://localhost',
   transform: {
     '^.+\\.(js|jsx|mjs)$': '<rootDir>/jest-transformer.js',
