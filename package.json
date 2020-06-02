@@ -23,12 +23,12 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.3",
-    "@babel/core": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.1",
+    "@babel/plugin-transform-modules-commonjs": "^7.10.1",
+    "@babel/preset-env": "^7.10.1",
     "babel-eslint": "^10.0.3",
-    "babel-jest": "^25.1.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-jest": "^26.0.1",
     "eslint": "^5.16.0",
     "eslint-plugin-import": "^2.17.3",
     "eslint-plugin-jest": "^23.6.0",
@@ -41,7 +41,7 @@
     "whatwg-fetch": "3.0.0"
   },
   "scripts": {
-    "compile": "rm -rf lib && babel -d lib src",
+    "compile": "rm -rf lib && npx babel -d lib src",
     "format:js": "prettier-eslint --write 'src/**/*.{js,jsx}'",
     "postinstall": "if [ -d src ]; then npm run compile; fi",
     "prepublish": "npm run compile",

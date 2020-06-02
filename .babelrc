@@ -1,4 +1,5 @@
 {
   "ignore": ["src/**/__specs__"],
+  "plugins": ["@babel/plugin-transform-modules-commonjs"],
   "presets": ["@babel/preset-env"]
 }
