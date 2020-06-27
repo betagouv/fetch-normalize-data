@@ -6,14 +6,14 @@
 # If git is reporting that your prettified files are still modified
 # after committing, you may need to add a post-commit script
 # to update git's index as described in this issue.
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E ".js$|.jsx$")
+STAGED_FILES=$PWD/$(git diff --cached --name-only --diff-filter=ACM | grep -E ".js$|.jsx$")
 if [[ "$STAGED_FILES" = "" ]]; then
     exit 0
 fi
 
 for FILE in $STAGED_FILES
 do
-  ./node_modules/.bin/eslint --quiet --max-warnings 0 "$PWD/$FILE"
+  ./node_modules/.bin/eslint --quiet --max-warnings 0 "$FILE"
   if [[ "$?" == 0 ]]; then
     echo "\t\033[32mESLint Passed: $FILE\033[0m"
   else
