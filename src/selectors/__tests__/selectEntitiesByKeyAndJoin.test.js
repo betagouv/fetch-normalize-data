@@ -59,7 +59,7 @@ describe('selectEntitiesByKeyAndJoin', () => {
 
     it('should return the datum for two items in join', () => {
       // given
-      const selectedFoos = [
+      const selectedFoos = [  
         {
           barId: 'CG',
           id: 'AE',
@@ -71,7 +71,7 @@ describe('selectEntitiesByKeyAndJoin', () => {
           isActive: true,
         },
       ]
-      const state = {   
+      const state = {
         data: {
           bars: [{ id: 'CG' }],
           foos: [
