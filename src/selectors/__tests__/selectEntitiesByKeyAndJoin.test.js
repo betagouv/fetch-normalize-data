@@ -11,7 +11,7 @@ describe('selectEntitiesByKeyAndJoin', () => {
         },
       }
 
-      // when
+      //  when
       const result = selectEntitiesByKeyAndJoin(state, 'foos', {
         key: 'barId',
         value: 'CG',
@@ -71,7 +71,7 @@ describe('selectEntitiesByKeyAndJoin', () => {
           isActive: true,
         },
       ]
-      const state = {
+      const state = {   
         data: {
           bars: [{ id: 'CG' }],
           foos: [
@@ -86,6 +86,42 @@ describe('selectEntitiesByKeyAndJoin', () => {
       // when
       const result = selectEntitiesByKeyAndJoin(state, 'foos', {
         key: 'barId',
+        value: 'CG',
+      })
+
+      // then
+      expect(result).toStrictEqual(selectedFoos)
+    })
+
+    it('should return the datum for two items in nested join', () => {
+      // given
+      const selectedFoos = [
+        {
+          patch: { barId: 'CG' },
+          id: 'AE',
+          isActive: true,
+        },
+        {
+          patch: { barId: 'CG' },
+          id: 'BF',
+          isActive: true,
+        },
+      ]
+      const state = {
+        data: {
+          bars: [{ id: 'CG' }],
+          foos: [
+            ...selectedFoos,
+            {
+              id: 'JK',
+            },
+          ],
+        },
+      }
+
+      // when
+      const result = selectEntitiesByKeyAndJoin(state, 'foos', {
+        key: ['patch', 'barId'],
         value: 'CG',
       })
 

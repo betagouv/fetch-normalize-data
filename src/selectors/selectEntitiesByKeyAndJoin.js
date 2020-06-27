@@ -8,7 +8,12 @@ export const selectEntitiesByKeyAndJoin = createCachedSelector(
   (state, key, join) => join.key,
   (state, key, join) => join.value,
   (entities, key, value) =>
-    (entities || []).filter(entity => entity[key] === value)
+    (entities || []).filter(entity => {
+      const entityValue = Array.isArray(key)
+        ? key.reduce((subObj, subKey) => (subObj || {})[subKey], entity)
+        : entity[key]
+      return entityValue === value
+    })
 )(mapArgsToCacheKey)
 
 export default selectEntitiesByKeyAndJoin

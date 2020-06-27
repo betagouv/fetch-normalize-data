@@ -13,7 +13,7 @@ fi
 
 for FILE in $STAGED_FILES
 do
-  ./node_modules/.bin/eslint --quiet --max-warnings 0 "$FILE"
+  ./node_modules/.bin/eslint --quiet --max-warnings 0 "$PWD/$FILE"
   if [[ "$?" == 0 ]]; then
     echo "\t\033[32mESLint Passed: $FILE\033[0m"
   else
@@ -23,7 +23,7 @@ do
 done
 
 # Prettify all staged .js files
-echo "$STAGED_FILES" | xargs ./node_modules/.bin/prettier-eslint --eslint-config-path ./.eslintrc.json --config ./.prettierrc.json --list-different --write
+echo "$STAGED_FILES" | xargs ./node_modules/.bin/prettier-eslint --eslint-config-path $PWD/.eslintrc.json --config $PWD/.prettierrc.json --list-different
 
 # Add back the modified/prettified files to staging
 echo "$STAGED_FILES" | xargs git add

@@ -3,7 +3,6 @@ import { successStatusCodesWithDataOrDatum } from '../../fetch/status'
 import getNormalizedDeletedState from '../../normalize/getNormalizedDeletedState'
 import getNormalizedMergedState from '../../normalize/getNormalizedMergedState'
 
-
 export function getPatchFromStateKeyAndPayload(stateKey, payload) {
   const { datum } = payload
   let { data } = payload
@@ -18,7 +17,6 @@ export function getPatchFromStateKeyAndPayload(stateKey, payload) {
 
   return patch
 }
-
 
 export const getSuccessState = (state, action) => {
   const { config, payload } = action
