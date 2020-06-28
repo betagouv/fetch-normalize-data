@@ -1,5 +1,6 @@
 import {
   ASSIGN_DATA,
+  COMMIT_DATA,
   DELETE_DATA,
   MERGE_DATA,
   REINITIALIZE_DATA,
@@ -11,6 +12,11 @@ import getConfigWithDefaultValues from '../../fetch/getConfigWithDefaultValues'
 export const assignData = patch => ({
   patch,
   type: ASSIGN_DATA,
+})
+
+export const commitData = commits => ({
+  commits,
+  type: COMMIT_DATA
 })
 
 export const deleteData = (patch, config = {}) => ({

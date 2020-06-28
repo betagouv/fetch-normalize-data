@@ -5,3 +5,8 @@ export function getDefaultDatumIdKey() {
 export function getDefaultDatumIdValue(datum, index) {
   return datum.id || index
 }
+
+
+export function getDefaultCommitFrom() {
+  return {}
+}
