@@ -3,24 +3,22 @@ import uniq from 'lodash.uniq'
 import getNormalizedMergedState from './getNormalizedMergedState'
 import { getDefaultCommitFrom } from './utils'
 
-
 export function getNormalizedCommittedState(state, patch, config) {
   const getCommitFrom = config.getCommitFrom || getDefaultCommitFrom
 
-  const stateWithPossibleDeletedCollections = {...state}
+  const stateWithPossibleDeletedCollections = { ...state }
   const { commits } = patch
 
-  const deletedCommitUuids = (commits || []).filter(commit =>
-    commit.isRemoved).map(commit => commit.uuid)
+  const deletedCommitUuids = (commits || [])
+    .filter(commit => commit.isRemoved)
+    .map(commit => commit.uuid)
 
-  const notSoftDeletedCommits = (commits || []).filter(commit =>
-    !deletedCommitUuids.includes(commit.uuid))
+  const notSoftDeletedCommits = (commits || []).filter(
+    commit => !deletedCommitUuids.includes(commit.uuid)
+  )
 
-  const sortedCommits = notSoftDeletedCommits.sort(
-    (commit1, commit2) =>
-      new Date(commit1.dateCreated) < new Date(commit2.dateCreated)
-      ? -1
-      : 1
+  const sortedCommits = notSoftDeletedCommits.sort((commit1, commit2) =>
+    new Date(commit1.dateCreated) < new Date(commit2.dateCreated) ? -1 : 1
   )
 
   const firstDateCreatedsByUuid = {}
@@ -30,13 +28,17 @@ export function getNormalizedCommittedState(state, patch, config) {
     }
   })
 
-  const collectionNames = uniq((commits || [])
-                          .map(commit => commit.collectionName))
-  collectionNames.forEach(collectionName => { delete stateWithPossibleDeletedCollections[collectionName] })
+  const collectionNames = uniq(
+    (commits || []).map(commit => commit.collectionName)
+  )
+  collectionNames.forEach(collectionName => {
+    delete stateWithPossibleDeletedCollections[collectionName]
+  })
 
-  return sortedCommits.reduce((aggregation, commit) => ({
-    ...aggregation,
-    ...getNormalizedMergedState(  
+  return sortedCommits.reduce(
+    (aggregation, commit) => ({
+      ...aggregation,
+      ...getNormalizedMergedState(
         aggregation,
         {
           [commit.collectionName]: [
@@ -45,18 +47,19 @@ export function getNormalizedCommittedState(state, patch, config) {
               lastDateCreated: commit.dateCreated,
               uuid: commit.uuid,
               ...commit.patch,
-              ...getCommitFrom(commit)
-            }
-          ]
+              ...getCommitFrom(commit),
+            },
+          ],
         },
         {
           getDatumIdKey: () => 'uuid',
           getDatumIdValue: commit => commit.uuid,
-          isMergingDatum: true
+          isMergingDatum: true,
         }
-    )
-  }), {...stateWithPossibleDeletedCollections, ...patch})
+      ),
+    }),
+    { ...stateWithPossibleDeletedCollections, ...patch }
+  )
 }
-
 
 export default getNormalizedCommittedState
