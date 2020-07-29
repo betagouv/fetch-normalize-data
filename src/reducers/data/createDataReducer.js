@@ -5,16 +5,20 @@ import {
   MERGE_DATA,
   REINITIALIZE_DATA,
 } from './actions'
-import reinitializeState from './reinitializeState'
 import getSuccessState from './getSuccessState'
 import getDeletedPatchByActivityTag from './getDeletedPatchByActivityTag'
+import reinitializeState from './reinitializeState'
 
-import getNormalizedCommitedState from '../../normalize/getNormalizedCommitedState'
+import getNormalizedCommittedState from '../../normalize/getNormalizedCommittedState'
 import getNormalizedDeletedState from '../../normalize/getNormalizedDeletedState'
 import getNormalizedMergedState from '../../normalize/getNormalizedMergedState'
+import { getDefaultCommitFrom } from '../../normalize/utils'
+
 
 export const createDataReducer = (initialState = {}) => {
-  const reducer = (state = initialState, action) => {
+  const wrappedReducer = (state = initialState, action) => {
+    const getCommitFrom = action.config.getCommitFrom || getDefaultCommitFrom
+
     if (action.type === ASSIGN_DATA) {
       return {
         ...state,
@@ -23,19 +27,18 @@ export const createDataReducer = (initialState = {}) => {
     }
 
     if (action.type === COMMIT_DATA) {
-      /*
-      const mergedState =
-      return {
-        ...state,
-        ...getNormalizedMergedState(
-          nextState,
-          { __COMMITS__: action.commits },
-          {
-            getDatumIdKey: () => '__COMMIT_IDENTIFIER__',
-            getDatumIdValue: commit => commit.id || `${commit.uuid}/${commit.dateCreated}`,
-            isMergingDatum: true
-          }) }
-      */
+      const { commits: nextCommits } = getNormalizedMergedState(
+        state,
+        { commits: action.commits },
+        {
+          getDatumIdKey: () => 'localIdentifier',
+          getDatumIdValue: commit => commit.id || `${commit.uuid}/${commit.dateCreated}`,
+          isMergingDatum: true
+        }
+      )
+      return getNormalizedCommittedState(state,
+                                         { commits: nextCommits },
+                                         { getCommitFrom })
     }
 
     if (action.type === DELETE_DATA) {
@@ -67,6 +70,14 @@ export const createDataReducer = (initialState = {}) => {
                                action.config)
     }
 
+    if (action.type === 'persist/REHYDRATE' &&
+      typeof action.payload !== 'undefined' &&
+      typeof action.payload.commits !== 'undefined') {
+      return getNormalizedCommittedState(state,
+                                         action.payload,
+                                         { getCommitFrom })
+    }
+
     if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
       return {
         ...state,
@@ -74,28 +85,20 @@ export const createDataReducer = (initialState = {}) => {
       }
     }
 
-
-    let nextState = state
-    let needsToUpdateCommitCollectionsBecauseChange
-    if (action.type === 'persist/REHYDRATE') {
-      needsToUpdateCommitCollectionsBecauseChange =
-        typeof action.payload !== 'undefined' &&
-        typeof action.payload.__COMMITS__ !== 'undefined'
-      nextState = action.payload
-    } else {
-      needsToUpdateCommitCollectionsBecauseChange =
-      typeof nextState.commits !== 'undefined' &&
-      state.__COMMITS__ !== nextState.__COMMITS__
-    }
-    if (needsToUpdateCommitCollectionsBecauseChange) {
-      const patch = { __COMMITS__: nextState.__COMMITS__ }
-      const nextState = getNormalizedCommitedState(state, patch, action.config)
-      return { ...state, ...nextState }
-    }
-
-
     return state
   }
+
+  const reducer = (state, action) => {
+    const getCommitFrom = action.config.getCommitFrom || getDefaultCommitFrom
+    const nextState = wrappedReducer(state, action)
+    if (state.commits !== nextState.commits) {
+      return getNormalizedCommittedState(nextState,
+                                        { commits: nextState.commits },
+                                        { getCommitFrom })
+    }
+    return nextState
+  }
+
   return reducer
 }
 

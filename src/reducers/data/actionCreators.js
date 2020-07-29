@@ -25,16 +25,22 @@ export const deleteData = (patch, config = {}) => ({
   type: DELETE_DATA,
 })
 
+export const failData = (payload = {}, config = {}) => ({
+  config,
+  payload,
+  type: `FAIL_DATA_${getTypeSuffixFromConfig(config)}`,
+})
+
 export const mergeData = (patch, config = {}) => ({
   config,
   patch,
   type: MERGE_DATA,
 })
 
-export const failData = (payload = {}, config = {}) => ({
-  config,
-  payload,
-  type: `FAIL_DATA_${getTypeSuffixFromConfig(config)}`,
+export const purgeData = key => ({
+  key,
+  type: 'persist/PURGE',
+  result: () => null
 })
 
 export const requestData = (config = {}) => {
