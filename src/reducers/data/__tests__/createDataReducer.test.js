@@ -3,6 +3,7 @@ import { combineReducers, createStore } from 'redux'
 import createDataReducer from '../createDataReducer'
 import {
   assignData,
+  commitData,
   deleteData,
   reinitializeData,
   successData,
@@ -23,6 +24,77 @@ describe('src | createDataReducer', () => {
 
       // then
       expect(store.getState().data.foos).toStrictEqual(foos)
+    })
+  })
+
+  describe('when COMMIT_DATA', () => {
+    it('should commit data', () => {
+      // given
+      const initialState = {
+        commits: [],
+        foos: [],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+
+      const firstDateCreated = new Date().toISOString()
+      let secondDateCreated = new Date(firstDateCreated)
+      secondDateCreated.setDate(secondDateCreated.getDate() + 1)
+      secondDateCreated = secondDateCreated.toISOString()
+      const commits = [
+        {
+          collectionName: 'foos',
+          dateCreated: firstDateCreated,
+          patch: {
+            bar: 'ouech',
+          },
+          uuid: 1,
+        },
+        {
+          collectionName: 'foos',
+          dateCreated: firstDateCreated,
+          patch: {
+            mom: 'dad',
+          },
+          uuid: 2,
+        },
+        {
+          collectionName: 'foos',
+          dateCreated: secondDateCreated,
+          patch: {
+            pek: 1,
+          },
+          uuid: 1,
+        },
+      ]
+      // when
+      store.dispatch(commitData(commits))
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        commits: [
+          { ...commits[0], localIdentifier: `1/${commits[0].dateCreated}` },
+          { ...commits[1], localIdentifier: `2/${commits[1].dateCreated}` },
+          { ...commits[2], localIdentifier: `1/${commits[2].dateCreated}` },
+        ],
+        foos: [
+          {
+            bar: 'ouech',
+            firstDateCreated: commits[0].dateCreated,
+            lastDateCreated: commits[2].dateCreated,
+            pek: 1,
+            uuid: 1,
+          },
+          {
+            firstDateCreated: commits[1].dateCreated,
+            lastDateCreated: commits[1].dateCreated,
+            mom: 'dad',
+            uuid: 2,
+          },
+        ],
+      })
     })
   })
 

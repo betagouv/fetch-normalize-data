@@ -16,8 +16,8 @@ import { getDefaultCommitFrom } from '../../normalize/utils'
 
 
 export const createDataReducer = (initialState = {}) => {
-  const wrappedReducer = (state = initialState, action) => {
-    const getCommitFrom = action.config.getCommitFrom || getDefaultCommitFrom
+  const wrappedReducer = (state, action) => {
+    const getCommitFrom = (action.config || {}).getCommitFrom || getDefaultCommitFrom
 
     if (action.type === ASSIGN_DATA) {
       return {
@@ -88,13 +88,14 @@ export const createDataReducer = (initialState = {}) => {
     return state
   }
 
-  const reducer = (state, action) => {
-    const getCommitFrom = action.config.getCommitFrom || getDefaultCommitFrom
+  const reducer = (state = initialState, action) => {
+    const getCommitFrom = (action.config || {}).getCommitFrom || getDefaultCommitFrom
+
     const nextState = wrappedReducer(state, action)
     if (state.commits !== nextState.commits) {
       return getNormalizedCommittedState(nextState,
-                                        { commits: nextState.commits },
-                                        { getCommitFrom })
+                                         { commits: nextState.commits },
+                                         { getCommitFrom })
     }
     return nextState
   }
