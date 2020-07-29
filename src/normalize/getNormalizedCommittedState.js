@@ -36,7 +36,7 @@ export function getNormalizedCommittedState(state, patch, config) {
 
   return sortedCommits.reduce((aggregation, commit) => ({
     ...aggregation,
-    ...getNormalizedMergedState( 
+    ...getNormalizedMergedState(  
         aggregation,
         {
           [commit.collectionName]: [

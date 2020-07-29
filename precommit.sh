@@ -14,6 +14,7 @@ fi
 for FILE in $STAGED_FILES
 do
   FILE_PATH=$PWD/$FILE
+  echo $FILE_PATH
   ./node_modules/.bin/eslint --quiet --max-warnings 0 "$FILE_PATH"
   if [[ "$?" == 0 ]]; then
     echo "\t\033[32mESLint Passed: $FILE\033[0m"
