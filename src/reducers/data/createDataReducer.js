@@ -14,17 +14,17 @@ import getNormalizedDeletedState from '../../normalize/getNormalizedDeletedState
 import getNormalizedMergedState from '../../normalize/getNormalizedMergedState'
 import { getDefaultCommitFrom } from '../../normalize/utils'
 
-
 export const createDataReducer = (initialState = {}, extraConfig = {}) => {
   const wrappedReducer = (state, action) => {
-    const keepFromCommit = (action.config || {}).keepFromCommit ||
-                           extraConfig.keepFromCommit ||
-                           getDefaultCommitFrom
+    const keepFromCommit =
+      (action.config || {}).keepFromCommit ||
+      extraConfig.keepFromCommit ||
+      getDefaultCommitFrom
 
     if (action.type === ASSIGN_DATA) {
       return {
         ...state,
-        ...action.patch
+        ...action.patch,
       }
     }
 
@@ -34,56 +34,54 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
         { commits: action.commits },
         {
           getDatumIdKey: () => 'localIdentifier',
-          getDatumIdValue: commit => commit.id || `${commit.uuid}/${commit.dateCreated}`,
-          isMergingDatum: true
+          getDatumIdValue: commit =>
+            commit.id || `${commit.uuid}/${commit.dateCreated}`,
+          isMergingDatum: true,
         }
       )
-      return getNormalizedCommittedState(state,
-                                         { commits: nextCommits },
-                                         { keepFromCommit })
+      return getNormalizedCommittedState(
+        state,
+        { commits: nextCommits },
+        { keepFromCommit }
+      )
     }
 
     if (action.type === DELETE_DATA) {
       let patch = action.patch || state
       if (action.config.activityTags) {
-        patch = getDeletedPatchByActivityTag(patch,
-                                             action.config.activityTags)
+        patch = getDeletedPatchByActivityTag(patch, action.config.activityTags)
       }
       return {
         ...state,
-        ...getNormalizedDeletedState(state,
-                                     patch,
-                                     action.config)
+        ...getNormalizedDeletedState(state, patch, action.config),
       }
     }
 
     if (action.type === MERGE_DATA) {
       return {
         ...state,
-        ...getNormalizedMergedState(state,
-                                    action.patch,
-                                    action.config)
+        ...getNormalizedMergedState(state, action.patch, action.config),
       }
     }
 
     if (action.type === REINITIALIZE_DATA) {
-      return reinitializeState(state,
-                               initialState,
-                               action.config)
+      return reinitializeState(state, initialState, action.config)
     }
 
-    if (action.type === 'persist/REHYDRATE' &&
+    if (
+      action.type === 'persist/REHYDRATE' &&
       typeof action.payload !== 'undefined' &&
-      typeof action.payload.commits !== 'undefined') {
-      return getNormalizedCommittedState(state,
-                                         action.payload,
-                                         { keepFromCommit })
+      typeof action.payload.commits !== 'undefined'
+    ) {
+      return getNormalizedCommittedState(state, action.payload, {
+        keepFromCommit,
+      })
     }
 
     if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
       return {
         ...state,
-        ...getSuccessState(state, action)
+        ...getSuccessState(state, action),
       }
     }
 
@@ -91,13 +89,18 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
   }
 
   const reducer = (state = initialState, action) => {
-    const keepFromCommit = (action.config || {}).keepFromCommit || getDefaultCommitFrom
+    const keepFromCommit =
+      (action.config || {}).keepFromCommit ||
+      extraConfig.keepFromCommit ||
+      getDefaultCommitFrom
 
     const nextState = wrappedReducer(state, action)
     if (state.commits !== nextState.commits) {
-      return getNormalizedCommittedState(nextState,
-                                         { commits: nextState.commits },
-                                         { keepFromCommit })
+      return getNormalizedCommittedState(
+        nextState,
+        { commits: nextState.commits },
+        { keepFromCommit }
+      )
     }
     return nextState
   }
