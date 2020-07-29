@@ -25,7 +25,7 @@ do
 done
 
 # Prettify all staged .js files
-echo "$STAGED_FILES" | xargs ./node_modules/.bin/prettier-eslint --eslint-config-path $PWD/.eslintrc.json --config $PWD/.prettierrc.json --list-different --write
+echo "$PWD/$STAGED_FILES" | xargs ./node_modules/.bin/prettier-eslint --eslint-config-path $PWD/.eslintrc.json --config $PWD/.prettierrc.json --list-different --write
 # Add back the modified/prettified files to staging
 echo "$STAGED_FILES" | xargs git add
 
