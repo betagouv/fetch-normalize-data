@@ -43,7 +43,7 @@
   },
   "scripts": {
     "compile": "rm -rf lib && npx babel -d lib --ignore src/**/__tests__ src/",
-    "format:js": "prettier-eslint --write 'src/**/*.{js,jsx}'",
+    "format:js": "prettier-eslint --write '$(pwd)/src/**/*.{js,jsx}'",
     "postinstall": "if [ -d src ]; then npm run compile; fi",
     "prepublish": "npm run compile",
     "test": "jest --env=jsdom src",
