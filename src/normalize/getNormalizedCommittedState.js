@@ -4,7 +4,7 @@ import getNormalizedMergedState from './getNormalizedMergedState'
 import { getDefaultCommitFrom } from './utils'
 
 export function getNormalizedCommittedState(state, patch, config) {
-  const getCommitFrom = config.getCommitFrom || getDefaultCommitFrom
+  const keepFromCommit = config.keepFromCommit || getDefaultCommitFrom
 
   const stateWithPossibleDeletedCollections = { ...state }
   const { commits } = patch
@@ -47,7 +47,7 @@ export function getNormalizedCommittedState(state, patch, config) {
               lastDateCreated: commit.dateCreated,
               uuid: commit.uuid,
               ...commit.patch,
-              ...getCommitFrom(commit),
+              ...keepFromCommit(commit),
             },
           ],
         },

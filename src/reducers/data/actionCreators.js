@@ -14,8 +14,9 @@ export const assignData = patch => ({
   type: ASSIGN_DATA,
 })
 
-export const commitData = commits => ({
+export const commitData = (commits, config={}) => ({
   commits,
+  config,
   type: COMMIT_DATA
 })
 

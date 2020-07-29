@@ -15,9 +15,11 @@ import getNormalizedMergedState from '../../normalize/getNormalizedMergedState'
 import { getDefaultCommitFrom } from '../../normalize/utils'
 
 
-export const createDataReducer = (initialState = {}) => {
+export const createDataReducer = (initialState = {}, extraConfig = {}) => {
   const wrappedReducer = (state, action) => {
-    const getCommitFrom = (action.config || {}).getCommitFrom || getDefaultCommitFrom
+    const keepFromCommit = (action.config || {}).keepFromCommit ||
+                           extraConfig.keepFromCommit ||
+                           getDefaultCommitFrom
 
     if (action.type === ASSIGN_DATA) {
       return {
@@ -38,7 +40,7 @@ export const createDataReducer = (initialState = {}) => {
       )
       return getNormalizedCommittedState(state,
                                          { commits: nextCommits },
-                                         { getCommitFrom })
+                                         { keepFromCommit })
     }
 
     if (action.type === DELETE_DATA) {
@@ -75,7 +77,7 @@ export const createDataReducer = (initialState = {}) => {
       typeof action.payload.commits !== 'undefined') {
       return getNormalizedCommittedState(state,
                                          action.payload,
-                                         { getCommitFrom })
+                                         { keepFromCommit })
     }
 
     if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
@@ -89,13 +91,13 @@ export const createDataReducer = (initialState = {}) => {
   }
 
   const reducer = (state = initialState, action) => {
-    const getCommitFrom = (action.config || {}).getCommitFrom || getDefaultCommitFrom
+    const keepFromCommit = (action.config || {}).keepFromCommit || getDefaultCommitFrom
 
     const nextState = wrappedReducer(state, action)
     if (state.commits !== nextState.commits) {
       return getNormalizedCommittedState(nextState,
                                          { commits: nextState.commits },
-                                         { getCommitFrom })
+                                         { keepFromCommit })
     }
     return nextState
   }
