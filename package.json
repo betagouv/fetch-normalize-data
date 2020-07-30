@@ -1,7 +1,7 @@
 {
   "name": "fetch-normalize-data",
   "description": "A library to obtain a state of normalized data. Special fetch and reducer helpers are also provided in the export.",
-  "version": "1.10.18-rc3",
+  "version": "1.10.18-rc4",
   "private": false,
   "main": "lib/index.js",
   "license": "MPL-2.0",
@@ -42,7 +42,7 @@
     "whatwg-fetch": "3.0.0"
   },
   "scripts": {
-    "compile": "rm -rf lib && npx babel -d lib --ignore src/**/__tests__ src/",
+    "compile": "rm -rf lib && npx babel -d lib --ignore **/__tests__ src/",
     "format:js": "prettier-eslint --write 'src/**/*.{js,jsx}'",
     "postinstall": "if [ -d src ]; then npm run compile; fi",
     "prepublish": "npm run compile",
