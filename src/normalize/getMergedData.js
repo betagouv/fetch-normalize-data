@@ -5,7 +5,7 @@ export function getMergedData(nextData, previousData, config) {
     return nextData
   }
 
-  const { isMergingDatum, isMutatingDatum } = config
+  const { isMergingDatum, isMutatingDatum, resolve } = config
   const getDatumIdValue = config.getDatumIdValue || getDefaultDatumIdValue
   const isMutatingArray =
     typeof config.isMutatingArray === 'undefined'
@@ -37,6 +37,8 @@ export function getMergedData(nextData, previousData, config) {
         previousIndex !== -1
           ? Object.assign(previousData[previousIndex], nextDatum)
           : nextDatum
+    } else if (resolve) {
+      datum = resolve(datum, nextData, config)
     } else {
       datum = nextDatum
     }

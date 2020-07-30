@@ -33,15 +33,17 @@ export function normalizeData(data, config) {
   const {
     isMergingDatum: globalIsMergingDatum,
     isMutatingDatum: globalIsMutatingDatum,
-    normalizer,
+    normalizer
   } = config
 
   const reshapedNormalizer = getReshapedNormalizer(normalizer)
 
   Object.keys(normalizer).forEach(datumKey => {
-    const { isMergingDatum, isMutatingDatum, stateKey } = reshapedNormalizer[
-      datumKey
-    ]
+    const {
+      isMergingDatum,
+      isMutatingDatum,
+      stateKey
+    } = reshapedNormalizer[datumKey]
     const subNormalizer = reshapedNormalizer[datumKey].normalizer || {}
 
     const subConfig = Object.assign({}, config, {
