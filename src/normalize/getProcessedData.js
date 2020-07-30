@@ -3,7 +3,7 @@ import uniqBy from 'lodash.uniqby'
 import { getDefaultDatumIdKey, getDefaultDatumIdValue } from './utils'
 
 export function getProcessedDatum(datum, index, config) {
-  const { apiPath, data, resolve } = config
+  const { apiPath, data, process } = config
   const activityTag = config.activityTag || apiPath
   const getDatumIdKey = config.getDatumIdKey || getDefaultDatumIdKey
   const getDatumIdValue = config.getDatumIdValue || getDefaultDatumIdValue
@@ -21,8 +21,8 @@ export function getProcessedDatum(datum, index, config) {
     }
   }
 
-  if (resolve) {
-    processedDatum = config.resolve(processedDatum, data, config)
+  if (process) {
+    processedDatum = config.process(processedDatum, data, config)
   }
 
   return processedDatum

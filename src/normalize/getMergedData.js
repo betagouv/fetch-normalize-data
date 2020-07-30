@@ -1,4 +1,4 @@
-import { getDefaultDatumIdValue } from './utils'
+import { getDefaultDatumIdValue, merge } from './utils'
 
 export function getMergedData(nextData, previousData, config) {
   if (!previousData) {
@@ -26,7 +26,13 @@ export function getMergedData(nextData, previousData, config) {
 
     let datum
 
-    if (isMutatingDatum) {
+    if (resolve) {
+      datum = resolve(nextDatum, previousData[previousIndex], {
+        previousData,
+        nextData,
+        config,
+      })
+    } else if (isMutatingDatum) {
       datum = Object.assign(
         {},
         isMergingDatum && previousData[previousIndex],
@@ -35,10 +41,8 @@ export function getMergedData(nextData, previousData, config) {
     } else if (isMergingDatum) {
       datum =
         previousIndex !== -1
-          ? Object.assign(previousData[previousIndex], nextDatum)
+          ? merge(previousData[previousIndex], nextDatum)
           : nextDatum
-    } else if (resolve) {
-      datum = resolve(datum, nextData, config)
     } else {
       datum = nextDatum
     }
