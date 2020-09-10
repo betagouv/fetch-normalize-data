@@ -1,6 +1,6 @@
 import {
+  ACTIVATE_DATA,
   ASSIGN_DATA,
-  COMMIT_DATA,
   DELETE_DATA,
   MERGE_DATA,
   REINITIALIZE_DATA,
@@ -9,41 +9,41 @@ import getSuccessState from './getSuccessState'
 import getDeletedPatchByActivityTag from './getDeletedPatchByActivityTag'
 import reinitializeState from './reinitializeState'
 
-import getNormalizedCommittedState from '../../normalize/getNormalizedCommittedState'
+import getNormalizedActivatedState from '../../normalize/getNormalizedActivatedState'
 import getNormalizedDeletedState from '../../normalize/getNormalizedDeletedState'
 import getNormalizedMergedState from '../../normalize/getNormalizedMergedState'
-import { getDefaultCommitFrom } from '../../normalize/utils'
+import { getDefaultActivityFrom } from '../../normalize/utils'
 
 export const createDataReducer = (initialState = {}, extraConfig = {}) => {
   const wrappedReducer = (state, action) => {
-    const keepFromCommit =
-      (action.config || {}).keepFromCommit ||
-      extraConfig.keepFromCommit ||
-      getDefaultCommitFrom
+    const keepFromActivity =
+      (action.config || {}).keepFromActivity ||
+      extraConfig.keepFromActivity ||
+      getDefaultActivityFrom
+
+    if (action.type === ACTIVATE_DATA) {
+      const { activities: nextActivities } = getNormalizedMergedState(
+        state,
+        { activities: action.activities },
+        {
+          getDatumIdKey: () => 'localIdentifier',
+          getDatumIdValue: activity =>
+            activity.id || `${activity.uuid}/${activity.dateCreated}`,
+          isMergingDatum: true,
+        }
+      )
+      return getNormalizedActivatedState(
+        state,
+        { activities: nextActivities },
+        { keepFromActivity }
+      )
+    }
 
     if (action.type === ASSIGN_DATA) {
       return {
         ...state,
         ...action.patch,
       }
-    }
-
-    if (action.type === COMMIT_DATA) {
-      const { commits: nextCommits } = getNormalizedMergedState(
-        state,
-        { commits: action.commits },
-        {
-          getDatumIdKey: () => 'localIdentifier',
-          getDatumIdValue: commit =>
-            commit.id || `${commit.uuid}/${commit.dateCreated}`,
-          isMergingDatum: true,
-        }
-      )
-      return getNormalizedCommittedState(
-        state,
-        { commits: nextCommits },
-        { keepFromCommit }
-      )
     }
 
     if (action.type === DELETE_DATA) {
@@ -71,10 +71,10 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
     if (
       action.type === 'persist/REHYDRATE' &&
       typeof action.payload !== 'undefined' &&
-      typeof action.payload.commits !== 'undefined'
+      typeof action.payload.activities !== 'undefined'
     ) {
-      return getNormalizedCommittedState(state, action.payload, {
-        keepFromCommit,
+      return getNormalizedActivatedState(state, action.payload, {
+        keepFromActivity,
       })
     }
 
@@ -89,17 +89,17 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
   }
 
   const reducer = (state = initialState, action) => {
-    const keepFromCommit =
-      (action.config || {}).keepFromCommit ||
-      extraConfig.keepFromCommit ||
-      getDefaultCommitFrom
+    const keepFromActivity =
+      (action.config || {}).keepFromActivity ||
+      extraConfig.keepFromActivity ||
+      getDefaultActivityFrom
 
     const nextState = wrappedReducer(state, action)
-    if (state.commits !== nextState.commits) {
-      return getNormalizedCommittedState(
+    if (state.activities !== nextState.activities) {
+      return getNormalizedActivatedState(
         nextState,
-        { commits: nextState.commits },
-        { keepFromCommit }
+        { activities: nextState.activities },
+        { keepFromActivity }
       )
     }
     return nextState

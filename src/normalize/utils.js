@@ -8,7 +8,7 @@ export function getDefaultDatumIdValue(datum, index) {
 }
 
 
-export function getDefaultCommitFrom() {
+export function getDefaultActivityFrom() {
   return {}
 }
 

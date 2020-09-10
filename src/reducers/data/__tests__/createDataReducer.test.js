@@ -2,8 +2,8 @@ import { combineReducers, createStore } from 'redux'
 
 import createDataReducer from '../createDataReducer'
 import {
+  activateData,
   assignData,
-  commitData,
   deleteData,
   reinitializeData,
   successData,
@@ -12,26 +12,11 @@ import {
 Date.now = jest.spyOn(Date, 'now').mockImplementation(() => 1487076708000)
 
 describe('src | createDataReducer', () => {
-  describe('when ASSIGN_DATA', () => {
-    it('should assign data', () => {
-      // given
-      const rootReducer = combineReducers({ data: createDataReducer({}) })
-      const store = createStore(rootReducer)
-      const foos = [{ id: 'AE' }]
-
-      // when
-      store.dispatch(assignData({ foos }))
-
-      // then
-      expect(store.getState().data.foos).toStrictEqual(foos)
-    })
-  })
-
-  describe('when COMMIT_DATA', () => {
-    it('should commit data', () => {
+  describe('when ACTIVATE_DATA', () => {
+    it('should activate data', () => {
       // given
       const initialState = {
-        commits: [],
+        activities: [],
         foos: [],
       }
       const rootReducer = combineReducers({
@@ -43,7 +28,7 @@ describe('src | createDataReducer', () => {
       let secondDateCreated = new Date(firstDateCreated)
       secondDateCreated.setDate(secondDateCreated.getDate() + 1)
       secondDateCreated = secondDateCreated.toISOString()
-      const commits = [
+      const activities = [
         {
           collectionName: 'foos',
           dateCreated: firstDateCreated,
@@ -70,31 +55,46 @@ describe('src | createDataReducer', () => {
         },
       ]
       // when
-      store.dispatch(commitData(commits))
+      store.dispatch(activateData(activities))
 
       // then
       expect(store.getState().data).toStrictEqual({
-        commits: [
-          { ...commits[0], localIdentifier: `1/${commits[0].dateCreated}` },
-          { ...commits[1], localIdentifier: `2/${commits[1].dateCreated}` },
-          { ...commits[2], localIdentifier: `1/${commits[2].dateCreated}` },
+        activities: [
+          { ...activities[0], localIdentifier: `1/${activities[0].dateCreated}` },
+          { ...activities[1], localIdentifier: `2/${activities[1].dateCreated}` },
+          { ...activities[2], localIdentifier: `1/${activities[2].dateCreated}` },
         ],
         foos: [
           {
             bar: 'ouech',
-            firstDateCreated: commits[0].dateCreated,
-            lastDateCreated: commits[2].dateCreated,
+            firstDateCreated: activities[0].dateCreated,
+            lastDateCreated: activities[2].dateCreated,
             pek: 1,
             uuid: 1,
           },
           {
-            firstDateCreated: commits[1].dateCreated,
-            lastDateCreated: commits[1].dateCreated,
+            firstDateCreated: activities[1].dateCreated,
+            lastDateCreated: activities[1].dateCreated,
             mom: 'dad',
             uuid: 2,
           },
         ],
       })
+    })
+  })
+
+  describe('when ASSIGN_DATA', () => {
+    it('should assign data', () => {
+      // given
+      const rootReducer = combineReducers({ data: createDataReducer({}) })
+      const store = createStore(rootReducer)
+      const foos = [{ id: 'AE' }]
+
+      // when
+      store.dispatch(assignData({ foos }))
+
+      // then
+      expect(store.getState().data.foos).toStrictEqual(foos)
     })
   })
 

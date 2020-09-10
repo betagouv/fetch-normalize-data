@@ -1,6 +1,6 @@
 import {
+  ACTIVATE_DATA,
   ASSIGN_DATA,
-  COMMIT_DATA,
   DELETE_DATA,
   MERGE_DATA,
   REINITIALIZE_DATA,
@@ -9,15 +9,15 @@ import {
 import getTypeSuffixFromConfig from './getTypeSuffixFromConfig'
 import getConfigWithDefaultValues from '../../fetch/getConfigWithDefaultValues'
 
+export const activateData = (activities, config={}) => ({
+  activities,
+  config,
+  type: ACTIVATE_DATA
+})
+
 export const assignData = patch => ({
   patch,
   type: ASSIGN_DATA,
-})
-
-export const commitData = (commits, config={}) => ({
-  commits,
-  config,
-  type: COMMIT_DATA
 })
 
 export const deleteData = (patch, config = {}) => ({
