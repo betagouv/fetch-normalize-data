@@ -1,4 +1,5 @@
 export * from './getMergedData'
+export * from './getNormalizedActivatedState'
 export * from './getNormalizedDeletedState'
 export * from './getNormalizedMergedState'
 export * from './getReshapedNormalizer'
