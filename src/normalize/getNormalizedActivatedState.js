@@ -44,9 +44,9 @@ export function getNormalizedActivatedState(state, patch, config) {
         {
           [activity.collectionName]: [
             {
+              activityUuid: activity.uuid,
               firstDateCreated: firstDateCreatedsByUuid[activity.uuid],
               lastDateCreated: activity.dateCreated,
-              uuid: activity.uuid,
               ...activity.patch,
               ...keepFromActivity(activity),
             },
