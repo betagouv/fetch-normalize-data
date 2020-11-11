@@ -1,3 +1,5 @@
+import uniq from 'lodash.uniq'
+
 import { getDefaultDatumIdValue, merge } from './utils'
 
 export function getMergedData(nextData, previousData, config) {
@@ -21,30 +23,35 @@ export function getMergedData(nextData, previousData, config) {
       previousDatum =>
         getDatumIdValue(previousDatum) === getDatumIdValue(nextDatum)
     )
+    const previousDatum = previousData[previousIndex]
+
     const resolvedIndex =
       previousIndex === -1 ? mergedData.length : previousIndex
 
     let datum
 
     if (resolve) {
-      datum = resolve(nextDatum, previousData[previousIndex], {
+      datum = resolve(nextDatum, previousDatum, {
         previousData,
         nextData,
         config,
       })
     } else if (isMutatingDatum) {
-      datum = Object.assign(
-        {},
-        isMergingDatum && previousData[previousIndex],
-        nextDatum
-      )
+      datum = Object.assign({}, isMergingDatum && previousDatum, nextDatum)
     } else if (isMergingDatum) {
-      datum =
-        previousIndex !== -1
-          ? merge(previousData[previousIndex], nextDatum)
-          : nextDatum
+      datum = previousIndex !== -1 ? merge(previousDatum, nextDatum) : nextDatum
     } else {
       datum = nextDatum
+    }
+
+    if (
+      previousDatum &&
+      previousDatum.__ACTIVITIES__ &&
+      nextDatum.__ACTIVITIES__
+    ) {
+      datum.__ACTIVITIES__ = uniq(
+        previousDatum.__ACTIVITIES__.concat(nextDatum.__ACTIVITIES__)
+      )
     }
 
     mergedData[resolvedIndex] = datum

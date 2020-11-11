@@ -226,6 +226,40 @@ describe('src | createDataReducer', () => {
       })
     })
 
+    it('should have pushed activityTag in the already existing __ACTIVITIES__', () => {
+      // given
+      const initialState = { bars: [] }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const foos = [{ id: 'AE' }]
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { activityTag: '/foos-one', apiPath: '/foos', method: 'GET' }
+        )
+      )
+
+      // when
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { activityTag: '/foos-two', apiPath: '/foos', method: 'GET' }
+        )
+      )
+
+      // then
+      const expectedFoos = foos.map(foo => ({
+        ...foo,
+        __ACTIVITIES__: ['/foos-one', '/foos-two'],
+      }))
+      expect(store.getState().data).toStrictEqual({
+        bars: [],
+        foos: expectedFoos,
+      })
+    })
+
     it('should not merge a patch when stateKey is null', () => {
       // given
       const initialState = { bars: [] }
