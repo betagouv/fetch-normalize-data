@@ -6,6 +6,7 @@ const arrayErrorsToErrorsByName = errors =>
 const parseHeaders = headers =>
   headers && {
     hasMore: headers['has-more'] === 'False' ? false : true,
+    page: headers['page'],
     totalDataCount: headers['total-data-count']
       ? parseInt(headers['total-data-count'], 10)
       : null,
