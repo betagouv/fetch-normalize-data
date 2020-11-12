@@ -54,7 +54,7 @@ export function getNormalizedActivatedState(state, patch, config) {
         },
         {
           getDatumIdKey: () => 'activityUuid',
-          getDatumIdValue: activity => activity.uuid,
+          getDatumIdValue: entity => entity.activityUuid,
           isMergingDatum: true,
         }
       ),
