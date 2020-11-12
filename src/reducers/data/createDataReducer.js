@@ -48,8 +48,8 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
 
     if (action.type === DELETE_DATA) {
       let patch = action.patch || state
-      if (action.config.activityTags) {
-        patch = getDeletedPatchByActivityTag(patch, action.config.activityTags)
+      if (action.config.tags) {
+        patch = getDeletedPatchByActivityTag(patch, action.config.tags)
       }
       return {
         ...state,

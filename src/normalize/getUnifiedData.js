@@ -4,7 +4,7 @@ import { getDefaultDatumIdKey, getDefaultDatumIdValue } from '../normalize/utils
 
 export function getUnifiedDatum(datum, index, config) {
   const { apiPath } = config
-  const activityTag = config.activityTag || apiPath
+  const tag = config.tag || apiPath
   const getDatumIdKey = config.getDatumIdKey || getDefaultDatumIdKey
   const getDatumIdValue = config.getDatumIdValue || getDefaultDatumIdValue
 
@@ -13,11 +13,11 @@ export function getUnifiedDatum(datum, index, config) {
     ...datum
   }
 
-  if (activityTag) {
-    if (!unifiedDatum.__ACTIVITIES__) {
-      unifiedDatum.__ACTIVITIES__ = [activityTag]
+  if (tag) {
+    if (!unifiedDatum.__TAGS__) {
+      unifiedDatum.__TAGS__ = [tag]
     } else {
-      unifiedDatum.__ACTIVITIES__.push(activityTag)
+      unifiedDatum.__TAGS__.push(tag)
     }
   }
 
