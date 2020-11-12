@@ -15,7 +15,7 @@ const parseHeaders = headers =>
 export const createRequestsReducer = (initialState = {}) => {
   const reducer = (state = initialState, action) => {
     const { config = {} } = action || {}
-    const key = config.activityTag || config.apiPath
+    const key = config.tag || config.apiPath
 
     if (/FAIL_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
       const nextState = {

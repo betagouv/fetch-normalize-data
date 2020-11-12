@@ -44,14 +44,8 @@ export function getMergedData(nextData, previousData, config) {
       datum = nextDatum
     }
 
-    if (
-      previousDatum &&
-      previousDatum.__ACTIVITIES__ &&
-      nextDatum.__ACTIVITIES__
-    ) {
-      datum.__ACTIVITIES__ = uniq(
-        previousDatum.__ACTIVITIES__.concat(nextDatum.__ACTIVITIES__)
-      )
+    if (previousDatum && previousDatum.__TAGS__ && nextDatum.__TAGS__) {
+      datum.__TAGS__ = uniq(previousDatum.__TAGS__.concat(nextDatum.__TAGS__))
     }
 
     mergedData[resolvedIndex] = datum

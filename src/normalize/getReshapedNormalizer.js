@@ -5,7 +5,7 @@ export function getReshapedNormalizer(normalizer) {
     reshapedNormalizer[datumKey] = {}
 
     if (typeof stateKeyOrObj !== 'string') {
-      reshapedNormalizer[datumKey].activityTag = stateKeyOrObj.activityTag
+      reshapedNormalizer[datumKey].tag = stateKeyOrObj.tag
       reshapedNormalizer[datumKey].apiPath = stateKeyOrObj.apiPath
       reshapedNormalizer[datumKey].isMergingArray = stateKeyOrObj.isMergingArray
       reshapedNormalizer[datumKey].isMutatingDatum =

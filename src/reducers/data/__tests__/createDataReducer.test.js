@@ -66,17 +66,17 @@ describe('src | createDataReducer', () => {
         ],
         foos: [
           {
+            activityUuid: 1,
             bar: 'ouech',
             firstDateCreated: activities[0].dateCreated,
             lastDateCreated: activities[2].dateCreated,
             pek: 1,
-            uuid: 1,
           },
           {
+            activityUuid: 2,
             firstDateCreated: activities[1].dateCreated,
             lastDateCreated: activities[1].dateCreated,
             mom: 'dad',
-            uuid: 2,
           },
         ],
       })
@@ -104,21 +104,21 @@ describe('src | createDataReducer', () => {
       const bars = [
         {
           id: 'AE',
-          __ACTIVITIES__: ['TO_BE_DELETED'],
+          __TAGS__: ['TO_BE_DELETED'],
         },
         {
           id: 'BF',
-          __ACTIVITIES__: ['/bars'],
+          __TAGS__: ['/bars'],
         },
       ]
       const foos = [
         {
           id: 'AE',
-          __ACTIVITIES__: ['TO_BE_DELETED'],
+          __TAGS__: ['TO_BE_DELETED'],
         },
         {
           id: 'BF',
-          __ACTIVITIES__: ['TO_BE_DELETED'],
+          __TAGS__: ['TO_BE_DELETED'],
         },
       ]
       const rootReducer = combineReducers({
@@ -130,7 +130,7 @@ describe('src | createDataReducer', () => {
       const store = createStore(rootReducer)
 
       // when
-      store.dispatch(deleteData(null, { activityTags: ['TO_BE_DELETED'] }))
+      store.dispatch(deleteData(null, { tags: ['TO_BE_DELETED'] }))
 
       // then
       const state = store.getState().data
@@ -138,7 +138,7 @@ describe('src | createDataReducer', () => {
         bars: [
           {
             id: 'BF',
-            __ACTIVITIES__: ['/bars'],
+            __TAGS__: ['/bars'],
           },
         ],
         foos: [],
@@ -214,7 +214,7 @@ describe('src | createDataReducer', () => {
       // then
       const expectedFoos = foos.map(foo => ({
         ...foo,
-        __ACTIVITIES__: ['/foos'],
+        __TAGS__: ['/foos'],
       }))
       expect(store.getState().data).toStrictEqual({
         bars: [],
@@ -222,7 +222,7 @@ describe('src | createDataReducer', () => {
       })
     })
 
-    it('should have pushed activityTag in the already existing __ACTIVITIES__', () => {
+    it('should have pushed tag in the already existing __TAGS__', () => {
       // given
       const initialState = { bars: [] }
       const rootReducer = combineReducers({
@@ -232,19 +232,19 @@ describe('src | createDataReducer', () => {
       const foos = [{ id: 'AE' }]
       store.dispatch(successData(
         { data: foos, status: 200 },
-        { activityTag: '/foos-one', apiPath: '/foos', method: 'GET' }
+        { tag: '/foos-one', apiPath: '/foos', method: 'GET' }
       ))
 
       // when
       store.dispatch(successData(
         { data: foos, status: 200 },
-        { activityTag: '/foos-two', apiPath: '/foos', method: 'GET' }
+        { tag: '/foos-two', apiPath: '/foos', method: 'GET' }
       ))
 
       // then
       const expectedFoos = foos.map(foo => ({
         ...foo,
-        __ACTIVITIES__: ['/foos-one', '/foos-two'],
+        __TAGS__: ['/foos-one', '/foos-two'],
       }))
       expect(store.getState().data).toStrictEqual({
         bars: [],

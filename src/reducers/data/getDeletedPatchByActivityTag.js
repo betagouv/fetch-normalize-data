@@ -1,12 +1,12 @@
-const getDeletedPatchByActivityTags = (patch, activityTags) => {
+const getDeletedPatchByActivityTags = (patch, tags) => {
   const deletedPatch = {}
   Object.keys(patch).forEach(key => {
     const filteredEntities = patch[key].filter(
       entity =>
-        entity.__ACTIVITIES__ &&
-        entity.__ACTIVITIES__.length > 0 &&
-        entity.__ACTIVITIES__.every(activityTag =>
-          activityTags.includes(activityTag)
+        entity.__TAGS__ &&
+        entity.__TAGS__.length > 0 &&
+        entity.__TAGS__.every(tag =>
+          tags.includes(tag)
         )
     )
     deletedPatch[key] = filteredEntities
