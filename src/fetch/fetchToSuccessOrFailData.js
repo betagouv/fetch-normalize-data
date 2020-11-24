@@ -15,14 +15,9 @@ export async function fetchToSuccessOrFailData(
 
   const fetchDataMethod = config.fetchData || fetchData
 
+  let payload
   try {
-    const payload = await fetchDataMethod(url, config)
-
-    const isSuccess = isSuccessStatus(payload.status)
-    if (isSuccess) {
-      handleApiSuccess(reducer, payload, config)
-      return
-    }
+    payload = await fetchDataMethod(url, config)
 
     const isTimeout = isTimeoutStatus(payload.status)
     if (isTimeout) {
@@ -35,6 +30,14 @@ export async function fetchToSuccessOrFailData(
     }
   } catch (error) {
     handleServerError(reducer, error, config)
+  }
+
+  if (payload) {
+    const isSuccess = isSuccessStatus(payload.status)
+    if (isSuccess) {
+      handleApiSuccess(reducer, payload, config)
+      return
+    }
   }
 }
 
