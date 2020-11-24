@@ -14,7 +14,7 @@ export function handleServerError(reducer, error, config) {
       global: [globalServerError],
     },
     {
-      data: [String(error)],
+      data: [error.stack],
     },
   ]
 
