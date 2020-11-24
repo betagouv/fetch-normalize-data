@@ -2,7 +2,7 @@ import uuid from 'uuid'
 
 const { NAME, VERSION } = process.env
 
-export function getInit(config) {
+export function getFetchConfig(config) {
   const { body, method, token } = config
 
   const init = {
@@ -55,4 +55,4 @@ export function getInit(config) {
   return init
 }
 
-export default getInit
+export default getFetchConfig
