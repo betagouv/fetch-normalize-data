@@ -1,3 +1,4 @@
+import getProcessedData from './getProcessedData'
 import {
   errorTimeoutStatusCode,
   successStatusCodesWithDataOrDatum,
@@ -44,11 +45,11 @@ export async function getPayload(result, config) {
     }
 
     const dataOrDatum = await result.json()
-    if (Array.isArray(dataOrDatum)) {
-      payload.data = dataOrDatum
-    } else if (typeof dataOrDatum === 'object') {
-      payload.datum = dataOrDatum
-    }
+    const isArray = Array.isArray(dataOrDatum)
+    const data = isArray ? dataOrDatum : [dataOrDatum]
+    const processedData = await getProcessedData(data, config)
+    const payloadKey = isArray ? 'data' : 'datum'
+    payload[payloadKey] = isArray ? processedData : processedData[0]
 
     return payload
   }

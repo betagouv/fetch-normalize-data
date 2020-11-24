@@ -177,13 +177,11 @@ describe('src | createDataReducer', () => {
         data: createDataReducer(initialState),
       })
       const store = createStore(rootReducer)
-      store.dispatch(
-        assignData({
-          bars: [{ id: 'FF' }],
-          foos: [],
-          totos: [{ id: 'DD1' }, { id: 'DD2' }],
-        })
-      )
+      store.dispatch(assignData({
+        bars: [{ id: 'FF' }],
+        foos: [],
+        totos: [{ id: 'DD1' }, { id: 'DD2' }],
+      }))
 
       // when
       store.dispatch(reinitializeData({ excludes: ['bars', 'totos'] }))
@@ -208,12 +206,10 @@ describe('src | createDataReducer', () => {
       const foos = [{ id: 'AE' }]
 
       // when
-      store.dispatch(
-        successData(
-          { data: foos, status: 200 },
-          { apiPath: '/foos', method: 'GET' }
-        )
-      )
+      store.dispatch(successData(
+        { data: foos, status: 200 },
+        { apiPath: '/foos', method: 'GET' }
+      ))
 
       // then
       const expectedFoos = foos.map(foo => ({
@@ -234,20 +230,16 @@ describe('src | createDataReducer', () => {
       })
       const store = createStore(rootReducer)
       const foos = [{ id: 'AE' }]
-      store.dispatch(
-        successData(
-          { data: foos, status: 200 },
-          { activityTag: '/foos-one', apiPath: '/foos', method: 'GET' }
-        )
-      )
+      store.dispatch(successData(
+        { data: foos, status: 200 },
+        { activityTag: '/foos-one', apiPath: '/foos', method: 'GET' }
+      ))
 
       // when
-      store.dispatch(
-        successData(
-          { data: foos, status: 200 },
-          { activityTag: '/foos-two', apiPath: '/foos', method: 'GET' }
-        )
-      )
+      store.dispatch(successData(
+        { data: foos, status: 200 },
+        { activityTag: '/foos-two', apiPath: '/foos', method: 'GET' }
+      ))
 
       // then
       const expectedFoos = foos.map(foo => ({
@@ -270,12 +262,10 @@ describe('src | createDataReducer', () => {
       const foos = [{ id: 'AE' }]
 
       // when
-      store.dispatch(
-        successData(
-          { data: foos, status: 200 },
-          { apiPath: '/foos', method: 'GET', stateKey: null }
-        )
-      )
+      store.dispatch(successData(
+        { data: foos, status: 200 },
+        { apiPath: '/foos', method: 'GET', stateKey: null }
+      ))
 
       // then
       expect(store.getState().data).toStrictEqual({ bars: [] })
