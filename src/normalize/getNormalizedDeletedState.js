@@ -1,4 +1,4 @@
-import getProcessedData from './getProcessedData'
+import getUnifiedData from './getUnifiedData'
 import { getDefaultDatumIdValue } from './utils'
 
 export function getNormalizedDeletedState(state, patch, config) {
@@ -11,7 +11,7 @@ export function getNormalizedDeletedState(state, patch, config) {
       return
     }
 
-    const nextData = getProcessedData(data, config)
+    const nextData = getUnifiedData(data, config)
 
     const previousData = state[patchKey]
     if (!previousData) {

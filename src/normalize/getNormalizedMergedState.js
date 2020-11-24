@@ -1,5 +1,5 @@
-import getProcessedData from './getProcessedData'
 import getMergedData from './getMergedData'
+import getUnifiedData from './getUnifiedData'
 import normalize from './normalize'
 
 export function getNormalizedMergedState(state, patch, config = {}) {
@@ -8,17 +8,13 @@ export function getNormalizedMergedState(state, patch, config = {}) {
 
   const nextState = config.nextState || {}
 
-  if (!patch) {
-    return state
-  }
+  if (!patch) return state
 
   Object.keys(patch).forEach(patchKey => {
-    const patchData = patch[patchKey]
-    if (!patchData) {
-      return
-    }
+    let data = patch[patchKey]
+    if (!data) return
 
-    let nextData = getProcessedData(patchData, config)
+    let nextData = getUnifiedData(data, config)
 
     function doWithNormalizedPatch(normalizedPatch, normalizerConfig) {
       const subNormalizedMergedState = getNormalizedMergedState(
