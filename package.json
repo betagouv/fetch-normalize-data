@@ -1,7 +1,7 @@
 {
   "name": "fetch-normalize-data",
   "description": "A library to obtain a state of normalized data. Special fetch and reducer helpers are also provided in the export.",
-  "version": "1.15.1-async3",
+  "version": "1.16.0",
   "private": false,
   "main": "lib/index.js",
   "license": "MPL-2.0",
