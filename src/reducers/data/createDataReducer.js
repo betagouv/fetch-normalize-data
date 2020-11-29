@@ -32,11 +32,10 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
           isMergingDatum: true,
         }
       )
-      return getNormalizedActivatedState(
-        state,
-        { activities: nextActivities },
-        { keepFromActivity }
-      )
+      return {
+        ...state,
+        activities: nextActivities
+      }
     }
 
     if (action.type === ASSIGN_DATA) {

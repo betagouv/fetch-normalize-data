@@ -15,8 +15,23 @@ describe('src | createDataReducer', () => {
   describe('when ACTIVATE_DATA', () => {
     it('should activate data', () => {
       // given
+      const firstDateCreated = new Date().toISOString()
       const initialState = {
-        activities: [],
+        activities: [
+          {
+            collectionName: 'foos',
+            dateCreated: firstDateCreated,
+            id: 'AE',
+            patch: {
+              fromFirstActivity: 1,
+              fromFirstActivityChangedByThird: 1,
+              nestedDatum: {
+                fromFirstActivity: 1,
+              }
+            },
+            uuid: 1
+          }
+        ],
         foos: [],
       }
       const rootReducer = combineReducers({
@@ -24,42 +39,50 @@ describe('src | createDataReducer', () => {
       })
       const store = createStore(rootReducer)
 
-      const firstDateCreated = new Date().toISOString()
       let secondDateCreated = new Date(firstDateCreated)
       secondDateCreated.setDate(secondDateCreated.getDate() + 1)
       secondDateCreated = secondDateCreated.toISOString()
+      let thirdDateCreated = new Date(firstDateCreated)
+      thirdDateCreated.setDate(thirdDateCreated.getDate() + 2)
+      thirdDateCreated = thirdDateCreated.toISOString()
       const activities = [
         {
           collectionName: 'foos',
-          dateCreated: firstDateCreated,
+          dateCreated: secondDateCreated,
           patch: {
-            bar: 'ouech',
+            fromSecondActivity: 2,
+            nestedDatum: {
+              fromSecondActivity: 2
+            }
           },
           uuid: 1,
-        },
-        {
-          collectionName: 'foos',
-          dateCreated: firstDateCreated,
-          patch: {
-            mom: 'dad',
-          },
-          uuid: 2,
         },
         {
           collectionName: 'foos',
           dateCreated: secondDateCreated,
           patch: {
-            pek: 1,
+            otherActivity: 'foo',
+          },
+          uuid: 2,
+        },
+        {
+          collectionName: 'foos',
+          dateCreated: thirdDateCreated,
+          patch: {
+            fromFirstActivityChangedByThird: 3,
+            fromThirdActivity: 3,
           },
           uuid: 1,
-        },
+        }
       ]
       // when
       store.dispatch(activateData(activities))
 
       // then
+      console.log(initialState.activities[0])
       expect(store.getState().data).toStrictEqual({
         activities: [
+          initialState.activities[0],
           { ...activities[0], localIdentifier: `1/${activities[0].dateCreated}` },
           { ...activities[1], localIdentifier: `2/${activities[1].dateCreated}` },
           { ...activities[2], localIdentifier: `1/${activities[2].dateCreated}` },
@@ -67,16 +90,22 @@ describe('src | createDataReducer', () => {
         foos: [
           {
             activityUuid: 1,
-            bar: 'ouech',
-            firstDateCreated: activities[0].dateCreated,
+            fromFirstActivity: 1,
+            fromFirstActivityChangedByThird: 3,
+            fromSecondActivity: 2,
+            fromThirdActivity: 3,
+            nestedDatum: {
+              fromFirstActivity: 1,
+              fromSecondActivity: 2,
+            },
+            firstDateCreated: initialState.activities[0].dateCreated,
             lastDateCreated: activities[2].dateCreated,
-            pek: 1,
           },
           {
             activityUuid: 2,
             firstDateCreated: activities[1].dateCreated,
             lastDateCreated: activities[1].dateCreated,
-            mom: 'dad',
+            otherActivity: 'foo',
           },
         ],
       })
