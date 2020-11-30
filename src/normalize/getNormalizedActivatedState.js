@@ -1,19 +1,21 @@
 import uniq from 'lodash.uniq'
 
 import getNormalizedMergedState from './getNormalizedMergedState'
-import { getDefaultActivityFrom } from './utils'
+import { getDefaultActivityFrom, hydratedActivityFrom } from './utils'
 
 export function getNormalizedActivatedState(state, patch, config) {
   const keepFromActivity = config.keepFromActivity || getDefaultActivityFrom
 
-  const stateWithPossibleDeletedCollections = { ...state }
+  const stateWithPossibleDeletedKeys = { ...state }
   const { activities } = patch
 
-  const deletedActivityUuids = (activities || [])
+  const hydratedActivities = (activities || []).map(hydratedActivityFrom)
+
+  const deletedActivityUuids = hydratedActivities
     .filter(activity => activity.isRemoved)
     .map(activity => activity.uuid)
 
-  const notSoftDeletedActivities = (activities || []).filter(
+  const notSoftDeletedActivities = hydratedActivities.filter(
     activity => !deletedActivityUuids.includes(activity.uuid)
   )
 
@@ -29,11 +31,10 @@ export function getNormalizedActivatedState(state, patch, config) {
     }
   })
 
-  const collectionNames = uniq(
-    (activities || []).map(activity => activity.collectionName)
-  )
-  collectionNames.forEach(collectionName => {
-    delete stateWithPossibleDeletedCollections[collectionName]
+  const stateKeys = uniq(hydratedActivities.map(activity => activity.stateKey))
+
+  stateKeys.forEach(stateKey => {
+    delete stateWithPossibleDeletedKeys[stateKey]
   })
 
   return sortedActivities.reduce(
@@ -42,7 +43,7 @@ export function getNormalizedActivatedState(state, patch, config) {
       ...getNormalizedMergedState(
         aggregation,
         {
-          [activity.collectionName]: [
+          [activity.stateKey]: [
             {
               activityUuid: activity.uuid,
               firstDateCreated: firstDateCreatedsByUuid[activity.uuid],
@@ -59,7 +60,7 @@ export function getNormalizedActivatedState(state, patch, config) {
         }
       ),
     }),
-    { ...stateWithPossibleDeletedCollections, ...patch }
+    { ...stateWithPossibleDeletedKeys, ...patch }
   )
 }
 

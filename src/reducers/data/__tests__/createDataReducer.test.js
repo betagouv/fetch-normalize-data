@@ -19,7 +19,6 @@ describe('src | createDataReducer', () => {
       const initialState = {
         activities: [
           {
-            collectionName: 'foos',
             dateCreated: firstDateCreated,
             id: 'AE',
             patch: {
@@ -29,6 +28,7 @@ describe('src | createDataReducer', () => {
                 fromFirstActivity: 1,
               }
             },
+            tableName: 'foo',
             uuid: 1
           }
         ],
@@ -47,7 +47,6 @@ describe('src | createDataReducer', () => {
       thirdDateCreated = thirdDateCreated.toISOString()
       const activities = [
         {
-          collectionName: 'foos',
           dateCreated: secondDateCreated,
           patch: {
             fromSecondActivity: 2,
@@ -55,23 +54,24 @@ describe('src | createDataReducer', () => {
               fromSecondActivity: 2
             }
           },
+          tableName: 'foo',
           uuid: 1,
         },
         {
-          collectionName: 'foos',
           dateCreated: secondDateCreated,
           patch: {
             otherActivity: 'foo',
           },
+          tableName: 'foos',
           uuid: 2,
         },
         {
-          collectionName: 'foos',
           dateCreated: thirdDateCreated,
           patch: {
             fromFirstActivityChangedByThird: 3,
             fromThirdActivity: 3,
           },
+          tableName: 'foos',
           uuid: 1,
         }
       ]
@@ -79,7 +79,6 @@ describe('src | createDataReducer', () => {
       store.dispatch(activateData(activities))
 
       // then
-      console.log(initialState.activities[0])
       expect(store.getState().data).toStrictEqual({
         activities: [
           initialState.activities[0],
