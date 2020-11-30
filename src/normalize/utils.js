@@ -1,3 +1,5 @@
+import pluralize from 'pluralize'
+
 export function getDefaultDatumIdKey() {
   return 'id'
 }
@@ -8,6 +10,22 @@ export function getDefaultDatumIdValue(datum, index) {
 
 export function getDefaultActivityFrom() {
   return {}
+}
+
+
+export function hydratedActivityFrom(activity) {
+  let stateKey = activity.stateKey
+  if (!stateKey) {
+    if (activity.tableName) {
+      stateKey = pluralize(activity.tableName, 2)
+    } else {
+      console.warn('Missing stateKey or tableName for that activity.')
+    }
+  }
+  return {
+    ...activity,
+    stateKey
+  }
 }
 
 export const merge = (target, source) => {
