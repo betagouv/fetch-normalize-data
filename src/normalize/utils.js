@@ -12,19 +12,22 @@ export function getDefaultActivityFrom() {
   return {}
 }
 
-
 export function hydratedActivityFrom(activity) {
   let stateKey = activity.stateKey
   if (!stateKey) {
     if (activity.tableName) {
       stateKey = pluralize(activity.tableName, 2)
+    } else if (activity.modelName) {
+      stateKey = pluralize(activity.modelName, 2)
     } else {
-      console.warn('Missing stateKey or tableName for that activity.')
+      console.warn(
+        'Missing stateKey or tableName or modelName for that activity.'
+      )
     }
   }
   return {
     ...activity,
-    stateKey
+    stateKey,
   }
 }
 
