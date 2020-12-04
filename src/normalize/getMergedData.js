@@ -19,12 +19,9 @@ export function getMergedData(nextData, previousData, config) {
   // for each datum we are going to assign (by merging or not) them into
   // their right place in the resolved array
   nextData.forEach(nextDatum => {
-    const previousIndex = previousData.findIndex(
-      previousDatum =>
-        getDatumIdValue(previousDatum) === getDatumIdValue(nextDatum)
-    )
+    const previousIndex = previousData.findIndex(previousDatum =>
+      getDatumIdValue(previousDatum) === getDatumIdValue(nextDatum))
     const previousDatum = previousData[previousIndex]
-
     const resolvedIndex =
       previousIndex === -1 ? mergedData.length : previousIndex
 
