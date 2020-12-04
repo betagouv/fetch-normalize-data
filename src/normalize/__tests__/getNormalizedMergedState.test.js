@@ -521,5 +521,57 @@ describe('src | getNormalizedMergedState', () => {
       }
       expect(nextState).toStrictEqual(expectedNextState)
     })
+
+    it('merge with a collection that appears twice in the normalizer config', () => {
+      // given
+      const state = {}
+      const patch = {
+        dossiers: [
+          {
+            id: 'A',
+            foos: [
+              {
+                id: 'B',
+              },
+            ],
+            occupier: {
+              foos: [
+                {
+                  id: 'C',
+                },
+              ],
+              id: 'D',
+            },
+          },
+        ],
+      }
+      const config = {
+        normalizer: {
+          dossiers: {
+            normalizer: {
+              foos: 'foos',
+              occupier: {
+                normalizer: {
+                  foos: 'foos',
+                },
+                stateKey: 'contacts',
+              },
+            },
+            stateKey: 'dossiers',
+          },
+        },
+      }
+
+      // when
+      const nextState = getNormalizedMergedState(state, patch, config)
+
+      // then
+      const expectedNextState = {
+        contacts: [{ id: 'D' }],
+        dossiers: [{ id: 'A' }],
+        foos: [{ id: 'B' }, { id: 'C' }],
+      }
+      expect(nextState).toStrictEqual(expectedNextState)
+    })
   })
 })

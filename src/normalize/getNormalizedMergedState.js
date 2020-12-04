@@ -17,22 +17,21 @@ export function getNormalizedMergedState(state, patch, config = {}) {
     let nextData = getUnifiedData(data, config)
 
     function doWithNormalizedPatch(normalizedPatch, normalizerConfig) {
-      const subNormalizedMergedState = getNormalizedMergedState(
-        state,
-        normalizedPatch,
-        Object.assign({ nextState }, normalizerConfig)
-      )
+      const subNormalizedMergedState = getNormalizedMergedState(state,
+                                                                normalizedPatch,
+                                                                { nextState, ...normalizerConfig})
       Object.assign(nextState, subNormalizedMergedState)
     }
-    const normalizeConfig = Object.assign({ doWithNormalizedPatch }, config)
-    normalize({ [patchKey]: nextData }, normalizeConfig)
+
+    normalize({ [patchKey]: nextData },
+              { doWithNormalizedPatch, ...config })
 
     if (isMergingArray) {
       const previousData = state[patchKey]
       nextData = getMergedData(nextData, previousData, config)
     }
 
-    nextState[patchKey] = nextData
+    nextState[patchKey] = getMergedData(nextData, nextState[patchKey], config)
   })
 
   return nextState
