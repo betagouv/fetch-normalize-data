@@ -13,8 +13,8 @@ export default createCachedSelector(
     const firstActivity = selectEntityByKeyAndJoin({ data: { __ACTIVITIES__ } },
                                                    '__ACTIVITIES__',
                                                    { key: 'identifier', value: activityIdentifier })
-    if (firstActivity) {
-      const key = pluralize(firstActivity.modelName.toLowerCase())
+    if (firstActivity && firstActivity.modelName) {
+      const key = pluralize(`${firstActivity.modelName[0].toLowerCase()}${firstActivity.modelName.slice(1)}`)
       return selectEntityByKeyAndJoin({ data: { [key]: data[key] } },
                                       key,
                                       { key: 'activityIdentifier', value: activityIdentifier })
