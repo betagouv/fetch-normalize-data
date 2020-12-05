@@ -17,9 +17,10 @@ describe('src | createDataReducer', () => {
       // given
       const firstDateCreated = new Date().toISOString()
       const initialState = {
-        activities: [
+        __ACTIVITIES__: [
           {
             dateCreated: firstDateCreated,
+            entityIdentifier: 1,
             id: 'AE',
             patch: {
               fromFirstActivity: 1,
@@ -29,7 +30,7 @@ describe('src | createDataReducer', () => {
               }
             },
             tableName: 'foo',
-            uuid: 1
+
           }
         ],
         foos: [],
@@ -48,6 +49,7 @@ describe('src | createDataReducer', () => {
       const activities = [
         {
           dateCreated: secondDateCreated,
+          entityIdentifier: 1,
           patch: {
             fromSecondActivity: 2,
             nestedDatum: {
@@ -55,24 +57,23 @@ describe('src | createDataReducer', () => {
             }
           },
           tableName: 'foo',
-          uuid: 1,
         },
         {
           dateCreated: secondDateCreated,
+          entityIdentifier: 2,
           patch: {
             otherActivity: 'foo',
           },
           tableName: 'foos',
-          uuid: 2,
         },
         {
           dateCreated: thirdDateCreated,
+          entityIdentifier: 1,
           patch: {
             fromFirstActivityChangedByThird: 3,
             fromThirdActivity: 3,
           },
           tableName: 'foos',
-          uuid: 1,
         }
       ]
       // when
@@ -80,15 +81,15 @@ describe('src | createDataReducer', () => {
 
       // then
       expect(store.getState().data).toStrictEqual({
-        activities: [
-          initialState.activities[0],
+        __ACTIVITIES__: [
+          initialState.__ACTIVITIES__[0],
           { ...activities[0], localIdentifier: `1/${activities[0].dateCreated}` },
           { ...activities[1], localIdentifier: `2/${activities[1].dateCreated}` },
           { ...activities[2], localIdentifier: `1/${activities[2].dateCreated}` },
         ],
         foos: [
           {
-            activityUuid: 1,
+            activityIdentifier: 1,
             fromFirstActivity: 1,
             fromFirstActivityChangedByThird: 3,
             fromSecondActivity: 2,
@@ -97,11 +98,11 @@ describe('src | createDataReducer', () => {
               fromFirstActivity: 1,
               fromSecondActivity: 2,
             },
-            firstDateCreated: initialState.activities[0].dateCreated,
+            firstDateCreated: initialState.__ACTIVITIES__[0].dateCreated,
             lastDateCreated: activities[2].dateCreated,
           },
           {
-            activityUuid: 2,
+            activityIdentifier: 2,
             firstDateCreated: activities[1].dateCreated,
             lastDateCreated: activities[1].dateCreated,
             otherActivity: 'foo',
