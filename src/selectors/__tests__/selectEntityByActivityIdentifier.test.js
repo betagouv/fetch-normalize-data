@@ -6,7 +6,7 @@ describe('selectEntityByActivityIdentifier', () => {
       // given
       const state = {
         data: {
-          __ACTIVITIES__: [
+          __activities__: [
             {
               entityIdentifier: 1
             }
@@ -44,7 +44,7 @@ describe('selectEntityByActivityIdentifier', () => {
       }
       const state = {
         data: {
-          __ACTIVITIES__: [
+          __activities__: [
             {
               entityIdentifier: 1
             }
@@ -75,7 +75,7 @@ describe('selectEntityByActivityIdentifier', () => {
       }
       const state = {
         data: {
-          __ACTIVITIES__: [
+          __activities__: [
             {
               entityIdentifier: 2
             }

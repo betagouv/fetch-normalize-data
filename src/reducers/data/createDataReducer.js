@@ -22,9 +22,9 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       getDefaultActivityFrom
 
     if (action.type === ACTIVATE_DATA) {
-      const { __ACTIVITIES__: nextActivities } = getNormalizedMergedState(
+      const { __activities__: nextActivities } = getNormalizedMergedState(
         state,
-        { __ACTIVITIES__: action.activities },
+        { __activities__: action.activities },
         {
           getDatumIdKey: () => 'localIdentifier',
           getDatumIdValue: activity =>
@@ -34,7 +34,7 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       )
       return {
         ...state,
-        __ACTIVITIES__: nextActivities
+        __activities__: nextActivities
       }
     }
 
@@ -70,7 +70,7 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
     if (
       action.type === 'persist/REHYDRATE' &&
       typeof action.payload !== 'undefined' &&
-      typeof action.payload.__ACTIVITIES__ !== 'undefined'
+      typeof action.payload.__activities__ !== 'undefined'
     ) {
       return getNormalizedActivatedState(state,
                                          action.payload,
@@ -94,9 +94,9 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       getDefaultActivityFrom
 
     const nextState = wrappedReducer(state, action)
-    if (state.__ACTIVITIES__ !== nextState.__ACTIVITIES__) {
+    if (state.__activities__ !== nextState.__activities__) {
       return getNormalizedActivatedState(nextState,
-                                         { __ACTIVITIES__: nextState.__ACTIVITIES__ },
+                                         { __activities__: nextState.__activities__ },
                                          { keepFromActivity })
     }
     return nextState

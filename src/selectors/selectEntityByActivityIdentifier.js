@@ -9,9 +9,9 @@ export default createCachedSelector(
   state => state.data,
   (state, activityIdentifier) => activityIdentifier,
   (data, activityIdentifier) => {
-    const __ACTIVITIES__ = data.__ACTIVITIES__
-    const firstActivity = selectEntityByKeyAndJoin({ data: { __ACTIVITIES__ } },
-                                                   '__ACTIVITIES__',
+    const __activities__ = data.__activities__
+    const firstActivity = selectEntityByKeyAndJoin({ data: { __activities__ } },
+                                                   '__activities__',
                                                    { key: 'identifier', value: activityIdentifier })
     if (firstActivity && firstActivity.modelName) {
       const key = pluralize(`${firstActivity.modelName[0].toLowerCase()}${firstActivity.modelName.slice(1)}`)
