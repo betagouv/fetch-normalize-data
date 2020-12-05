@@ -133,21 +133,21 @@ describe('src | createDataReducer', () => {
       const bars = [
         {
           id: 'AE',
-          __TAGS__: ['TO_BE_DELETED'],
+          __tags__: ['TO_BE_DELETED'],
         },
         {
           id: 'BF',
-          __TAGS__: ['/bars'],
+          __tags__: ['/bars'],
         },
       ]
       const foos = [
         {
           id: 'AE',
-          __TAGS__: ['TO_BE_DELETED'],
+          __tags__: ['TO_BE_DELETED'],
         },
         {
           id: 'BF',
-          __TAGS__: ['TO_BE_DELETED'],
+          __tags__: ['TO_BE_DELETED'],
         },
       ]
       const rootReducer = combineReducers({
@@ -167,7 +167,7 @@ describe('src | createDataReducer', () => {
         bars: [
           {
             id: 'BF',
-            __TAGS__: ['/bars'],
+            __tags__: ['/bars'],
           },
         ],
         foos: [],
@@ -243,7 +243,7 @@ describe('src | createDataReducer', () => {
       // then
       const expectedFoos = foos.map(foo => ({
         ...foo,
-        __TAGS__: ['/foos'],
+        __tags__: ['/foos'],
       }))
       expect(store.getState().data).toStrictEqual({
         bars: [],
@@ -251,7 +251,7 @@ describe('src | createDataReducer', () => {
       })
     })
 
-    it('should have pushed tag in the already existing __TAGS__', () => {
+    it('should have pushed tag in the already existing __tags__', () => {
       // given
       const initialState = { bars: [] }
       const rootReducer = combineReducers({
@@ -273,7 +273,7 @@ describe('src | createDataReducer', () => {
       // then
       const expectedFoos = foos.map(foo => ({
         ...foo,
-        __TAGS__: ['/foos-one', '/foos-two'],
+        __tags__: ['/foos-one', '/foos-two'],
       }))
       expect(store.getState().data).toStrictEqual({
         bars: [],

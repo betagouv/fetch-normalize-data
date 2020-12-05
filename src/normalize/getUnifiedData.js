@@ -14,10 +14,10 @@ export function getUnifiedDatum(datum, index, config) {
   }
 
   if (tag) {
-    if (!unifiedDatum.__TAGS__) {
-      unifiedDatum.__TAGS__ = [tag]
+    if (!unifiedDatum.__tags__) {
+      unifiedDatum.__tags__ = [tag]
     } else {
-      unifiedDatum.__TAGS__.push(tag)
+      unifiedDatum.__tags__.push(tag)
     }
   }
 

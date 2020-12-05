@@ -13,10 +13,10 @@ export default createCachedSelector(
     const tagsLength = tags.length
     return entities.filter(
       entity => {
-        if (strictness === 'equal' && tagsLength != entity.__TAGS__.length) {
+        if (strictness === 'equal' && tagsLength != entity.__tags__.length) {
           return false
         }
-        return tags.every(tag => entity.__TAGS__.includes(tag))
+        return tags.every(tag => entity.__tags__.includes(tag))
       }
     )
   }
