@@ -7,16 +7,16 @@ export function getNormalizedActivatedState(state, patch, config) {
   const keepFromActivity = config.keepFromActivity || getDefaultActivityFrom
 
   const stateWithPossibleDeletedKeys = { ...state }
-  const { activities } = patch
+  const { __ACTIVITIES__ } = patch
 
-  const hydratedActivities = (activities || []).map(hydratedActivityFrom)
+  const hydratedActivities = (__ACTIVITIES__ || []).map(hydratedActivityFrom)
 
-  const deletedActivityUuids = hydratedActivities
+  const deletedActivityIdentifiers = hydratedActivities
     .filter(activity => activity.isRemoved)
-    .map(activity => activity.uuid)
+    .map(activity => activity.entityIdentifier)
 
   const notSoftDeletedActivities = hydratedActivities.filter(
-    activity => !deletedActivityUuids.includes(activity.uuid)
+    activity => !deletedActivityIdentifiers.includes(activity.entityIdentifier)
   )
 
   const sortedActivities = notSoftDeletedActivities.sort(
@@ -24,10 +24,11 @@ export function getNormalizedActivatedState(state, patch, config) {
       new Date(activity1.dateCreated) < new Date(activity2.dateCreated) ? -1 : 1
   )
 
-  const firstDateCreatedsByUuid = {}
+  const firstDateCreatedsByIdentifier = {}
   sortedActivities.forEach(activity => {
-    if (!firstDateCreatedsByUuid[activity.uuid]) {
-      firstDateCreatedsByUuid[activity.uuid] = activity.dateCreated
+    if (!firstDateCreatedsByIdentifier[activity.entityIdentifier]) {
+      firstDateCreatedsByIdentifier[activity.entityIdentifier] =
+        activity.dateCreated
     }
   })
 
@@ -45,8 +46,9 @@ export function getNormalizedActivatedState(state, patch, config) {
         {
           [activity.stateKey]: [
             {
-              activityUuid: activity.uuid,
-              firstDateCreated: firstDateCreatedsByUuid[activity.uuid],
+              activityIdentifier: activity.entityIdentifier,
+              firstDateCreated:
+                firstDateCreatedsByIdentifier[activity.entityIdentifier],
               lastDateCreated: activity.dateCreated,
               ...activity.patch,
               ...keepFromActivity(activity),
@@ -54,8 +56,8 @@ export function getNormalizedActivatedState(state, patch, config) {
           ],
         },
         {
-          getDatumIdKey: () => 'activityUuid',
-          getDatumIdValue: entity => entity.activityUuid,
+          getDatumIdKey: () => 'activityIdentifier',
+          getDatumIdValue: entity => entity.activityIdentifier,
           isMergingDatum: true,
         }
       ),

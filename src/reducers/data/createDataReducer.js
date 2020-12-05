@@ -22,19 +22,19 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       getDefaultActivityFrom
 
     if (action.type === ACTIVATE_DATA) {
-      const { activities: nextActivities } = getNormalizedMergedState(
+      const { __ACTIVITIES__: nextActivities } = getNormalizedMergedState(
         state,
-        { activities: action.activities },
+        { __ACTIVITIES__: action.activities },
         {
           getDatumIdKey: () => 'localIdentifier',
           getDatumIdValue: activity =>
-            activity.id || `${activity.uuid}/${activity.dateCreated}`,
+            activity.id || `${activity.entityIdentifier}/${activity.dateCreated}`,
           isMergingDatum: true,
         }
       )
       return {
         ...state,
-        activities: nextActivities
+        __ACTIVITIES__: nextActivities
       }
     }
 
@@ -70,11 +70,11 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
     if (
       action.type === 'persist/REHYDRATE' &&
       typeof action.payload !== 'undefined' &&
-      typeof action.payload.activities !== 'undefined'
+      typeof action.payload.__ACTIVITIES__ !== 'undefined'
     ) {
-      return getNormalizedActivatedState(state, action.payload, {
-        keepFromActivity,
-      })
+      return getNormalizedActivatedState(state,
+                                         action.payload,
+                                         { keepFromActivity })
     }
 
     if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
@@ -94,12 +94,10 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       getDefaultActivityFrom
 
     const nextState = wrappedReducer(state, action)
-    if (state.activities !== nextState.activities) {
-      return getNormalizedActivatedState(
-        nextState,
-        { activities: nextState.activities },
-        { keepFromActivity }
-      )
+    if (state.__ACTIVITIES__ !== nextState.__ACTIVITIES__) {
+      return getNormalizedActivatedState(nextState,
+                                         { __ACTIVITIES__: nextState.__ACTIVITIES__ },
+                                         { keepFromActivity })
     }
     return nextState
   }
