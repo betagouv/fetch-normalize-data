@@ -17,7 +17,7 @@ describe('src | createDataReducer', () => {
       // given
       const firstDateCreated = new Date().toISOString()
       const initialState = {
-        __ACTIVITIES__: [
+        __activities__: [
           {
             dateCreated: firstDateCreated,
             entityIdentifier: 1,
@@ -81,8 +81,8 @@ describe('src | createDataReducer', () => {
 
       // then
       expect(store.getState().data).toStrictEqual({
-        __ACTIVITIES__: [
-          initialState.__ACTIVITIES__[0],
+        __activities__: [
+          initialState.__activities__[0],
           { ...activities[0], localIdentifier: `1/${activities[0].dateCreated}` },
           { ...activities[1], localIdentifier: `2/${activities[1].dateCreated}` },
           { ...activities[2], localIdentifier: `1/${activities[2].dateCreated}` },
@@ -98,7 +98,7 @@ describe('src | createDataReducer', () => {
               fromFirstActivity: 1,
               fromSecondActivity: 2,
             },
-            firstDateCreated: initialState.__ACTIVITIES__[0].dateCreated,
+            firstDateCreated: initialState.__activities__[0].dateCreated,
             lastDateCreated: activities[2].dateCreated,
           },
           {

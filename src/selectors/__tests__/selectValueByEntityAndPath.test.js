@@ -11,7 +11,7 @@ describe('selectValueByEntityAndPath', () => {
       }
       const state = {
         data: {
-          __ACTIVITIES__: [
+          __activities__: [
             {
               entityIdentifier: 1,
               modelName: 'SubFoo'
@@ -53,7 +53,7 @@ describe('selectValueByEntityAndPath', () => {
       }
       const state = {
         data: {
-          __ACTIVITIES__: [
+          __activities__: [
             {
               entityIdentifier: 1
             }

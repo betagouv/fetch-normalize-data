@@ -7,9 +7,9 @@ export function getNormalizedActivatedState(state, patch, config) {
   const keepFromActivity = config.keepFromActivity || getDefaultActivityFrom
 
   const stateWithPossibleDeletedKeys = { ...state }
-  const { __ACTIVITIES__ } = patch
+  const { __activities__ } = patch
 
-  const hydratedActivities = (__ACTIVITIES__ || []).map(hydratedActivityFrom)
+  const hydratedActivities = (__activities__ || []).map(hydratedActivityFrom)
 
   const deletedActivityIdentifiers = hydratedActivities
     .filter(activity => activity.isRemoved)
