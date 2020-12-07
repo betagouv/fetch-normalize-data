@@ -25,11 +25,10 @@ export const getSuccessState = (state, action) => {
 
   const stateKey = getStateKeyFromConfig(config)
 
-  if (!successStatusCodesWithDataOrDatum.includes(status)) {
-    return Object.assign({}, state)
-  }
-
-  if (!stateKey) return state
+  if (
+    !stateKey ||
+    !successStatusCodesWithDataOrDatum.includes(status)
+  ) return {}
 
   const patch = getPatchFromStateKeyAndPayload(stateKey, payload)
 

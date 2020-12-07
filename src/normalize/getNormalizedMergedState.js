@@ -8,7 +8,7 @@ export function getNormalizedMergedState(state, patch, config = {}) {
 
   const nextState = config.nextState || {}
 
-  if (!patch) return state
+  if (!patch) return nextState
 
   Object.keys(patch).forEach(patchKey => {
     let data = patch[patchKey]
@@ -17,14 +17,15 @@ export function getNormalizedMergedState(state, patch, config = {}) {
     let nextData = getUnifiedData(data, config)
 
     function doWithNormalizedPatch(normalizedPatch, normalizerConfig) {
-      const subNormalizedMergedState = getNormalizedMergedState(state,
-                                                                normalizedPatch,
-                                                                { nextState, ...normalizerConfig})
+      const subNormalizedMergedState = getNormalizedMergedState(
+        state,
+        normalizedPatch,
+        { nextState, ...normalizerConfig }
+      )
       Object.assign(nextState, subNormalizedMergedState)
     }
 
-    normalize({ [patchKey]: nextData },
-              { doWithNormalizedPatch, ...config })
+    normalize({ [patchKey]: nextData }, { doWithNormalizedPatch, ...config })
 
     if (isMergingArray) {
       const previousData = state[patchKey]

@@ -32,17 +32,15 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
           isMergingDatum: true,
         }
       )
-      return {
-        ...state,
-        __activities__: nextActivities
-      }
+      return nextActivities.length
+        ? { ...state, __activities__: nextActivities }
+        : state
     }
 
     if (action.type === ASSIGN_DATA) {
-      return {
-        ...state,
-        ...action.patch,
-      }
+      return Object.keys(action.patch || {}).length
+        ? { ...state, ...action.patch}
+        : state
     }
 
     if (action.type === DELETE_DATA) {
@@ -50,17 +48,17 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       if (action.config.tags) {
         patch = getDeletedPatchByActivityTag(patch, action.config.tags)
       }
-      return {
-        ...state,
-        ...getNormalizedDeletedState(state, patch, action.config),
-      }
+      const deleteState = getNormalizedDeletedState(state, patch, action.config)
+      return Object.keys(deleteState).length
+        ? { ...state, ...deleteState }
+        : state
     }
 
     if (action.type === MERGE_DATA) {
-      return {
-        ...state,
-        ...getNormalizedMergedState(state, action.patch, action.config),
-      }
+      const mergeState = getNormalizedMergedState(state, action.patch, action.config)
+      return Object.keys(mergeState).length
+        ? { ...state, ...mergeState }
+        : state
     }
 
     if (action.type === REINITIALIZE_DATA) {
@@ -78,10 +76,10 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
     }
 
     if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
-      return {
-        ...state,
-        ...getSuccessState(state, action),
-      }
+      const successState = getSuccessState(state, action)
+      return Object.keys(successState).length
+        ? { ...state, ...successState }
+        : state
     }
 
     return state
