@@ -9,15 +9,26 @@ export function normalizeDataAtItem(data, datumKey, stateKey, config) {
   let normalizedData = []
 
   data.forEach(datum => {
-    const normalizedValue = datum[datumKey]
+    let normalizedValue = datum[datumKey]
 
     if (Array.isArray(normalizedValue)) {
+      normalizedValue = normalizedValue.map(entity => ({
+        ...entity,
+        __normalizers__: entity.__normalizers__
+          ? entity.__normalizers__.concat({ datumKey })
+          : [{ datumKey }]
+      }))
       normalizedData = normalizedData.concat(normalizedValue)
-      delete datum[datumKey]
     } else if (normalizedValue) {
-      normalizedData.push(datum[datumKey])
-      delete datum[datumKey]
+      normalizedValue = {
+        ...normalizedValue,
+        __normalizers__: normalizedValue.__normalizers__
+          ? normalizedValue.__normalizers__.concat({ datumKey })
+          : [{ datumKey }]
+      }
+      normalizedData.push(normalizedValue)
     }
+    datum[datumKey] = { stateKey, type: '__normalizer__' }
   })
 
   if (normalizedData.length) {

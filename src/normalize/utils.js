@@ -18,7 +18,7 @@ export function hydratedActivityFrom(activity) {
     if (activity.tableName) {
       stateKey = pluralize(activity.tableName, 2)
     } else if (activity.modelName) {
-      stateKey = pluralize(activity.modelName.toLowerCase(), 2)
+      stateKey = pluralize(`${activity.modelName[0].toLowerCase()}${activity.modelName.slice(1)}`, 2)
     } else {
       console.warn(
         'Missing stateKey or tableName or modelName for that activity.'

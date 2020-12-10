@@ -48,17 +48,22 @@ describe('selectValueByEntityAndPath', () => {
       // given
       const value = 3
       const foo = {
-        id: 1,
-        subFoo: { stateKey: 'subFoos', type: '__normalizer__' }
+        id: 'A',
+        subFooActivityIdentifier: 1
       }
       const state = {
         data: {
+          __activities__: [
+            {
+              entityIdentifier: 1
+            }
+          ],
           foos: [
             foo
           ],
           subFoos: [
             {
-              id: 1,
+              activityIdentifier: 1,
               subSubFooActivityIdentifier: 2
             }
           ],
