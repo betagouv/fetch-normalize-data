@@ -219,6 +219,110 @@ describe('src | getNormalizedMergedState', () => {
   describe('using normalizer config', () => {
     it('normalizes one entity at first level', () => {
       // given
+      const state = {}
+      const patch = {
+        books: [
+          {
+            author: { id: 1, name: 'Edmond Frostan' },
+            authorId: 1,
+            id: 1,
+            title: 'Your empty noise',
+          },
+        ],
+      }
+      const config = {
+        normalizer: {
+          books: {
+            normalizer: {
+              author: 'authors',
+            },
+            stateKey: 'books',
+          },
+        },
+      }
+
+      // when
+      const nextState = getNormalizedMergedState(state, patch, config)
+
+      // then
+      const expectedNextState = {
+        authors: [
+          {
+            id: 1,
+            name: 'Edmond Frostan',
+            __normalizers__: [{ datumKey: 'author' }],
+          },
+        ],
+        books: [
+          {
+            author: { stateKey: 'authors', type: '__normalizer__' },
+            authorId: 1,
+            id: 1,
+            title: 'Your empty noise',
+          },
+        ],
+      }
+      expect(nextState).toStrictEqual(expectedNextState)
+    })
+
+    it('normalizes array of entities at first level', () => {
+      // given
+      const state = {}
+      const patch = {
+        books: [
+          {
+            id: 1,
+            paragraphs: [
+              { bookId: 1, id: 1, text: 'Your noise is kind of a rock.' },
+              { bookId: 1, id: 2, text: 'Your noise is kind of an orange.' },
+            ],
+            title: 'Your noise',
+          },
+        ],
+      }
+      const config = {
+        normalizer: {
+          books: {
+            normalizer: {
+              paragraphs: 'paragraphs',
+            },
+            stateKey: 'books',
+          },
+        },
+      }
+
+      // when
+      const nextState = getNormalizedMergedState(state, patch, config)
+
+      // then
+      const expectedNextState = {
+        books: [
+          {
+            paragraphs: { stateKey: 'paragraphs', type: '__normalizer__' },
+            id: 1,
+            title: 'Your noise',
+          },
+        ],
+        paragraphs: [
+          {
+            bookId: 1,
+            id: 1,
+            text: 'Your noise is kind of a rock.',
+            __normalizers__: [{ datumKey: 'paragraphs' }],
+          },
+          {
+            bookId: 1,
+            id: 2,
+            text: 'Your noise is kind of an orange.',
+            __normalizers__: [{ datumKey: 'paragraphs' }],
+          },
+        ],
+      }
+      expect(nextState).toStrictEqual(expectedNextState)
+    })
+
+    it('normalizes all kind at the first level', () => {
+      // given
       const state = {
         authors: [{ id: 0, name: 'John Marxou' }],
         books: [{ authorId: 0, id: 0, text: 'my foo', title: 'My foo' }],
@@ -266,23 +370,44 @@ describe('src | getNormalizedMergedState', () => {
       const expectedNextState = {
         authors: [
           { id: 0, name: 'John Marxou' },
-          { id: 1, name: 'Edmond Frostan' },
+          {
+            id: 1,
+            name: 'Edmond Frostan',
+            __normalizers__: [{ datumKey: 'author' }],
+          },
         ],
         books: [
           { authorId: 0, id: 0, text: 'my foo', title: 'My foo' },
-          { authorId: 1, id: 1, title: 'Your noise' },
-          { authorId: 1, id: 2, title: 'Your empty noise' },
+          {
+            author: { stateKey: 'authors', type: '__normalizer__' },
+            authorId: 1,
+            paragraphs: { stateKey: 'paragraphs', type: '__normalizer__' },
+            id: 1,
+            title: 'Your noise',
+          },
+          {
+            author: { stateKey: 'authors', type: '__normalizer__' },
+            authorId: 1,
+            paragraphs: { stateKey: 'paragraphs', type: '__normalizer__' },
+            id: 2,
+            title: 'Your empty noise',
+          },
         ],
         paragraphs: [
           { bookId: 0, id: 0, text: 'My foo is lovely.' },
           { bookId: 0, id: 1, text: 'But I prefer fee.' },
-          { bookId: 1, id: 3, text: 'Your noise is kind of a rock.' },
+          {
+            bookId: 1,
+            id: 3,
+            text: 'Your noise is kind of a rock.',
+            __normalizers__: [{ datumKey: 'paragraphs' }],
+          },
         ],
       }
       expect(nextState).toStrictEqual(expectedNextState)
     })
 
-    it('normalize entities at deep levels', () => {
+    it.only('normalize entities at deep levels', () => {
       // given
       const state = {
         authors: [
@@ -370,7 +495,12 @@ describe('src | getNormalizedMergedState', () => {
       const expectedNextState = {
         authors: [
           { id: 0, name: 'John Marxou', placeId: 0 },
-          { id: 1, name: 'Edmond Frostan', placeId: 1 },
+          {
+            id: 1,
+            name: 'Edmond Frostan',
+            place: { stateKey: 'places', type: '__normalizer__' },
+            placeId: 1,
+          },
         ],
         books: [
           { authorId: 0, id: 0, text: 'my foo', title: 'My foo' },
@@ -383,7 +513,12 @@ describe('src | getNormalizedMergedState', () => {
         ],
         places: [
           { address: '11, rue de la Potalerie', city: 'Paris', id: 0 },
-          { address: '10, rue de Venise', city: 'Vannes', id: 1 },
+          {
+            address: '10, rue de Venise',
+            city: 'Vannes',
+            id: 1,
+            __normalize__: [{ datumKey: 'place' }],
+          },
         ],
         tags: [
           { id: 0, label: 'WTF', paragraphId: 0 },
@@ -567,9 +702,24 @@ describe('src | getNormalizedMergedState', () => {
 
       // then
       const expectedNextState = {
-        contacts: [{ id: 'D' }],
-        dossiers: [{ id: 'A' }],
-        foos: [{ id: 'B' }, { id: 'C' }],
+        contacts: [
+          {
+            foos: { stateKey: 'foos', type: '__normalizer__' },
+            id: 'D',
+            __normalizers__: [{ datumKey: 'occupier' }],
+          },
+        ],
+        dossiers: [
+          {
+            foos: { stateKey: 'foos', type: '__normalizer__' },
+            id: 'A',
+            occupier: { stateKey: 'contacts', type: '__normalizer__' },
+          },
+        ],
+        foos: [
+          { id: 'B', __normalizers__: [{ datumKey: 'foos' }] },
+          { id: 'C', __normalizers__: [{ datumKey: 'foos' }] },
+        ],
       }
       expect(nextState).toStrictEqual(expectedNextState)
     })

@@ -4,6 +4,7 @@ import { default as selectEntityByActivityIdentifier } from './selectEntityByAct
 import { default as selectEntityByKeyAndId } from './selectEntityByKeyAndId'
 import { default as selectEntityByKeyAndJoin } from './selectEntityByKeyAndJoin'
 import { default as selectValueByEntityAndPath } from './selectValueByEntityAndPath'
+import { default as selectValueByEntityAndPathAndNormalizer } from './selectValueByEntityAndPathAndNormalizer'
 
 export {
   selectEntitiesByKeyAndTagsAndStrictness,
@@ -12,4 +13,5 @@ export {
   selectEntityByKeyAndId,
   selectEntityByKeyAndJoin,
   selectValueByEntityAndPath,
+  selectValueByEntityAndPathAndNormalizer,
 }
