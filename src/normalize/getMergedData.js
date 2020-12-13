@@ -1,4 +1,5 @@
 import uniq from 'lodash.uniq'
+import uniqBy from 'lodash.uniqby'
 
 import { getDefaultDatumIdValue, merge } from './utils'
 
@@ -43,9 +44,16 @@ export function getMergedData(nextData, previousData, config) {
       datum = nextDatum
     }
 
+    if (previousDatum && previousDatum.__normalizers__ && nextDatum.__normalizers__) {
+      datum.__normalizers__ = uniqBy(previousDatum.__normalizers__.concat(nextDatum.__normalizers__),
+                                     normalizer => `${normalizer.datumKey || ''}-${normalizer.stateKey || ''}`)
+    }
+
     if (previousDatum && previousDatum.__tags__ && nextDatum.__tags__) {
       datum.__tags__ = uniq(previousDatum.__tags__.concat(nextDatum.__tags__))
     }
+
+
 
     mergedData[resolvedIndex] = datum
   })

@@ -1,10 +1,11 @@
-import selectValueByEntityAndPathAndNormalizer from '../selectValueByEntityAndPathAndNormalizer'
+import selectValueByWalk from '../selectValueByWalk'
 
-describe('selectValueByEntityAndPathAndNormalizer', () => {
+describe('selectValueByWalk', () => {
   describe('when datum is not here', () => {
     it('should return undefined', () => {
       // given
       const foo = {
+        child: { stateKey: 'subFoos', type: '__normalizer__' },
         childId: 1,
         id: 1,
       }
@@ -16,30 +17,27 @@ describe('selectValueByEntityAndPathAndNormalizer', () => {
           subFoos: [
             {
               id: 1,
-              subSubFooId: 1
+              subSubFoo: { stateKey: 'subSubFoos', type: '__normalizer__' },
+              subSubFooId: 1,
+              __normalizers__: [{ datumKey: 'child' }]
             }
           ],
           subSubFoos: [
             {
-              id: 1
+              id: 1,
+              __normalizers__: [{ datumKey: 'subSubFoo' }]
             }
           ]
         },
       }
-      const normalizer = {
-        child: {
-          normalizer: {
-            subSubFoo: 'subSubFoos'
-          },
-          stateKey: 'subFoos'
-        }
-      }
 
       // when
-      const result = selectValueByEntityAndPathAndNormalizer(state,
-                                                             foo,
-                                                             'child.subSubFoo.value',
-                                                             normalizer)
+      const result = selectValueByWalk(state,
+                                       {
+                                         topKey: 'foos',
+                                         topId: 1,
+                                         path: 'child.subSubFoo.value'
+                                       })
 
       // then
       expect(result).toBeUndefined()
@@ -47,10 +45,11 @@ describe('selectValueByEntityAndPathAndNormalizer', () => {
   })
 
   describe('when datum is here', () => {
-    it.only('should return the datum for . path', () => {
+    it('should return the datum for path with dots', () => {
       // given
       const value = 3
       const foo = {
+        child: { stateKey: 'subFoos', type: '__normalizer__' },
         childId: 1,
         id: 1,
       }
@@ -62,36 +61,35 @@ describe('selectValueByEntityAndPathAndNormalizer', () => {
           subFoos: [
             {
               id: 1,
-              subSubFooId: 1
+              subSubFoo: { stateKey: 'subSubFoos', type: '__normalizer__' },
+              subSubFooId: 1,
+              __normalizers__: [{ datumKey: 'child' }]
             }
           ],
           subSubFoos: [
             {
               id: 1,
-              value
+              value,
+              __normalizers__: [{ datumKey: 'subSubFoo' }]
             }
           ]
         },
       }
-      const normalizer = {
-        child: {
-          normalizer: {
-            subSubFoo: 'subSubFoos'
-          },
-          stateKey: 'subFoos'
-        }
-      }
 
       // when
-      const result = selectValueByEntityAndPathAndNormalizer(state,
-                                                             foo,
-                                                             'child.subSubFoo.value',
-                                                             normalizer)
+      const result = selectValueByWalk(state,
+                                       {
+                                         topKey: 'foos',
+                                         topId: 1,
+                                         path: 'child.subSubFoo.value'
+                                       })
 
       // then
       expect(result).toStrictEqual(value)
     })
-    it.only('should return the datum for [] path', () => {
+
+    /*
+    it.only('should return the datum for path with []', () => {
       // given
       const value = 3
       const foo = {
@@ -127,7 +125,7 @@ describe('selectValueByEntityAndPathAndNormalizer', () => {
       }
 
       // when
-      const result = selectValueByEntityAndPathAndNormalizer(state,
+      const result = selectValueByWalk(state,
                                                              foo,
                                                              'children[0].subSubFoo.value',
                                                              normalizer)
@@ -135,5 +133,6 @@ describe('selectValueByEntityAndPathAndNormalizer', () => {
       // then
       expect(result).toStrictEqual(value)
     })
+    */
   })
 })

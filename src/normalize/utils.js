@@ -34,7 +34,12 @@ export function hydratedActivityFrom(activity) {
 export const merge = (target, source) => {
   for (const key of Object.keys(source)) {
     if (source[key] instanceof Object) {
-      target[key] = merge({ ...target[key] }, source[key])
+      if (Array.isArray(source[key])) {
+        target[key] = source[key].map((s, index) =>
+          merge({...(target[key] && target[key][index])}, s))
+      } else {
+        target[key] = merge({ ...target[key] }, source[key])
+      }
     } else {
       target[key] = source[key]
     }
