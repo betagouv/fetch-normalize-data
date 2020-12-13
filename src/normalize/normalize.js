@@ -14,17 +14,13 @@ export function normalizeDataAtItem(data, datumKey, stateKey, config) {
     if (Array.isArray(normalizedValue)) {
       normalizedValue = normalizedValue.map(entity => ({
         ...entity,
-        __normalizers__: entity.__normalizers__
-          ? entity.__normalizers__.concat({ datumKey })
-          : [{ datumKey }]
+        __normalizers__: [{ datumKey }]
       }))
       normalizedData = normalizedData.concat(normalizedValue)
     } else if (normalizedValue) {
       normalizedValue = {
         ...normalizedValue,
-        __normalizers__: normalizedValue.__normalizers__
-          ? normalizedValue.__normalizers__.concat({ datumKey })
-          : [{ datumKey }]
+        __normalizers__: [{ datumKey }]
       }
       normalizedData.push(normalizedValue)
     }

@@ -407,7 +407,63 @@ describe('src | getNormalizedMergedState', () => {
       expect(nextState).toStrictEqual(expectedNextState)
     })
 
-    it.only('normalize entities at deep levels', () => {
+    it('normalizes with cumulated __normalizers__', () => {
+      // given
+      const state = {}
+      const patch = {
+        books: [
+          {
+            author: { id: 1, name: 'Edmond Frostan' },
+            authorId: 1,
+            id: 1,
+            sameAuthor: { id: 1, name: 'Edmond Frostan' },
+            sameAuthorId: 1,
+            title: 'Your empty noise',
+          },
+        ],
+      }
+      const config = {
+        normalizer: {
+          books: {
+            normalizer: {
+              author: 'authors',
+              sameAuthor: 'authors',
+            },
+            stateKey: 'books',
+          },
+        },
+      }
+
+      // when
+      const nextState = getNormalizedMergedState(state, patch, config)
+
+      // then
+      const expectedNextState = {
+        authors: [
+          {
+            id: 1,
+            name: 'Edmond Frostan',
+            __normalizers__: [
+              { datumKey: 'author' },
+              { datumKey: 'sameAuthor' },
+            ],
+          },
+        ],
+        books: [
+          {
+            author: { stateKey: 'authors', type: '__normalizer__' },
+            authorId: 1,
+            id: 1,
+            sameAuthor: { stateKey: 'authors', type: '__normalizer__' },
+            sameAuthorId: 1,
+            title: 'Your empty noise',
+          },
+        ],
+      }
+      expect(nextState).toStrictEqual(expectedNextState)
+    })
+
+    it('normalizes entities at deep levels', () => {
       // given
       const state = {
         authors: [
@@ -500,16 +556,29 @@ describe('src | getNormalizedMergedState', () => {
             name: 'Edmond Frostan',
             place: { stateKey: 'places', type: '__normalizer__' },
             placeId: 1,
+            __normalizers__: [{ datumKey: 'author' }],
           },
         ],
         books: [
           { authorId: 0, id: 0, text: 'my foo', title: 'My foo' },
-          { authorId: 1, id: 1, title: 'Your noise' },
+          {
+            author: { stateKey: 'authors', type: '__normalizer__' },
+            authorId: 1,
+            id: 1,
+            paragraphs: { stateKey: 'paragraphs', type: '__normalizer__' },
+            title: 'Your noise',
+          },
         ],
         paragraphs: [
           { bookId: 0, id: 0, text: 'My foo is lovely.' },
           { bookId: 0, id: 1, text: 'But I prefer fee.' },
-          { bookId: 1, id: 3, text: 'Your noise is kind of a rock.' },
+          {
+            bookId: 1,
+            id: 3,
+            tags: { stateKey: 'tags', type: '__normalizer__' },
+            text: 'Your noise is kind of a rock.',
+            __normalizers__: [{ datumKey: 'paragraphs' }],
+          },
         ],
         places: [
           { address: '11, rue de la Potalerie', city: 'Paris', id: 0 },
@@ -517,19 +586,29 @@ describe('src | getNormalizedMergedState', () => {
             address: '10, rue de Venise',
             city: 'Vannes',
             id: 1,
-            __normalize__: [{ datumKey: 'place' }],
+            __normalizers__: [{ datumKey: 'place' }],
           },
         ],
         tags: [
           { id: 0, label: 'WTF', paragraphId: 0 },
-          { id: 1, label: 'un cap', paragraphId: 3 },
-          { id: 2, label: 'une péninsule', paragraphId: 3 },
+          {
+            id: 1,
+            label: 'un cap',
+            paragraphId: 3,
+            __normalizers__: [{ datumKey: 'tags' }],
+          },
+          {
+            id: 2,
+            label: 'une péninsule',
+            paragraphId: 3,
+            __normalizers__: [{ datumKey: 'tags' }],
+          },
         ],
       }
       expect(nextState).toStrictEqual(expectedNextState)
     })
 
-    it('normalize entities at deep levels with deep isMergingDatum', () => {
+    it('normalizes entities at deep levels with deep isMergingDatum', () => {
       // given
       const state = {
         authors: [
@@ -628,20 +707,43 @@ describe('src | getNormalizedMergedState', () => {
       const expectedNextState = {
         authors: [
           { id: 0, name: 'John Marxou', placeId: 0 },
-          { id: 1, name: 'Edmond Frostan', placeId: 1 },
+          {
+            id: 1,
+            name: 'Edmond Frostan',
+            place: { stateKey: 'places', type: '__normalizer__' },
+            placeId: 1,
+            __normalizers__: [{ datumKey: 'author' }],
+          },
         ],
         books: [
           { authorId: 0, id: 0, text: 'my foo', title: 'My foo' },
-          { authorId: 1, id: 1, title: 'Your noise' },
+          {
+            author: { stateKey: 'authors', type: '__normalizer__' },
+            authorId: 1,
+            id: 1,
+            paragraphs: { stateKey: 'paragraphs', type: '__normalizer__' },
+            title: 'Your noise',
+          },
         ],
         paragraphs: [
           { bookId: 0, id: 0, text: 'My foo is lovely.' },
           { bookId: 0, id: 1, text: 'But I prefer fee.' },
-          { bookId: 1, id: 3, text: 'Your noise is kind of a rock.' },
+          {
+            bookId: 1,
+            id: 3,
+            tags: { stateKey: 'tags', type: '__normalizer__' },
+            text: 'Your noise is kind of a rock.',
+            __normalizers__: [{ datumKey: 'paragraphs' }],
+          },
         ],
         places: [
           { address: '11, rue de la Potalerie', city: 'Paris', id: 0 },
-          { address: '10, rue de Venise', city: 'Vannes', id: 1 },
+          {
+            address: '10, rue de Venise',
+            city: 'Vannes',
+            id: 1,
+            __normalizers__: [{ datumKey: 'place' }],
+          },
         ],
         tags: [
           {
@@ -649,9 +751,20 @@ describe('src | getNormalizedMergedState', () => {
             label: 'NEW WTF',
             paragraphId: 3,
             remainingKey: 'I should stay !',
+            __normalizers__: [{ datumKey: 'tags' }],
           },
-          { id: 2, label: 'un cap', paragraphId: 3 },
-          { id: 3, label: 'une péninsule', paragraphId: 3 },
+          {
+            id: 2,
+            label: 'un cap',
+            paragraphId: 3,
+            __normalizers__: [{ datumKey: 'tags' }],
+          },
+          {
+            id: 3,
+            label: 'une péninsule',
+            paragraphId: 3,
+            __normalizers__: [{ datumKey: 'tags' }],
+          },
         ],
       }
       expect(nextState).toStrictEqual(expectedNextState)

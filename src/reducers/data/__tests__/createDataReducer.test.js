@@ -444,6 +444,7 @@ describe('src | createDataReducer', () => {
               id: 1,
               value: 'foo'
             },
+            __normalizers__: [{ datumKey: '__activities__' }],
             __tags__: ['/foos']
           },
           {
@@ -455,6 +456,7 @@ describe('src | createDataReducer', () => {
               id: 1,
               subValue: 'fee'
             },
+            __normalizers__: [{ datumKey: '__activities__' }],
             __tags__: ['/foos']
           },
           {
@@ -466,36 +468,45 @@ describe('src | createDataReducer', () => {
               id: 1,
               subSubValue: 'fuu'
             },
+            __normalizers__: [{ datumKey: '__activities__' }],
             __tags__: ['/foos']
           }
         ],
         foos: [
           {
+            __activities__: { stateKey: '__activities__', type: '__normalizer__' },
             activityIdentifier: 1,
             firstDateCreated,
             id: 1,
             lastDateCreated: firstDateCreated,
+            sameSubFoo: { stateKey: 'subFoos', type: '__normalizer__' },
+            subFoo: { stateKey: 'subFoos', type: '__normalizer__' },
             value: 'foo',
             __tags__: ['/foos']
           }
         ],
         subFoos: [
           {
+            __activities__: { stateKey: '__activities__', type: '__normalizer__' },
             activityIdentifier: 2,
             firstDateCreated,
             id: 1,
             lastDateCreated: firstDateCreated,
+            subSubFoo: { stateKey: 'subSubFoos', type: '__normalizer__' },
             subValue: 'fee',
+            __normalizers__: [{ datumKey: 'subFoo' }, { datumKey: 'sameSubFoo' }],
             __tags__: ['/foos']
           }
         ],
         subSubFoos: [
           {
+            __activities__: { stateKey: '__activities__', type: '__normalizer__' },
             activityIdentifier: 3,
             firstDateCreated,
             id: 1,
             lastDateCreated: firstDateCreated,
             subSubValue: 'fuu',
+            __normalizers__: [{ datumKey: 'subSubFoo' }],
             __tags__: ['/foos']
           }
         ]
