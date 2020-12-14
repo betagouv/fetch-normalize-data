@@ -11,7 +11,7 @@ export default createCachedSelector(
   (state, activityIdentifier) => activityIdentifier,
   (data, activityIdentifier) => {
     if (typeof activityIdentifier === 'undefined') {
-      console.warning('activityIdentifier cannot be undefined')
+      console.warn('activityIdentifier cannot be undefined')
       return
     }
     const __activities__ = data.__activities__
