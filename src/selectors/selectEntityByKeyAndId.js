@@ -6,9 +6,8 @@ export const selectEntityByKeyAndId = createCachedSelector(
   (state, key) => state.data[key],
   (state, key, id) => id,
   (entities, id) => {
-    if (entities) {
-      return entities.find(entity => entity.id === id)
-    }
+    if (!entities || !id) return
+    return entities.find(entity => entity.id === id)
   }
 )(mapArgsToCacheKey)
 

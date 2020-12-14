@@ -10,10 +10,7 @@ export default createCachedSelector(
   state => state.data,
   (state, activityIdentifier) => activityIdentifier,
   (data, activityIdentifier) => {
-    if (typeof activityIdentifier === 'undefined') {
-      console.warn('activityIdentifier cannot be undefined')
-      return
-    }
+    if (!activityIdentifier) return
     const __activities__ = data.__activities__
     const firstActivity = selectEntityByKeyAndJoin(
       { data: { __activities__ } },
