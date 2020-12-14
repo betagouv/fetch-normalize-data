@@ -4,18 +4,20 @@ import selectEntityByActivityIdentifier from './selectEntityByActivityIdentifier
 import selectEntityByKeyAndId from './selectEntityByKeyAndId'
 // import selectEntityByKeyAndNormalizer from './selectEntityByKeyAndNormalizer'
 
-
 const mapArgsToCacheKey = (state, walk) =>
-  `${walk.topActivityIdentifier || ''}${walk.topKey || ''}${walk.topId || ''}${walk.path || ''}`
+  `${walk.topActivityIdentifier || ''}${walk.topKey || ''}${walk.topId ||
+    ''}${walk.path || ''}`
 
-
-const entityFrom = (data, entity, key,
-                    //config={}
-                  ) => {
+const entityFrom = (
+  data,
+  entity,
+  key
+  //config={}
+) => {
   // const { parentKey } = config
   const normalizer = entity[key]
-  const stateKey = (normalizer || {}).type === '__normalizer__' &&
-                   (normalizer || {}).stateKey
+  const stateKey =
+    (normalizer || {}).type === '__normalizer__' && (normalizer || {}).stateKey
   if (!stateKey) return
   let childEntity
   const idKey = `${key}Id`
@@ -27,10 +29,13 @@ const entityFrom = (data, entity, key,
     const activityIdentifierKey = `${key}ActivityIdentifier`
     const activityIdentifier = entity[activityIdentifierKey]
     if (activityIdentifier) {
-      childEntity = selectEntityByActivityIdentifier({ data }, activityIdentifier)
+      childEntity = selectEntityByActivityIdentifier(
+        { data },
+        activityIdentifier
+      )
     }
   }
-  if(!childEntity) {
+  if (!childEntity) {
     /*TODO*/
     //childEntity = selectEntityByKeyAndNormalizer({ data },
     //                                             stateKey,
@@ -39,26 +44,23 @@ const entityFrom = (data, entity, key,
   return childEntity
 }
 
-
-const valueFrom = (data, entity, path, config={}) => {
+const valueFrom = (data, entity, path, config = {}) => {
   if (path.includes('.')) {
     const chunks = path.split('.')
     const key = chunks[0]
     const childEntity = entityFrom(data, entity, key, config)
     if (childEntity) {
-      return valueFrom(data,
-                       childEntity,
-                       chunks.slice(1).join('.'),
-                       { parentKey: childEntity.__parent__})
+      return valueFrom(data, childEntity, chunks.slice(1).join('.'), {
+        parentKey: childEntity.__parent__,
+      })
     }
   }
   let value = entity[path]
-  if (!value) {
+  if (!value || value.type === '__normalizer__') {
     value = entityFrom(data, entity, path)
   }
   return value
 }
-
 
 export const selectValueByWalk = createCachedSelector(
   state => state.data,
@@ -75,6 +77,5 @@ export const selectValueByWalk = createCachedSelector(
     }
   }
 )(mapArgsToCacheKey)
-
 
 export default selectValueByWalk
