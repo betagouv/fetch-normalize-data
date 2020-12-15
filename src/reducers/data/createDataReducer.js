@@ -92,7 +92,10 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       getDefaultActivityFrom
 
     const nextState = wrappedReducer(state, action)
-    if (state.__activities__ !== nextState.__activities__) {
+    if (
+      state.__activities__ !== nextState.__activities__ ||
+      (nextState.__activities__ && nextState.__activities__.some(activity => activity.localIdentifier))
+    ) {
       return getNormalizedActivatedState(nextState,
                                          { __activities__: nextState.__activities__ },
                                          { keepFromActivity })

@@ -27,11 +27,10 @@ describe('src | createDataReducer', () => {
               fromFirstActivityChangedByThird: 1,
               nestedDatum: {
                 fromFirstActivity: 1,
-              }
+              },
             },
             tableName: 'foo',
-
-          }
+          },
         ],
         foos: [],
       }
@@ -53,8 +52,8 @@ describe('src | createDataReducer', () => {
           patch: {
             fromSecondActivity: 2,
             nestedDatum: {
-              fromSecondActivity: 2
-            }
+              fromSecondActivity: 2,
+            },
           },
           tableName: 'foo',
         },
@@ -74,7 +73,7 @@ describe('src | createDataReducer', () => {
             fromThirdActivity: 3,
           },
           tableName: 'foos',
-        }
+        },
       ]
       // when
       store.dispatch(activateData(activities))
@@ -83,9 +82,18 @@ describe('src | createDataReducer', () => {
       expect(store.getState().data).toStrictEqual({
         __activities__: [
           initialState.__activities__[0],
-          { ...activities[0], localIdentifier: `1/${activities[0].dateCreated}` },
-          { ...activities[1], localIdentifier: `2/${activities[1].dateCreated}` },
-          { ...activities[2], localIdentifier: `1/${activities[2].dateCreated}` },
+          {
+            ...activities[0],
+            localIdentifier: `1/${activities[0].dateCreated}`,
+          },
+          {
+            ...activities[1],
+            localIdentifier: `2/${activities[1].dateCreated}`,
+          },
+          {
+            ...activities[2],
+            localIdentifier: `1/${activities[2].dateCreated}`,
+          },
         ],
         foos: [
           {
@@ -206,11 +214,13 @@ describe('src | createDataReducer', () => {
         data: createDataReducer(initialState),
       })
       const store = createStore(rootReducer)
-      store.dispatch(assignData({
-        bars: [{ id: 'FF' }],
-        foos: [],
-        totos: [{ id: 'DD1' }, { id: 'DD2' }],
-      }))
+      store.dispatch(
+        assignData({
+          bars: [{ id: 'FF' }],
+          foos: [],
+          totos: [{ id: 'DD1' }, { id: 'DD2' }],
+        })
+      )
 
       // when
       store.dispatch(reinitializeData({ excludes: ['bars', 'totos'] }))
@@ -235,10 +245,12 @@ describe('src | createDataReducer', () => {
       const foos = [{ id: 'AE' }]
 
       // when
-      store.dispatch(successData(
-        { data: foos, status: 200 },
-        { apiPath: '/foos', method: 'GET' }
-      ))
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { apiPath: '/foos', method: 'GET' }
+        )
+      )
 
       // then
       const expectedFoos = foos.map(foo => ({
@@ -259,16 +271,20 @@ describe('src | createDataReducer', () => {
       })
       const store = createStore(rootReducer)
       const foos = [{ id: 'AE' }]
-      store.dispatch(successData(
-        { data: foos, status: 200 },
-        { tag: '/foos-one', apiPath: '/foos', method: 'GET' }
-      ))
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { tag: '/foos-one', apiPath: '/foos', method: 'GET' }
+        )
+      )
 
       // when
-      store.dispatch(successData(
-        { data: foos, status: 200 },
-        { tag: '/foos-two', apiPath: '/foos', method: 'GET' }
-      ))
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { tag: '/foos-two', apiPath: '/foos', method: 'GET' }
+        )
+      )
 
       // then
       const expectedFoos = foos.map(foo => ({
@@ -291,10 +307,12 @@ describe('src | createDataReducer', () => {
       const foos = [{ id: 'AE' }]
 
       // when
-      store.dispatch(successData(
-        { data: foos, status: 200 },
-        { apiPath: '/foos', method: 'GET', stateKey: null }
-      ))
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { apiPath: '/foos', method: 'GET', stateKey: null }
+        )
+      )
 
       // then
       expect(store.getState().data).toStrictEqual({ bars: [] })
@@ -318,9 +336,9 @@ describe('src | createDataReducer', () => {
               modelName: 'Foo',
               patch: {
                 id: 1,
-                value: 'foo'
-              }
-            }
+                value: 'foo',
+              },
+            },
           ],
           activityIdentifier: 1,
           id: 1,
@@ -333,9 +351,9 @@ describe('src | createDataReducer', () => {
                 modelName: 'SubFoo',
                 patch: {
                   id: 1,
-                  subValue: 'fee'
-                }
-              }
+                  subValue: 'fee',
+                },
+              },
             ],
             activityIdentifier: 2,
             id: 1,
@@ -349,14 +367,14 @@ describe('src | createDataReducer', () => {
                   modelName: 'SubSubFoo',
                   patch: {
                     id: 1,
-                    subSubValue: 'fuu'
-                  }
-                }
+                    subSubValue: 'fuu',
+                  },
+                },
               ],
               activityIdentifier: 3,
               id: 1,
-              subSubValue: 'fuu'
-            }
+              subSubValue: 'fuu',
+            },
           },
           sameSubFoo: {
             __activities__: [
@@ -367,9 +385,9 @@ describe('src | createDataReducer', () => {
                 modelName: 'SubFoo',
                 patch: {
                   id: 1,
-                  subValue: 'fee'
-                }
-              }
+                  subValue: 'fee',
+                },
+              },
             ],
             activityIdentifier: 2,
             id: 1,
@@ -383,54 +401,56 @@ describe('src | createDataReducer', () => {
                   modelName: 'SubSubFoo',
                   patch: {
                     id: 1,
-                    subSubValue: 'fuu'
-                  }
-                }
+                    subSubValue: 'fuu',
+                  },
+                },
               ],
               activityIdentifier: 3,
               id: 1,
-              subSubValue: 'fuu'
-            }
+              subSubValue: 'fuu',
+            },
           },
-          value: 'foo'
-        }
+          value: 'foo',
+        },
       ]
 
       // when
-      store.dispatch(successData(
-        { data: foos, status: 200 },
-        {
-          apiPath: '/foos',
-          method: 'GET',
-          normalizer: {
-            __activities__: '__activities__',
-            subFoo: {
-              normalizer: {
-                __activities__: '__activities__',
-                subSubFoo: {
-                  normalizer: {
-                    __activities__: '__activities__',
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          {
+            apiPath: '/foos',
+            method: 'GET',
+            normalizer: {
+              __activities__: '__activities__',
+              subFoo: {
+                normalizer: {
+                  __activities__: '__activities__',
+                  subSubFoo: {
+                    normalizer: {
+                      __activities__: '__activities__',
+                    },
+                    stateKey: 'subSubFoos',
                   },
-                  stateKey: 'subSubFoos'
-                }
+                },
+                stateKey: 'subFoos',
               },
-              stateKey: 'subFoos'
+              sameSubFoo: {
+                normalizer: {
+                  __activities__: '__activities__',
+                  subSubFoo: {
+                    normalizer: {
+                      __activities__: '__activities__',
+                    },
+                    stateKey: 'subSubFoos',
+                  },
+                },
+                stateKey: 'subFoos',
+              },
             },
-            sameSubFoo: {
-              normalizer: {
-                __activities__: '__activities__',
-                subSubFoo: {
-                  normalizer: {
-                    __activities__: '__activities__',
-                  },
-                  stateKey: 'subSubFoos'
-                }
-              },
-              stateKey: 'subFoos'
-            }
           }
-        }
-      ))
+        )
+      )
 
       // then
       expect(store.getState().data).toStrictEqual({
@@ -442,10 +462,10 @@ describe('src | createDataReducer', () => {
             modelName: 'Foo',
             patch: {
               id: 1,
-              value: 'foo'
+              value: 'foo',
             },
             __normalizers__: [{ datumKey: '__activities__' }],
-            __tags__: ['/foos']
+            __tags__: ['/foos'],
           },
           {
             dateCreated: firstDateCreated,
@@ -454,10 +474,10 @@ describe('src | createDataReducer', () => {
             modelName: 'SubFoo',
             patch: {
               id: 1,
-              subValue: 'fee'
+              subValue: 'fee',
             },
             __normalizers__: [{ datumKey: '__activities__' }],
-            __tags__: ['/foos']
+            __tags__: ['/foos'],
           },
           {
             dateCreated: firstDateCreated,
@@ -466,15 +486,18 @@ describe('src | createDataReducer', () => {
             modelName: 'SubSubFoo',
             patch: {
               id: 1,
-              subSubValue: 'fuu'
+              subSubValue: 'fuu',
             },
             __normalizers__: [{ datumKey: '__activities__' }],
-            __tags__: ['/foos']
-          }
+            __tags__: ['/foos'],
+          },
         ],
         foos: [
           {
-            __activities__: { stateKey: '__activities__', type: '__normalizer__' },
+            __activities__: {
+              stateKey: '__activities__',
+              type: '__normalizer__',
+            },
             activityIdentifier: 1,
             firstDateCreated,
             id: 1,
@@ -482,34 +505,118 @@ describe('src | createDataReducer', () => {
             sameSubFoo: { stateKey: 'subFoos', type: '__normalizer__' },
             subFoo: { stateKey: 'subFoos', type: '__normalizer__' },
             value: 'foo',
-            __tags__: ['/foos']
-          }
+            __tags__: ['/foos'],
+          },
         ],
         subFoos: [
           {
-            __activities__: { stateKey: '__activities__', type: '__normalizer__' },
+            __activities__: {
+              stateKey: '__activities__',
+              type: '__normalizer__',
+            },
             activityIdentifier: 2,
             firstDateCreated,
             id: 1,
             lastDateCreated: firstDateCreated,
             subSubFoo: { stateKey: 'subSubFoos', type: '__normalizer__' },
             subValue: 'fee',
-            __normalizers__: [{ datumKey: 'subFoo' }, { datumKey: 'sameSubFoo' }],
-            __tags__: ['/foos']
-          }
+            __normalizers__: [
+              { datumKey: 'subFoo' },
+              { datumKey: 'sameSubFoo' },
+            ],
+            __tags__: ['/foos'],
+          },
         ],
         subSubFoos: [
           {
-            __activities__: { stateKey: '__activities__', type: '__normalizer__' },
+            __activities__: {
+              stateKey: '__activities__',
+              type: '__normalizer__',
+            },
             activityIdentifier: 3,
             firstDateCreated,
             id: 1,
             lastDateCreated: firstDateCreated,
             subSubValue: 'fuu',
             __normalizers__: [{ datumKey: 'subSubFoo' }],
-            __tags__: ['/foos']
-          }
-        ]
+            __tags__: ['/foos'],
+          },
+        ],
+      })
+    })
+
+    it('should not overide the still local __activities__ values', () => {
+      // given
+      const dateCreated = new Date().toISOString()
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated,
+            entityIdentifier: 1,
+            localIdentifier: 1,
+            id: 1,
+            modelName: 'Foo',
+            patch: {
+              notOverridenValue: 'hello',
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            firstDateCreated: dateCreated,
+            id: 1,
+            lastDateCreated: dateCreated,
+            notOverridenValue: 'hello',
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const foos = [
+        {
+          activityIdentifier: 1,
+          id: 1,
+          moreValue: 1,
+          notOverridenValue: 'I should not be there',
+        },
+      ]
+
+      // when
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { apiPath: '/foos', method: 'GET' }
+        )
+      )
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated,
+            entityIdentifier: 1,
+            localIdentifier: 1,
+            id: 1,
+            modelName: 'Foo',
+            patch: {
+              notOverridenValue: 'hello',
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            firstDateCreated: dateCreated,
+            id: 1,
+            lastDateCreated: dateCreated,
+            moreValue: 1,
+            notOverridenValue: 'hello',
+            __tags__: ['/foos'],
+          },
+        ],
       })
     })
   })
