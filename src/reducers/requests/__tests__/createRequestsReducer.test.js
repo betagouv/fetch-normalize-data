@@ -22,8 +22,8 @@ describe('src | createRequestsReducer', () => {
       expect(store.getState().requests['/foos']).toStrictEqual({
         date: new Date(mockNowDate).toISOString(),
         errors: null,
+        isFail: false,
         isPending: true,
-        isError: false,
         isSuccess: false,
       })
     })
@@ -44,8 +44,8 @@ describe('src | createRequestsReducer', () => {
         date: new Date(mockNowDate).toISOString(),
         errors: null,
         headers: undefined,
+        isFail: false,
         isPending: false,
-        isError: false,
         isSuccess: true,
       })
     })
@@ -69,8 +69,8 @@ describe('src | createRequestsReducer', () => {
         date: new Date(mockNowDate).toISOString(),
         errors: { foo: 'missing something' },
         headers: undefined,
+        isFail: true,
         isPending: false,
-        isError: true,
         isSuccess: false,
       })
     })
@@ -84,8 +84,8 @@ describe('src | createRequestsReducer', () => {
             date: new Date(mockNowDate).toISOString(),
             errors: null,
             headers: undefined,
+            isFail: false,
             isPending: false,
-            isError: false,
             isSuccess: true,
           },
         }),
