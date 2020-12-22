@@ -171,4 +171,52 @@ describe('src | getNormalizedActivatedState', () => {
       ],
     })
   })
+
+  it('should keep array of numeric like before', () => {
+    // given
+    const entityIdentifier = 1
+    const state = {
+      foos: [
+        {
+          activityIdentifier: entityIdentifier,
+        },
+      ],
+    }
+
+    const firstDateCreated = new Date().toISOString()
+    const patch = {
+      __activities__: [
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            positions: [
+              [0.1, 0.2],
+              [0.3, 0.4],
+            ],
+          },
+        },
+      ],
+    }
+
+    // when
+    const nextState = getNormalizedActivatedState(state, patch)
+
+    // then
+    expect(nextState).toStrictEqual({
+      __activities__: patch.__activities__,
+      foos: [
+        {
+          activityIdentifier: entityIdentifier,
+          firstDateCreated,
+          lastDateCreated: firstDateCreated,
+          positions: [
+            [0.1, 0.2],
+            [0.3, 0.4],
+          ],
+        },
+      ],
+    })
+  })
 })

@@ -35,6 +35,12 @@ export const merge = (target, source) => {
   for (const key of Object.keys(source)) {
     if (source[key] instanceof Object) {
       if (Array.isArray(source[key])) {
+        if (source[key][0]) {
+          if (!(source[key][0] instanceof Object) || Array.isArray(source[key][0])) {
+            target[key] = source[key]
+            continue
+          }
+        }
         target[key] = source[key].map((s, index) =>
           merge({...(target[key] && target[key][index])}, s))
       } else {
