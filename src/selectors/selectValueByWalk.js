@@ -56,7 +56,7 @@ const valueFrom = (data, entity, path, config = {}) => {
     }
   }
   let value = entity[path]
-  if (!value || value.type === '__normalizer__') {
+  if (typeof value === 'undefined' || value.type === '__normalizer__') {
     value = entityFrom(data, entity, path)
   }
   return value
