@@ -1,15 +1,11 @@
 import pluralize from 'pluralize'
 
-export function getDefaultDatumIdKey(datum) {
-  if (typeof datum.id !== 'undefined') return 'id'
-  if (typeof datum.activityIdentifier !== 'undefined')
-    return 'activityIdentifier'
+export function getDefaultDatumIdKey() {
+  return 'id'
 }
 
 export function getDefaultDatumIdValue(datum, index) {
   if (typeof datum.id !== 'undefined') return datum.id
-  if (typeof datum.activityIdentifier !== 'undefined')
-    return datum.activityIdentifier
   return index
 }
 
