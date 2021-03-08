@@ -837,4 +837,40 @@ describe('src | getNormalizedMergedState', () => {
       expect(nextState).toStrictEqual(expectedNextState)
     })
   })
+
+  describe('when merging with activityIdentifier', () => {
+    it.only('should merge to already existing entity', () => {
+      // given
+      const state = {
+        foos: [
+          {
+            activityIdentifier: 0,
+          },
+        ],
+      }
+      const patch = {
+        foos: [
+          {
+            activityIdentifier: 0,
+            id: 0,
+          },
+        ],
+      }
+
+      // when
+      const nextState = getNormalizedMergedState(state, patch)
+
+      // then
+      // then
+      const expectedNextState = {
+        foos: [
+          {
+            activityIdentifier: 0,
+            id: 0,
+          },
+        ],
+      }
+      expect(nextState).toStrictEqual(expectedNextState)
+    })
+  })
 })
