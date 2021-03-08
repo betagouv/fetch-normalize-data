@@ -219,4 +219,83 @@ describe('src | getNormalizedActivatedState', () => {
       ],
     })
   })
+
+  it('should force to not save activities with same dateCreated', () => {
+    // given
+    const entityIdentifier = 1
+    const state = {
+      foos: [],
+    }
+
+    const firstDateCreated = new Date().toISOString()
+    const patch = {
+      __activities__: [
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            textA: 'bar',
+          },
+        },
+        {
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            textB: 'bor',
+          },
+        },
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            textC: 'bir',
+          },
+        },
+      ],
+    }
+
+    // when
+    const nextState = getNormalizedActivatedState(state, patch)
+
+    // then
+    expect(nextState).toStrictEqual({
+      __activities__: [
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            textA: 'bar',
+          },
+        },
+        {
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            textB: 'bor',
+          },
+        },
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            textC: 'bir',
+          },
+        },
+      ],
+      foos: [
+        {
+          activityIdentifier: entityIdentifier,
+          firstDateCreated,
+          lastDateCreated: firstDateCreated,
+          textA: 'bar',
+          textB: 'bor',
+          textC: 'bir',
+        },
+      ],
+    })
+  })
 })
