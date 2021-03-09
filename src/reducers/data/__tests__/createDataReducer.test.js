@@ -81,18 +81,24 @@ describe('src | createDataReducer', () => {
       // then
       expect(store.getState().data).toStrictEqual({
         __activities__: [
-          initialState.__activities__[0],
+          {
+            ...initialState.__activities__[0],
+            stateKey: 'foos'
+          },
           {
             ...activities[0],
             localIdentifier: `1/${activities[0].dateCreated}`,
+            stateKey: 'foos'
           },
           {
             ...activities[1],
             localIdentifier: `2/${activities[1].dateCreated}`,
+            stateKey: 'foos'
           },
           {
             ...activities[2],
             localIdentifier: `1/${activities[2].dateCreated}`,
+            stateKey: 'foos'
           },
         ],
         foos: [
@@ -214,13 +220,11 @@ describe('src | createDataReducer', () => {
         data: createDataReducer(initialState),
       })
       const store = createStore(rootReducer)
-      store.dispatch(
-        assignData({
-          bars: [{ id: 'FF' }],
-          foos: [],
-          totos: [{ id: 'DD1' }, { id: 'DD2' }],
-        })
-      )
+      store.dispatch(assignData({
+        bars: [{ id: 'FF' }],
+        foos: [],
+        totos: [{ id: 'DD1' }, { id: 'DD2' }],
+      }))
 
       // when
       store.dispatch(reinitializeData({ excludes: ['bars', 'totos'] }))
@@ -245,12 +249,10 @@ describe('src | createDataReducer', () => {
       const foos = [{ id: 'AE' }]
 
       // when
-      store.dispatch(
-        successData(
-          { data: foos, status: 200 },
-          { apiPath: '/foos', method: 'GET' }
-        )
-      )
+      store.dispatch(successData(
+        { data: foos, status: 200 },
+        { apiPath: '/foos', method: 'GET' }
+      ))
 
       // then
       const expectedFoos = foos.map(foo => ({
@@ -279,12 +281,10 @@ describe('src | createDataReducer', () => {
       )
 
       // when
-      store.dispatch(
-        successData(
-          { data: foos, status: 200 },
-          { tag: '/foos-two', apiPath: '/foos', method: 'GET' }
-        )
-      )
+      store.dispatch(successData(
+        { data: foos, status: 200 },
+        { tag: '/foos-two', apiPath: '/foos', method: 'GET' }
+      ))
 
       // then
       const expectedFoos = foos.map(foo => ({
@@ -307,12 +307,10 @@ describe('src | createDataReducer', () => {
       const foos = [{ id: 'AE' }]
 
       // when
-      store.dispatch(
-        successData(
-          { data: foos, status: 200 },
-          { apiPath: '/foos', method: 'GET', stateKey: null }
-        )
-      )
+      store.dispatch(successData(
+        { data: foos, status: 200 },
+        { apiPath: '/foos', method: 'GET', stateKey: null }
+      ))
 
       // then
       expect(store.getState().data).toStrictEqual({ bars: [] })
@@ -464,6 +462,7 @@ describe('src | createDataReducer', () => {
               id: 1,
               value: 'foo',
             },
+            stateKey: 'foos',
             __normalizers__: [{ datumKey: '__activities__' }],
             __tags__: ['/foos'],
           },
@@ -476,6 +475,7 @@ describe('src | createDataReducer', () => {
               id: 1,
               subValue: 'fee',
             },
+            stateKey: 'subFoos',
             __normalizers__: [{ datumKey: '__activities__' }],
             __tags__: ['/foos'],
           },
@@ -488,6 +488,7 @@ describe('src | createDataReducer', () => {
               id: 1,
               subSubValue: 'fuu',
             },
+            stateKey: 'subSubFoos',
             __normalizers__: [{ datumKey: '__activities__' }],
             __tags__: ['/foos'],
           },
@@ -604,6 +605,7 @@ describe('src | createDataReducer', () => {
             patch: {
               notOverridenValue: 'hello',
             },
+            stateKey: 'foos'
           },
         ],
         foos: [

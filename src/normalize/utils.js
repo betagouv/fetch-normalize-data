@@ -13,9 +13,6 @@ export function getDefaultActivityFrom() {
   return {}
 }
 
-
-let lastCreationDate = new Date()
-
 export function hydratedActivityFrom(activity) {
   let stateKey = activity.stateKey
   if (!stateKey) {
@@ -32,18 +29,8 @@ export function hydratedActivityFrom(activity) {
       )
     }
   }
-
-  let creationDate = activity.dateCreated
-                        ? new Date(activity.dateCreated)
-                        : new Date()
-  if (creationDate === lastCreationDate) {
-    creationDate = new Date(lastCreationDate.getTime() + 1)
-  }
-  lastCreationDate = creationDate
-  const dateCreated = creationDate.toISOString()
-
   return { ...activity,
-           dateCreated,
+           dateCreated: activity.dateCreated || new Date().toISOString(),
            stateKey }
 }
 
