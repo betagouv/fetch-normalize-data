@@ -839,7 +839,7 @@ describe('src | getNormalizedMergedState', () => {
   })
 
   describe('when merging with activityIdentifier', () => {
-    it.only('should merge to already existing entity', () => {
+    it('should merge to already existing entity', () => {
       // given
       const state = {
         foos: [

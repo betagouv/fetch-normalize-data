@@ -36,7 +36,26 @@ describe('src | getNormalizedActivatedState', () => {
 
     // then
     expect(nextState).toStrictEqual({
-      __activities__: patch.__activities__,
+      __activities__: [
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            value: 1,
+          },
+          stateKey: 'foos',
+        },
+        {
+          dateCreated: lastDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            value: 2,
+          },
+          stateKey: 'foos',
+        },
+      ],
       foos: [
         {
           activityIdentifier: entityIdentifier,
@@ -81,7 +100,24 @@ describe('src | getNormalizedActivatedState', () => {
 
     // then
     expect(nextState).toStrictEqual({
-      __activities__: patch.__activities__,
+      __activities__: [
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            value: 1,
+          },
+          stateKey: 'foos',
+        },
+        {
+          dateCreated: lastDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          verb: 'delete',
+          stateKey: 'foos',
+        },
+      ],
     })
   })
 
@@ -120,7 +156,26 @@ describe('src | getNormalizedActivatedState', () => {
 
     // then
     expect(nextState).toStrictEqual({
-      __activities__: patch.__activities__,
+      __activities__: [
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            value: 1,
+          },
+          stateKey: 'foos',
+        },
+        {
+          dateCreated: lastDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            isSoftDeleted: true,
+          },
+          stateKey: 'foos',
+        },
+      ],
     })
   })
 
@@ -159,7 +214,17 @@ describe('src | getNormalizedActivatedState', () => {
 
     // then
     expect(nextState).toStrictEqual({
-      __activities__: patch.__activities__,
+      __activities__: [
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            value: 1,
+          },
+          stateKey: 'foos',
+        },
+      ],
       foos: [
         {
           activityIdentifier: entityIdentifier,
@@ -205,7 +270,20 @@ describe('src | getNormalizedActivatedState', () => {
 
     // then
     expect(nextState).toStrictEqual({
-      __activities__: patch.__activities__,
+      __activities__: [
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            positions: [
+              [0.1, 0.2],
+              [0.3, 0.4],
+            ],
+          },
+          stateKey: 'foos',
+        },
+      ],
       foos: [
         {
           activityIdentifier: entityIdentifier,
@@ -227,7 +305,8 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [],
     }
 
-    const firstDateCreated = new Date().toISOString()
+    const firstDate = new Date()
+    const firstDateCreated = firstDate.toISOString()
     const patch = {
       __activities__: [
         {
@@ -239,18 +318,18 @@ describe('src | getNormalizedActivatedState', () => {
           },
         },
         {
-          entityIdentifier,
-          modelName: 'Foo',
-          patch: {
-            textB: 'bor',
-          },
-        },
-        {
           dateCreated: firstDateCreated,
           entityIdentifier,
           modelName: 'Foo',
           patch: {
-            textC: 'bir',
+            textB: 'bir',
+          },
+        },
+        {
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            textC: 'bor',
           },
         },
       ],
@@ -260,6 +339,7 @@ describe('src | getNormalizedActivatedState', () => {
     const nextState = getNormalizedActivatedState(state, patch)
 
     // then
+    const secondDateCreated = new Date(firstDate.getTime() + 1).toISOString()
     expect(nextState).toStrictEqual({
       __activities__: [
         {
@@ -269,31 +349,35 @@ describe('src | getNormalizedActivatedState', () => {
           patch: {
             textA: 'bar',
           },
+          stateKey: 'foos',
         },
         {
+          dateCreated: secondDateCreated,
           entityIdentifier,
           modelName: 'Foo',
           patch: {
-            textB: 'bor',
+            textB: 'bir',
           },
+          stateKey: 'foos',
         },
         {
-          dateCreated: firstDateCreated,
+          dateCreated: nextState.__activities__[2].dateCreated,
           entityIdentifier,
           modelName: 'Foo',
           patch: {
-            textC: 'bir',
+            textC: 'bor',
           },
+          stateKey: 'foos',
         },
       ],
       foos: [
         {
           activityIdentifier: entityIdentifier,
-          firstDateCreated,
-          lastDateCreated: firstDateCreated,
+          firstDateCreated: firstDateCreated,
+          lastDateCreated: nextState.__activities__[2].dateCreated,
           textA: 'bar',
-          textB: 'bor',
-          textC: 'bir',
+          textB: 'bir',
+          textC: 'bor',
         },
       ],
     })
