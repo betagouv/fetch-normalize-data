@@ -7,7 +7,8 @@ export function getNormalizedActivatedState(state, patch, config={}) {
 
   const { __activities__ } = patch
   const hydratedActivities = (__activities__ || []).map(hydratedActivityFrom)
-
+  const hydratedPatch = { ...patch,
+                          __activities__: hydratedActivities }
 
   const stateWithoutDeletedEntitiesByActivities = { ...state }
   const deletedActivityIdentifiers = []
@@ -45,12 +46,21 @@ export function getNormalizedActivatedState(state, patch, config={}) {
       new Date(activity1.dateCreated) < new Date(activity2.dateCreated) ? -1 : 1)
 
   const firstDateCreatedsByIdentifier = {}
+  const lastDateCreatedByIdentifier = {}
   sortedActivities.forEach(activity => {
     if (!firstDateCreatedsByIdentifier[activity.entityIdentifier]) {
       firstDateCreatedsByIdentifier[activity.entityIdentifier] =
         activity.dateCreated
     }
+
+    const lastDateCreated = lastDateCreatedByIdentifier[activity.entityIdentifier]
+    if (lastDateCreated >= activity.dateCreated) {
+      const dateTimePlusOneMillisecond = new Date(lastDateCreated).getTime() + 1
+      activity.dateCreated = new Date(dateTimePlusOneMillisecond).toISOString()
+    }
+    lastDateCreatedByIdentifier[activity.entityIdentifier] = activity.dateCreated
   })
+
 
   return sortedActivities.reduce(
     (aggregation, activity) => ({
@@ -76,7 +86,7 @@ export function getNormalizedActivatedState(state, patch, config={}) {
         }
       ),
     }),
-    { ...stateWithoutDeletedEntitiesByActivities, ...patch }
+    { ...stateWithoutDeletedEntitiesByActivities, ...hydratedPatch }
   )
 }
 
