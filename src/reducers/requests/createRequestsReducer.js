@@ -1,4 +1,4 @@
-import { DELETE_REQUESTS } from './actions'
+import { DELETE_REQUESTS, REINITIALIZE_REQUESTS } from './actions'
 import { keyFromConfig } from '../../selectors/selectRequestByConfig'
 
 const arrayErrorsToErrorsByName = errors =>
@@ -65,6 +65,10 @@ export const createRequestsReducer = (initialState = {}) => {
     if (action.type === DELETE_REQUESTS) {
       const nextState = { [action.key]: undefined }
       return { ...state, ...nextState }
+    }
+
+    if (action.type === REINITIALIZE_REQUESTS) {
+      return initialState
     }
 
     return state
