@@ -1,4 +1,5 @@
 import { DELETE_REQUESTS } from './actions'
+import { keyFromConfig } from '../../selectors/selectRequestByConfig'
 
 const arrayErrorsToErrorsByName = errors =>
   Object.values(errors).reduce((acc, error) => ({ ...acc, ...error }), {})
@@ -15,7 +16,7 @@ const parseHeaders = headers =>
 export const createRequestsReducer = (initialState = {}) => {
   const reducer = (state = initialState, action) => {
     const { config = {} } = action || {}
-    const key = config.tag || config.apiPath
+    const key = keyFromConfig(config)
 
     if (/FAIL_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
       const nextState = {

@@ -4,6 +4,7 @@ import { default as selectEntityByActivityIdentifier } from './selectEntityByAct
 import { default as selectEntityByKeyAndId } from './selectEntityByKeyAndId'
 import { default as selectEntityByKeyAndJoin } from './selectEntityByKeyAndJoin'
 import { default as selectEntityByKeyAndNormalizer } from './selectEntityByKeyAndNormalizer'
+import { default as selectRequestByConfig } from './selectRequestByConfig'
 import { default as selectValueByWalk } from './selectValueByWalk'
 
 export {
@@ -13,5 +14,6 @@ export {
   selectEntityByKeyAndId,
   selectEntityByKeyAndJoin,
   selectEntityByKeyAndNormalizer,
+  selectRequestByConfig,
   selectValueByWalk,
 }
