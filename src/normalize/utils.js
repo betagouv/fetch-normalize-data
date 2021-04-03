@@ -13,6 +13,7 @@ export function getDefaultActivityFrom() {
   return {}
 }
 
+let lastDateCreated
 export function hydratedActivityFrom(activity) {
   let stateKey = activity.stateKey
   if (!stateKey) {
@@ -29,9 +30,15 @@ export function hydratedActivityFrom(activity) {
       )
     }
   }
-  return { ...activity,
-           dateCreated: activity.dateCreated || new Date().toISOString(),
-           stateKey }
+
+  let dateCreated = activity.dateCreated || new Date().toISOString()
+  if (lastDateCreated >= dateCreated) {
+    const dateTimePlusOneMillisecond = new Date(lastDateCreated).getTime() + 1
+    dateCreated = new Date(dateTimePlusOneMillisecond).toISOString()
+  }
+  lastDateCreated = dateCreated
+
+  return { ...activity, dateCreated, stateKey }
 }
 
 export const merge = (target, source) => {

@@ -1,11 +1,12 @@
 import { getNormalizedActivatedState } from '../getNormalizedActivatedState'
 
 describe('src | getNormalizedActivatedState', () => {
-  it('should create an entity through accumulated patches', () => {
+  it.only('should create an entity through accumulated patches', () => {
     // given
     const state = {}
 
     const firstDateCreated = new Date().toISOString()
+    console.log('1', firstDateCreated)
     let lastDateCreated = new Date(firstDateCreated)
     lastDateCreated.setDate(lastDateCreated.getDate() + 1)
     lastDateCreated = lastDateCreated.toISOString()
@@ -67,11 +68,12 @@ describe('src | getNormalizedActivatedState', () => {
     })
   })
 
-  it('should delete an entity when met a delete activity', () => {
+  it.only('should delete an entity when met a delete activity', () => {
     // given
     const state = {}
 
     const firstDateCreated = new Date().toISOString()
+    console.log('2', firstDateCreated)
     let lastDateCreated = new Date(firstDateCreated)
     lastDateCreated.setDate(lastDateCreated.getDate() + 1)
     lastDateCreated = lastDateCreated.toISOString()
