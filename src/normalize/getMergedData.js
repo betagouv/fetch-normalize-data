@@ -23,7 +23,12 @@ export function getMergedData(nextData, previousData, config) {
     const previousIndex = previousData.findIndex(previousDatum => {
       if (getDatumIdValue(previousDatum) === getDatumIdValue(nextDatum))
         return true
-      if (typeof previousDatum.activityIdentifier !== 'undefined' && typeof nextDatum.activityIdentifier !== 'undefined') {
+      if (
+        typeof previousDatum.activityIdentifier !== 'undefined' &&
+        previousDatum.activityIdentifier !== null &&
+        typeof nextDatum.activityIdentifier !== 'undefined' &&
+        nextDatum.activityIdentifier !== null
+      ) {
         return previousDatum.activityIdentifier === nextDatum.activityIdentifier
       }
       return false
