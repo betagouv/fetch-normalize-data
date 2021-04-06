@@ -27,7 +27,7 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
     if (action.type === ACTIVATE_DATA) {
       const sortedHydratedActivities = sortedHydratedActivitiesFrom(
         state,
-        state.__activities__.concat(action.activities)
+        (state.__activities__ || []).concat(action.activities)
       )
       const { __activities__: nextActivities } = getNormalizedMergedState(
         state,
