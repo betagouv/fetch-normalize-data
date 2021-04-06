@@ -29,6 +29,7 @@ describe('src | createDataReducer', () => {
                 fromFirstActivity: 1,
               },
             },
+            stateKey: 'foos',
             tableName: 'foo',
           },
         ],
@@ -83,22 +84,22 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             ...initialState.__activities__[0],
-            stateKey: 'foos'
+            stateKey: 'foos',
           },
           {
             ...activities[0],
             localIdentifier: `1/${activities[0].dateCreated}`,
-            stateKey: 'foos'
+            stateKey: 'foos',
           },
           {
             ...activities[1],
             localIdentifier: `2/${activities[1].dateCreated}`,
-            stateKey: 'foos'
+            stateKey: 'foos',
           },
           {
             ...activities[2],
             localIdentifier: `1/${activities[2].dateCreated}`,
-            stateKey: 'foos'
+            stateKey: 'foos',
           },
         ],
         foos: [
@@ -112,13 +113,9 @@ describe('src | createDataReducer', () => {
               fromFirstActivity: 1,
               fromSecondActivity: 2,
             },
-            firstDateCreated: initialState.__activities__[0].dateCreated,
-            lastDateCreated: activities[2].dateCreated,
           },
           {
             activityIdentifier: 2,
-            firstDateCreated: activities[1].dateCreated,
-            lastDateCreated: activities[1].dateCreated,
             otherActivity: 'foo',
           },
         ],
@@ -220,11 +217,13 @@ describe('src | createDataReducer', () => {
         data: createDataReducer(initialState),
       })
       const store = createStore(rootReducer)
-      store.dispatch(assignData({
-        bars: [{ id: 'FF' }],
-        foos: [],
-        totos: [{ id: 'DD1' }, { id: 'DD2' }],
-      }))
+      store.dispatch(
+        assignData({
+          bars: [{ id: 'FF' }],
+          foos: [],
+          totos: [{ id: 'DD1' }, { id: 'DD2' }],
+        })
+      )
 
       // when
       store.dispatch(reinitializeData({ excludes: ['bars', 'totos'] }))
@@ -249,10 +248,12 @@ describe('src | createDataReducer', () => {
       const foos = [{ id: 'AE' }]
 
       // when
-      store.dispatch(successData(
-        { data: foos, status: 200 },
-        { apiPath: '/foos', method: 'GET' }
-      ))
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { apiPath: '/foos', method: 'GET' }
+        )
+      )
 
       // then
       const expectedFoos = foos.map(foo => ({
@@ -281,10 +282,12 @@ describe('src | createDataReducer', () => {
       )
 
       // when
-      store.dispatch(successData(
-        { data: foos, status: 200 },
-        { tag: '/foos-two', apiPath: '/foos', method: 'GET' }
-      ))
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { tag: '/foos-two', apiPath: '/foos', method: 'GET' }
+        )
+      )
 
       // then
       const expectedFoos = foos.map(foo => ({
@@ -307,10 +310,12 @@ describe('src | createDataReducer', () => {
       const foos = [{ id: 'AE' }]
 
       // when
-      store.dispatch(successData(
-        { data: foos, status: 200 },
-        { apiPath: '/foos', method: 'GET', stateKey: null }
-      ))
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { apiPath: '/foos', method: 'GET', stateKey: null }
+        )
+      )
 
       // then
       expect(store.getState().data).toStrictEqual({ bars: [] })
@@ -500,9 +505,7 @@ describe('src | createDataReducer', () => {
               type: '__normalizer__',
             },
             activityIdentifier: 1,
-            firstDateCreated,
             id: 1,
-            lastDateCreated: firstDateCreated,
             sameSubFoo: { stateKey: 'subFoos', type: '__normalizer__' },
             subFoo: { stateKey: 'subFoos', type: '__normalizer__' },
             value: 'foo',
@@ -516,9 +519,7 @@ describe('src | createDataReducer', () => {
               type: '__normalizer__',
             },
             activityIdentifier: 2,
-            firstDateCreated,
             id: 1,
-            lastDateCreated: firstDateCreated,
             subSubFoo: { stateKey: 'subSubFoos', type: '__normalizer__' },
             subValue: 'fee',
             __normalizers__: [
@@ -535,9 +536,7 @@ describe('src | createDataReducer', () => {
               type: '__normalizer__',
             },
             activityIdentifier: 3,
-            firstDateCreated,
             id: 1,
-            lastDateCreated: firstDateCreated,
             subSubValue: 'fuu',
             __normalizers__: [{ datumKey: 'subSubFoo' }],
             __tags__: ['/foos'],
@@ -605,15 +604,13 @@ describe('src | createDataReducer', () => {
             patch: {
               notOverridenValue: 'hello',
             },
-            stateKey: 'foos'
+            stateKey: 'foos',
           },
         ],
         foos: [
           {
             activityIdentifier: 1,
-            firstDateCreated: dateCreated,
             id: 1,
-            lastDateCreated: dateCreated,
             moreValue: 1,
             notOverridenValue: 'hello',
             __tags__: ['/foos'],

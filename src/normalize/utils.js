@@ -29,9 +29,12 @@ export function hydratedActivityFrom(activity) {
       )
     }
   }
-  return { ...activity,
-           dateCreated: activity.dateCreated || new Date().toISOString(),
-           stateKey }
+  return {
+    ...activity,
+    dateCreated: activity.dateCreated || new Date().toISOString(),
+    patch: { ...activity.patch },
+    stateKey,
+  }
 }
 
 export const merge = (target, source) => {
@@ -58,4 +61,27 @@ export const merge = (target, source) => {
     }
   }
   return target
+}
+
+export const forceActivitiesWithStrictIncreasingDateCreated = activities => {
+  const lastDateCreatedByIdentifier = {}
+  activities.forEach(activity => {
+    const lastDateCreated =
+      lastDateCreatedByIdentifier[activity.entityIdentifier]
+    if (lastDateCreated >= activity.dateCreated) {
+      const dateTimePlusOneMillisecond = new Date(lastDateCreated).getTime() + 1
+      activity.dateCreated = new Date(dateTimePlusOneMillisecond).toISOString()
+    }
+    lastDateCreatedByIdentifier[activity.entityIdentifier] =
+      activity.dateCreated
+  })
+}
+
+export const sortedHydratedActivitiesFrom = (state, activities) => {
+  const hydratedSortedActivities = (activities || []).map(hydratedActivityFrom)
+  hydratedSortedActivities.sort((activity1, activity2) =>
+    new Date(activity1.dateCreated) < new Date(activity2.dateCreated) ? -1 : 1
+  )
+  forceActivitiesWithStrictIncreasingDateCreated(hydratedSortedActivities)
+  return hydratedSortedActivities
 }
