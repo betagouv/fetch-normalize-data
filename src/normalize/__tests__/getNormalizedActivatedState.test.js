@@ -59,8 +59,6 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
-          firstDateCreated,
-          lastDateCreated,
           value: 2,
         },
       ],
@@ -114,6 +112,7 @@ describe('src | getNormalizedActivatedState', () => {
           dateCreated: lastDateCreated,
           entityIdentifier,
           modelName: 'Foo',
+          patch: {},
           verb: 'delete',
           stateKey: 'foos',
         },
@@ -228,8 +227,6 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
-          firstDateCreated,
-          lastDateCreated: firstDateCreated,
           notDisappearedValue: 'hello',
           value: 1,
         },
@@ -287,11 +284,83 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
-          firstDateCreated,
-          lastDateCreated: firstDateCreated,
           positions: [
             [0.1, 0.2],
             [0.3, 0.4],
+          ],
+        },
+      ],
+    })
+  })
+
+  it('should overide an array of numeric', () => {
+    // given
+    const entityIdentifier = 1
+    const firstDateCreated = new Date().toISOString()
+    const state = {
+      __activities__: [
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          localIdentifier: `0/${firstDateCreated}`,
+          modelName: 'Foo',
+          patch: {
+            positions: [
+              [0.1, 0.2],
+              [0.3, 0.4],
+            ],
+          },
+          stateKey: 'foos',
+        },
+      ],
+      foos: [
+        {
+          activityIdentifier: entityIdentifier,
+        },
+      ],
+    }
+    const secondDateCreated = new Date().toISOString()
+    const patch = {
+      __activities__: [
+        {
+          dateCreated: secondDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            positions: [
+              [0.9, 0.8],
+              [0.7, 0.6],
+            ],
+          },
+        },
+      ],
+    }
+
+    // when
+    const nextState = getNormalizedActivatedState(state, patch)
+
+    // then
+    expect(nextState).toStrictEqual({
+      __activities__: [
+        {
+          dateCreated: secondDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            positions: [
+              [0.9, 0.8],
+              [0.7, 0.6],
+            ],
+          },
+          stateKey: 'foos',
+        },
+      ],
+      foos: [
+        {
+          activityIdentifier: entityIdentifier,
+          positions: [
+            [0.9, 0.8],
+            [0.7, 0.6],
           ],
         },
       ],
@@ -373,8 +442,6 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
-          firstDateCreated: firstDateCreated,
-          lastDateCreated: nextState.__activities__[2].dateCreated,
           textA: 'bar',
           textB: 'bir',
           textC: 'bor',

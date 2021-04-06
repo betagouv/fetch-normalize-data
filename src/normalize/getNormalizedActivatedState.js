@@ -1,21 +1,24 @@
 import getNormalizedMergedState from './getNormalizedMergedState'
-import { getDefaultActivityFrom, hydratedActivityFrom } from './utils'
+import { getDefaultActivityFrom, sortedHydratedActivitiesFrom } from './utils'
 
-
-export function getNormalizedActivatedState(state, patch, config={}) {
+export function getNormalizedActivatedState(state, patch, config = {}) {
   const keepFromActivity = config.keepFromActivity || getDefaultActivityFrom
 
-  const { __activities__ } = patch
-  const hydratedActivities = (__activities__ || []).map(hydratedActivityFrom)
-  const hydratedPatch = { ...patch,
-                          __activities__: hydratedActivities }
+  const sortedHydratedActivities = sortedHydratedActivitiesFrom(
+    state,
+    patch.__activities__
+  )
+  const hydratedPatch = { ...patch, __activities__: sortedHydratedActivities }
 
   const stateWithoutDeletedEntitiesByActivities = { ...state }
   const deletedActivityIdentifiers = []
   const deletedActivityIdentifiersByStateKey = {}
-  hydratedActivities
-    .filter(activity => activity.verb === 'delete' ||
-                       (activity.patch && activity.patch.isSoftDeleted))
+  sortedHydratedActivities
+    .filter(
+      activity =>
+        activity.verb === 'delete' ||
+        (activity.patch && activity.patch.isSoftDeleted)
+    )
     .forEach(activity => {
       const activityIdentifier = activity.entityIdentifier
       const stateKey = activity.stateKey
@@ -26,43 +29,28 @@ export function getNormalizedActivatedState(state, patch, config={}) {
         deletedActivityIdentifiersByStateKey[stateKey].push(activityIdentifier)
       }
     })
-  Object.keys(deletedActivityIdentifiersByStateKey)
-        .forEach(stateKey => {
-          if (!stateWithoutDeletedEntitiesByActivities[stateKey]) {
-            return
-          }
-          stateWithoutDeletedEntitiesByActivities[stateKey] = stateWithoutDeletedEntitiesByActivities[stateKey].filter(entity =>
-            !deletedActivityIdentifiersByStateKey[stateKey].includes(entity.activityIdentifier))
-          if (!stateWithoutDeletedEntitiesByActivities[stateKey].length) {
-            delete stateWithoutDeletedEntitiesByActivities[stateKey]
-          }
-        })
-
-
-  const notDeletedActivities = hydratedActivities.filter(activity =>
-    !deletedActivityIdentifiers.includes(activity.entityIdentifier))
-
-  const sortedActivities = notDeletedActivities.sort((activity1, activity2) =>
-      new Date(activity1.dateCreated) < new Date(activity2.dateCreated) ? -1 : 1)
-
-  const firstDateCreatedsByIdentifier = {}
-  const lastDateCreatedByIdentifier = {}
-  sortedActivities.forEach(activity => {
-    if (!firstDateCreatedsByIdentifier[activity.entityIdentifier]) {
-      firstDateCreatedsByIdentifier[activity.entityIdentifier] =
-        activity.dateCreated
+  Object.keys(deletedActivityIdentifiersByStateKey).forEach(stateKey => {
+    if (!stateWithoutDeletedEntitiesByActivities[stateKey]) {
+      return
     }
-
-    const lastDateCreated = lastDateCreatedByIdentifier[activity.entityIdentifier]
-    if (lastDateCreated >= activity.dateCreated) {
-      const dateTimePlusOneMillisecond = new Date(lastDateCreated).getTime() + 1
-      activity.dateCreated = new Date(dateTimePlusOneMillisecond).toISOString()
+    stateWithoutDeletedEntitiesByActivities[
+      stateKey
+    ] = stateWithoutDeletedEntitiesByActivities[stateKey].filter(
+      entity =>
+        !deletedActivityIdentifiersByStateKey[stateKey].includes(
+          entity.activityIdentifier
+        )
+    )
+    if (!stateWithoutDeletedEntitiesByActivities[stateKey].length) {
+      delete stateWithoutDeletedEntitiesByActivities[stateKey]
     }
-    lastDateCreatedByIdentifier[activity.entityIdentifier] = activity.dateCreated
   })
 
+  const notDeletedActivities = sortedHydratedActivities.filter(
+    activity => !deletedActivityIdentifiers.includes(activity.entityIdentifier)
+  )
 
-  return sortedActivities.reduce(
+  return notDeletedActivities.reduce(
     (aggregation, activity) => ({
       ...aggregation,
       ...getNormalizedMergedState(
@@ -71,9 +59,6 @@ export function getNormalizedActivatedState(state, patch, config={}) {
           [activity.stateKey]: [
             {
               activityIdentifier: activity.entityIdentifier,
-              firstDateCreated:
-                firstDateCreatedsByIdentifier[activity.entityIdentifier],
-              lastDateCreated: activity.dateCreated,
               ...activity.patch,
               ...keepFromActivity(activity),
             },
