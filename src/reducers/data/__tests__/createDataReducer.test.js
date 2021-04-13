@@ -598,7 +598,6 @@ describe('src | createDataReducer', () => {
             dateCreated,
             dateModified: null,
             id: 1,
-            lastDateCreated: dateCreated,
             notOverridenValue: 'hello',
           },
         ],
@@ -649,6 +648,88 @@ describe('src | createDataReducer', () => {
             id: 1,
             moreValue: 1,
             notOverridenValue: 'hello',
+            __tags__: ['/foos'],
+          },
+        ],
+      })
+    })
+
+    it('should overide dateModified when success gives a remote updated entity', () => {
+      // given
+      const entityDateCreated = new Date().toISOString()
+      let localActivityDateCreated = new Date(entityDateCreated)
+      localActivityDateCreated.setDate(localActivityDateCreated.getDate() + 1)
+      localActivityDateCreated = localActivityDateCreated.toISOString()
+      let remoteDateModified = new Date(entityDateCreated)
+      remoteDateModified.setDate(remoteDateModified.getDate() + 2)
+      remoteDateModified = remoteDateModified.toISOString()
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated: localActivityDateCreated,
+            entityIdentifier: 1,
+            localIdentifier: 1,
+            id: 1,
+            modelName: 'Foo',
+            patch: {
+              value: 1,
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated: entityDateCreated,
+            dateModified: localActivityDateCreated,
+            id: 1,
+            value: 1,
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const foos = [
+        {
+          activityIdentifier: 1,
+          dateCreated: entityDateCreated,
+          dateModified: remoteDateModified,
+          id: 1,
+          value: 2,
+        },
+      ]
+
+      // when
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { apiPath: '/foos', method: 'GET' }
+        )
+      )
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: localActivityDateCreated,
+            entityIdentifier: 1,
+            localIdentifier: 1,
+            id: 1,
+            modelName: 'Foo',
+            patch: {
+              value: 1,
+            },
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated: entityDateCreated,
+            dateModified: remoteDateModified,
+            id: 1,
+            value: 1,
             __tags__: ['/foos'],
           },
         ],

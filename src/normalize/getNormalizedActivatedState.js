@@ -53,10 +53,12 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
 
   const entityDateCreatedsByIdentifier = {}
   const entityDateModifiedsByIdentifier = {}
+
   notDeletedActivities.forEach(activity => {
     const alreadyCreatedEntity = (
       stateWithoutDeletedEntitiesByActivities[activity.stateKey] || []
     ).find(entity => entity.activityIdentifier === activity.entityIdentifier)
+
     if (
       typeof entityDateCreatedsByIdentifier[activity.entityIdentifier] ===
       'undefined'
@@ -67,13 +69,27 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
       } else {
         entityDateCreatedsByIdentifier[activity.entityIdentifier] =
           activity.dateCreated
+        return
       }
-    } else if (
-      alreadyCreatedEntity &&
-      (!alreadyCreatedEntity.dateModified ||
-        new Date(activity.dateCreated) >
-          new Date(alreadyCreatedEntity.dateCreated))
+    }
+    if (
+      entityDateCreatedsByIdentifier[activity.entityIdentifier] !==
+      activity.dateCreated
     ) {
+      if (alreadyCreatedEntity) {
+        const activityIsNew =
+          !alreadyCreatedEntity.dateModified ||
+          new Date(activity.dateCreated) >
+            new Date(alreadyCreatedEntity.dateModified)
+        if (activityIsNew) {
+          entityDateModifiedsByIdentifier[activity.entityIdentifier] =
+            activity.dateCreated
+          return
+        }
+        entityDateModifiedsByIdentifier[activity.entityIdentifier] =
+          alreadyCreatedEntity.dateModified
+        return
+      }
       entityDateModifiedsByIdentifier[activity.entityIdentifier] =
         activity.dateCreated
     }

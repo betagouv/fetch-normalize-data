@@ -63,12 +63,25 @@ export const merge = (target, source) => {
   return target
 }
 
-export const forceActivitiesWithStrictIncreasingDateCreated = activities => {
+export const forceLocalActivitiesWithStrictIncreasingDateCreated = (
+  state,
+  activities
+) => {
   const lastDateCreatedByIdentifier = {}
   activities.forEach(activity => {
-    const lastDateCreated =
-      lastDateCreatedByIdentifier[activity.entityIdentifier]
-    if (lastDateCreated >= activity.dateCreated) {
+    let lastDateCreated = lastDateCreatedByIdentifier[activity.entityIdentifier]
+    if (!lastDateCreated) {
+      const entity = (state[activity.stateKey] || []).find(
+        entity => entity.activityIdentifier === activity.entityIdentifier
+      )
+      if (entity) {
+        lastDateCreated = entity.dateModified || entity.dateCreated
+      }
+    }
+    if (
+      lastDateCreated >= activity.dateCreated &&
+      typeof activity.id === 'undefined'
+    ) {
       const dateTimePlusOneMillisecond = new Date(lastDateCreated).getTime() + 1
       activity.dateCreated = new Date(dateTimePlusOneMillisecond).toISOString()
     }
@@ -82,6 +95,9 @@ export const sortedHydratedActivitiesFrom = (state, activities) => {
   hydratedSortedActivities.sort((activity1, activity2) =>
     new Date(activity1.dateCreated) < new Date(activity2.dateCreated) ? -1 : 1
   )
-  forceActivitiesWithStrictIncreasingDateCreated(hydratedSortedActivities)
+  forceLocalActivitiesWithStrictIncreasingDateCreated(
+    state,
+    hydratedSortedActivities
+  )
   return hydratedSortedActivities
 }

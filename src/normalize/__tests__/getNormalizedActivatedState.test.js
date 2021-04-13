@@ -196,7 +196,9 @@ describe('src | getNormalizedActivatedState', () => {
       ],
     }
 
-    const activityDateCreated = new Date().toISOString()
+    let activityDateCreated = new Date()
+    activityDateCreated.setDate(activityDateCreated.getDate() + 1)
+    activityDateCreated = activityDateCreated.toISOString()
     const patch = {
       __activities__: [
         {
@@ -252,7 +254,9 @@ describe('src | getNormalizedActivatedState', () => {
       ],
     }
 
-    const activityDateCreated = new Date().toISOString()
+    const activityDateCreated = new Date(
+      new Date(entityDateCreated).getTime() + 1
+    ).toISOString()
     const patch = {
       __activities__: [
         {
@@ -330,7 +334,9 @@ describe('src | getNormalizedActivatedState', () => {
         },
       ],
     }
-    const secondActivityDateCreated = new Date().toISOString()
+    const secondActivityDateCreated = new Date(
+      new Date(entityDateCreated).getTime() + 1
+    ).toISOString()
     const patch = {
       __activities__: [
         {
@@ -460,6 +466,129 @@ describe('src | getNormalizedActivatedState', () => {
           textA: 'bar',
           textB: 'bir',
           textC: 'bor',
+        },
+      ],
+    })
+  })
+
+  it('should force to not save activities with same dateCreated as entity dateCreated', () => {
+    // given
+    const entityIdentifier = 1
+    const entityDateCreated = new Date().toISOString()
+    const state = {
+      foos: [
+        {
+          activityIdentifier: entityIdentifier,
+          dateCreated: entityDateCreated,
+          dateModified: null,
+          notDisappearedValue: 'hello',
+          value: 2,
+        },
+      ],
+    }
+
+    const patch = {
+      __activities__: [
+        {
+          dateCreated: entityDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            value: 1,
+          },
+        },
+      ],
+    }
+
+    // when
+    const nextState = getNormalizedActivatedState(state, patch)
+
+    // then
+    const activityDateCreated = new Date(
+      new Date(entityDateCreated).getTime() + 1
+    ).toISOString()
+    expect(nextState).toStrictEqual({
+      __activities__: [
+        {
+          dateCreated: activityDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            value: 1,
+          },
+          stateKey: 'foos',
+        },
+      ],
+      foos: [
+        {
+          activityIdentifier: entityIdentifier,
+          dateCreated: entityDateCreated,
+          dateModified: activityDateCreated,
+          notDisappearedValue: 'hello',
+          value: 1,
+        },
+      ],
+    })
+  })
+
+  it('should force to not save activities with same dateCreated as entity dateModified', () => {
+    // given
+    const entityIdentifier = 1
+    const entityDateCreated = new Date().toISOString()
+    let entityDateModified = new Date(entityDateCreated)
+    entityDateModified.setDate(entityDateModified.getDate() + 1)
+    entityDateModified = entityDateModified.toISOString()
+    const state = {
+      foos: [
+        {
+          activityIdentifier: entityIdentifier,
+          dateCreated: entityDateCreated,
+          dateModified: entityDateModified,
+          notDisappearedValue: 'hello',
+          value: 2,
+        },
+      ],
+    }
+
+    const patch = {
+      __activities__: [
+        {
+          dateCreated: entityDateModified,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            value: 1,
+          },
+        },
+      ],
+    }
+
+    // when
+    const nextState = getNormalizedActivatedState(state, patch)
+
+    // then
+    const activityDateCreated = new Date(
+      new Date(entityDateModified).getTime() + 1
+    ).toISOString()
+    expect(nextState).toStrictEqual({
+      __activities__: [
+        {
+          dateCreated: activityDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            value: 1,
+          },
+          stateKey: 'foos',
+        },
+      ],
+      foos: [
+        {
+          activityIdentifier: entityIdentifier,
+          dateCreated: entityDateCreated,
+          dateModified: activityDateCreated,
+          notDisappearedValue: 'hello',
+          value: 1,
         },
       ],
     })
