@@ -154,18 +154,29 @@ export const dateCreatedAndModifiedHelpersFrom = (state, activities) => {
   const entityDateCreatedsByIdentifier = {}
   const entityDateModifiedsByIdentifier = {}
 
-  activities.forEach(activity => {
-    const alreadyCreatedEntity = (state[activity.stateKey] || []).find(
-      entity => entity.activityIdentifier === activity.entityIdentifier
-    )
+  const entitiesByActivityIdentifier = {}
 
+  const notDeprecatedActivities = activities.filter(activity => {
+    let entity = entitiesByActivityIdentifier[activity.entityIdentifier]
+    if (!entity) {
+      entity = (state[activity.stateKey] || []).find(
+        entity => entity.activityIdentifier === activity.entityIdentifier
+      )
+    }
+    if (!entity) return true
+    entitiesByActivityIdentifier[activity.entityIdentifier] = entity
+    return new Date(activity.dateCreated) > new Date(entity.dateModified)
+  })
+
+  notDeprecatedActivities.forEach(activity => {
+    const entity = entitiesByActivityIdentifier[activity.entityIdentifier]
     if (
       typeof entityDateCreatedsByIdentifier[activity.entityIdentifier] ===
       'undefined'
     ) {
-      if (alreadyCreatedEntity) {
+      if (entity) {
         entityDateCreatedsByIdentifier[activity.entityIdentifier] =
-          alreadyCreatedEntity.dateCreated
+          entity.dateCreated
       } else {
         entityDateCreatedsByIdentifier[activity.entityIdentifier] =
           activity.dateCreated
@@ -176,18 +187,9 @@ export const dateCreatedAndModifiedHelpersFrom = (state, activities) => {
       entityDateCreatedsByIdentifier[activity.entityIdentifier] !==
       activity.dateCreated
     ) {
-      if (alreadyCreatedEntity) {
-        const activityIsNew =
-          !alreadyCreatedEntity.dateModified ||
-          new Date(activity.dateCreated) >
-            new Date(alreadyCreatedEntity.dateModified)
-        if (activityIsNew) {
-          entityDateModifiedsByIdentifier[activity.entityIdentifier] =
-            activity.dateCreated
-          return
-        }
+      if (entity) {
         entityDateModifiedsByIdentifier[activity.entityIdentifier] =
-          alreadyCreatedEntity.dateModified
+          activity.dateCreated
         return
       }
       entityDateModifiedsByIdentifier[activity.entityIdentifier] =
@@ -198,5 +200,6 @@ export const dateCreatedAndModifiedHelpersFrom = (state, activities) => {
   return {
     entityDateCreatedsByIdentifier,
     entityDateModifiedsByIdentifier,
+    notDeprecatedActivities,
   }
 }

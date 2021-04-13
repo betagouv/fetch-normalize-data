@@ -654,7 +654,7 @@ describe('src | createDataReducer', () => {
       })
     })
 
-    it('should overide dateModified when success gives a remote updated entity', () => {
+    it('should cancel deprecated activities when success gives a remote modified entity', () => {
       // given
       const entityDateCreated = new Date().toISOString()
       let localActivityDateCreated = new Date(entityDateCreated)
@@ -672,7 +672,7 @@ describe('src | createDataReducer', () => {
             id: 1,
             modelName: 'Foo',
             patch: {
-              value: 1,
+              value: 'Local Value',
             },
           },
         ],
@@ -682,7 +682,7 @@ describe('src | createDataReducer', () => {
             dateCreated: entityDateCreated,
             dateModified: localActivityDateCreated,
             id: 1,
-            value: 1,
+            value: 'Local Value',
           },
         ],
       }
@@ -696,7 +696,7 @@ describe('src | createDataReducer', () => {
           dateCreated: entityDateCreated,
           dateModified: remoteDateModified,
           id: 1,
-          value: 2,
+          value: 'Remote Value',
         },
       ]
 
@@ -718,7 +718,7 @@ describe('src | createDataReducer', () => {
             id: 1,
             modelName: 'Foo',
             patch: {
-              value: 1,
+              value: 'Local Value',
             },
             stateKey: 'foos',
           },
@@ -729,7 +729,7 @@ describe('src | createDataReducer', () => {
             dateCreated: entityDateCreated,
             dateModified: remoteDateModified,
             id: 1,
-            value: 1,
+            value: 'Remote Value',
             __tags__: ['/foos'],
           },
         ],

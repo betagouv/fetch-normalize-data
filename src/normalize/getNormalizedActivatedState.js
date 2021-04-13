@@ -21,6 +21,7 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
   } = deletionHelpersFrom(state, sortedHydratedActivities)
 
   const {
+    notDeprecatedActivities,
     entityDateCreatedsByIdentifier,
     entityDateModifiedsByIdentifier,
   } = dateCreatedAndModifiedHelpersFrom(
@@ -28,7 +29,7 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
     notDeletedActivities
   )
 
-  return notDeletedActivities.reduce(
+  return notDeprecatedActivities.reduce(
     (aggregation, activity) => ({
       ...aggregation,
       ...getNormalizedMergedState(
