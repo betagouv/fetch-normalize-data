@@ -29,6 +29,7 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
         deletedActivityIdentifiersByStateKey[stateKey].push(activityIdentifier)
       }
     })
+
   Object.keys(deletedActivityIdentifiersByStateKey).forEach(stateKey => {
     if (!stateWithoutDeletedEntitiesByActivities[stateKey]) {
       return
@@ -50,6 +51,34 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
     activity => !deletedActivityIdentifiers.includes(activity.entityIdentifier)
   )
 
+  const entityDateCreatedsByIdentifier = {}
+  const entityDateModifiedsByIdentifier = {}
+  notDeletedActivities.forEach(activity => {
+    const alreadyCreatedEntity = (
+      stateWithoutDeletedEntitiesByActivities[activity.stateKey] || []
+    ).find(entity => entity.activityIdentifier === activity.entityIdentifier)
+    if (
+      typeof entityDateCreatedsByIdentifier[activity.entityIdentifier] ===
+      'undefined'
+    ) {
+      if (alreadyCreatedEntity) {
+        entityDateCreatedsByIdentifier[activity.entityIdentifier] =
+          alreadyCreatedEntity.dateCreated
+      } else {
+        entityDateCreatedsByIdentifier[activity.entityIdentifier] =
+          activity.dateCreated
+      }
+    } else if (
+      alreadyCreatedEntity &&
+      (!alreadyCreatedEntity.dateModified ||
+        new Date(activity.dateCreated) >
+          new Date(alreadyCreatedEntity.dateCreated))
+    ) {
+      entityDateModifiedsByIdentifier[activity.entityIdentifier] =
+        activity.dateCreated
+    }
+  })
+
   return notDeletedActivities.reduce(
     (aggregation, activity) => ({
       ...aggregation,
@@ -59,6 +88,11 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
           [activity.stateKey]: [
             {
               activityIdentifier: activity.entityIdentifier,
+              dateCreated:
+                entityDateCreatedsByIdentifier[activity.entityIdentifier],
+              dateModified:
+                entityDateModifiedsByIdentifier[activity.entityIdentifier] ||
+                null,
               ...activity.patch,
               ...keepFromActivity(activity),
             },

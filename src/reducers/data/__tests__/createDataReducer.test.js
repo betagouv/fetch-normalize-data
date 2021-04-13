@@ -33,7 +33,18 @@ describe('src | createDataReducer', () => {
             tableName: 'foo',
           },
         ],
-        foos: [],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated: firstDateCreated,
+            dateModified: null,
+            fromFirstActivity: 1,
+            fromFirstActivityChangedByThird: 1,
+            nestedDatum: {
+              fromFirstActivity: 1,
+            },
+          },
+        ],
       }
       const rootReducer = combineReducers({
         data: createDataReducer(initialState),
@@ -105,6 +116,8 @@ describe('src | createDataReducer', () => {
         foos: [
           {
             activityIdentifier: 1,
+            dateCreated: firstDateCreated,
+            dateModified: thirdDateCreated,
             fromFirstActivity: 1,
             fromFirstActivityChangedByThird: 3,
             fromSecondActivity: 2,
@@ -116,6 +129,8 @@ describe('src | createDataReducer', () => {
           },
           {
             activityIdentifier: 2,
+            dateCreated: secondDateCreated,
+            dateModified: null,
             otherActivity: 'foo',
           },
         ],
@@ -328,12 +343,12 @@ describe('src | createDataReducer', () => {
         data: createDataReducer(initialState),
       })
       const store = createStore(rootReducer)
-      const firstDateCreated = new Date().toISOString()
+      const dateCreated = new Date().toISOString()
       const foos = [
         {
           __activities__: [
             {
-              dateCreated: firstDateCreated,
+              dateCreated,
               entityIdentifier: 1,
               id: 1,
               modelName: 'Foo',
@@ -344,11 +359,13 @@ describe('src | createDataReducer', () => {
             },
           ],
           activityIdentifier: 1,
+          dateCreated,
+          dateModified: null,
           id: 1,
           subFoo: {
             __activities__: [
               {
-                dateCreated: firstDateCreated,
+                dateCreated,
                 entityIdentifier: 2,
                 id: 2,
                 modelName: 'SubFoo',
@@ -359,12 +376,14 @@ describe('src | createDataReducer', () => {
               },
             ],
             activityIdentifier: 2,
+            dateCreated,
+            dateModified: null,
             id: 1,
             subValue: 'fee',
             subSubFoo: {
               __activities__: [
                 {
-                  dateCreated: firstDateCreated,
+                  dateCreated,
                   entityIdentifier: 3,
                   id: 3,
                   modelName: 'SubSubFoo',
@@ -375,6 +394,8 @@ describe('src | createDataReducer', () => {
                 },
               ],
               activityIdentifier: 3,
+              dateCreated,
+              dateModified: null,
               id: 1,
               subSubValue: 'fuu',
             },
@@ -382,7 +403,7 @@ describe('src | createDataReducer', () => {
           sameSubFoo: {
             __activities__: [
               {
-                dateCreated: firstDateCreated,
+                dateCreated,
                 entityIdentifier: 2,
                 id: 2,
                 modelName: 'SubFoo',
@@ -393,12 +414,14 @@ describe('src | createDataReducer', () => {
               },
             ],
             activityIdentifier: 2,
+            dateCreated,
+            dateModified: null,
             id: 1,
             subValue: 'fee',
             subSubFoo: {
               __activities__: [
                 {
-                  dateCreated: firstDateCreated,
+                  dateCreated,
                   entityIdentifier: 3,
                   id: 3,
                   modelName: 'SubSubFoo',
@@ -409,6 +432,8 @@ describe('src | createDataReducer', () => {
                 },
               ],
               activityIdentifier: 3,
+              dateCreated,
+              dateModified: null,
               id: 1,
               subSubValue: 'fuu',
             },
@@ -459,7 +484,7 @@ describe('src | createDataReducer', () => {
       expect(store.getState().data).toStrictEqual({
         __activities__: [
           {
-            dateCreated: firstDateCreated,
+            dateCreated,
             entityIdentifier: 1,
             id: 1,
             modelName: 'Foo',
@@ -472,7 +497,7 @@ describe('src | createDataReducer', () => {
             __tags__: ['/foos'],
           },
           {
-            dateCreated: firstDateCreated,
+            dateCreated,
             entityIdentifier: 2,
             id: 2,
             modelName: 'SubFoo',
@@ -485,7 +510,7 @@ describe('src | createDataReducer', () => {
             __tags__: ['/foos'],
           },
           {
-            dateCreated: firstDateCreated,
+            dateCreated,
             entityIdentifier: 3,
             id: 3,
             modelName: 'SubSubFoo',
@@ -505,6 +530,8 @@ describe('src | createDataReducer', () => {
               type: '__normalizer__',
             },
             activityIdentifier: 1,
+            dateCreated,
+            dateModified: null,
             id: 1,
             sameSubFoo: { stateKey: 'subFoos', type: '__normalizer__' },
             subFoo: { stateKey: 'subFoos', type: '__normalizer__' },
@@ -519,6 +546,8 @@ describe('src | createDataReducer', () => {
               type: '__normalizer__',
             },
             activityIdentifier: 2,
+            dateCreated,
+            dateModified: null,
             id: 1,
             subSubFoo: { stateKey: 'subSubFoos', type: '__normalizer__' },
             subValue: 'fee',
@@ -536,6 +565,8 @@ describe('src | createDataReducer', () => {
               type: '__normalizer__',
             },
             activityIdentifier: 3,
+            dateCreated,
+            dateModified: null,
             id: 1,
             subSubValue: 'fuu',
             __normalizers__: [{ datumKey: 'subSubFoo' }],
@@ -564,7 +595,8 @@ describe('src | createDataReducer', () => {
         foos: [
           {
             activityIdentifier: 1,
-            firstDateCreated: dateCreated,
+            dateCreated,
+            dateModified: null,
             id: 1,
             lastDateCreated: dateCreated,
             notOverridenValue: 'hello',
@@ -578,6 +610,8 @@ describe('src | createDataReducer', () => {
       const foos = [
         {
           activityIdentifier: 1,
+          dateCreated,
+          dateModified: null,
           id: 1,
           moreValue: 1,
           notOverridenValue: 'I should not be there',
@@ -610,6 +644,8 @@ describe('src | createDataReducer', () => {
         foos: [
           {
             activityIdentifier: 1,
+            dateCreated,
+            dateModified: null,
             id: 1,
             moreValue: 1,
             notOverridenValue: 'hello',

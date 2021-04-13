@@ -59,6 +59,8 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
+          dateCreated: firstDateCreated,
+          dateModified: lastDateCreated,
           value: 2,
         },
       ],
@@ -181,24 +183,24 @@ describe('src | getNormalizedActivatedState', () => {
   it('should keep items of the entity not related to activity', () => {
     // given
     const entityIdentifier = 1
+    const entityDateCreated = new Date().toISOString()
     const state = {
       foos: [
         {
           activityIdentifier: entityIdentifier,
+          dateCreated: entityDateCreated,
+          dateModified: null,
           notDisappearedValue: 'hello',
           value: 2,
         },
       ],
     }
 
-    const firstDateCreated = new Date().toISOString()
-    let lastDateCreated = new Date(firstDateCreated)
-    lastDateCreated.setDate(lastDateCreated.getDate() + 1)
-    lastDateCreated = lastDateCreated.toISOString()
+    const activityDateCreated = new Date().toISOString()
     const patch = {
       __activities__: [
         {
-          dateCreated: firstDateCreated,
+          dateCreated: activityDateCreated,
           entityIdentifier,
           modelName: 'Foo',
           patch: {
@@ -215,7 +217,7 @@ describe('src | getNormalizedActivatedState', () => {
     expect(nextState).toStrictEqual({
       __activities__: [
         {
-          dateCreated: firstDateCreated,
+          dateCreated: activityDateCreated,
           entityIdentifier,
           modelName: 'Foo',
           patch: {
@@ -227,6 +229,8 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
+          dateCreated: entityDateCreated,
+          dateModified: activityDateCreated,
           notDisappearedValue: 'hello',
           value: 1,
         },
@@ -237,19 +241,22 @@ describe('src | getNormalizedActivatedState', () => {
   it('should keep array of numeric like before', () => {
     // given
     const entityIdentifier = 1
+    const entityDateCreated = new Date().toISOString()
     const state = {
       foos: [
         {
           activityIdentifier: entityIdentifier,
+          dateCreated: entityDateCreated,
+          dateModified: null,
         },
       ],
     }
 
-    const firstDateCreated = new Date().toISOString()
+    const activityDateCreated = new Date().toISOString()
     const patch = {
       __activities__: [
         {
-          dateCreated: firstDateCreated,
+          dateCreated: activityDateCreated,
           entityIdentifier,
           modelName: 'Foo',
           patch: {
@@ -269,7 +276,7 @@ describe('src | getNormalizedActivatedState', () => {
     expect(nextState).toStrictEqual({
       __activities__: [
         {
-          dateCreated: firstDateCreated,
+          dateCreated: activityDateCreated,
           entityIdentifier,
           modelName: 'Foo',
           patch: {
@@ -284,6 +291,8 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
+          dateCreated: entityDateCreated,
+          dateModified: activityDateCreated,
           positions: [
             [0.1, 0.2],
             [0.3, 0.4],
@@ -296,13 +305,13 @@ describe('src | getNormalizedActivatedState', () => {
   it('should overide an array of numeric', () => {
     // given
     const entityIdentifier = 1
-    const firstDateCreated = new Date().toISOString()
+    const entityDateCreated = new Date().toISOString()
     const state = {
       __activities__: [
         {
-          dateCreated: firstDateCreated,
+          dateCreated: entityDateCreated,
           entityIdentifier,
-          localIdentifier: `0/${firstDateCreated}`,
+          localIdentifier: `0/${entityDateCreated}`,
           modelName: 'Foo',
           patch: {
             positions: [
@@ -316,14 +325,16 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
+          dateCreated: entityDateCreated,
+          dateModified: null,
         },
       ],
     }
-    const secondDateCreated = new Date().toISOString()
+    const secondActivityDateCreated = new Date().toISOString()
     const patch = {
       __activities__: [
         {
-          dateCreated: secondDateCreated,
+          dateCreated: secondActivityDateCreated,
           entityIdentifier,
           modelName: 'Foo',
           patch: {
@@ -343,7 +354,7 @@ describe('src | getNormalizedActivatedState', () => {
     expect(nextState).toStrictEqual({
       __activities__: [
         {
-          dateCreated: secondDateCreated,
+          dateCreated: secondActivityDateCreated,
           entityIdentifier,
           modelName: 'Foo',
           patch: {
@@ -358,6 +369,8 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
+          dateCreated: entityDateCreated,
+          dateModified: secondActivityDateCreated,
           positions: [
             [0.9, 0.8],
             [0.7, 0.6],
@@ -442,6 +455,8 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
+          dateCreated: firstDateCreated,
+          dateModified: nextState.__activities__[2].dateCreated,
           textA: 'bar',
           textB: 'bir',
           textC: 'bor',
