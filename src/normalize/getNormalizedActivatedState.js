@@ -1,5 +1,10 @@
 import getNormalizedMergedState from './getNormalizedMergedState'
-import { getDefaultActivityFrom, sortedHydratedActivitiesFrom } from './utils'
+import {
+  dateCreatedAndModifiedHelpersFrom,
+  deletionHelpersFrom,
+  getDefaultActivityFrom,
+  sortedHydratedActivitiesFrom,
+} from './utils'
 
 export function getNormalizedActivatedState(state, patch, config = {}) {
   const keepFromActivity = config.keepFromActivity || getDefaultActivityFrom
@@ -10,90 +15,18 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
   )
   const hydratedPatch = { ...patch, __activities__: sortedHydratedActivities }
 
-  const stateWithoutDeletedEntitiesByActivities = { ...state }
-  const deletedActivityIdentifiers = []
-  const deletedActivityIdentifiersByStateKey = {}
-  sortedHydratedActivities
-    .filter(
-      activity =>
-        activity.verb === 'delete' ||
-        (activity.patch && activity.patch.isSoftDeleted)
-    )
-    .forEach(activity => {
-      const activityIdentifier = activity.entityIdentifier
-      const stateKey = activity.stateKey
-      deletedActivityIdentifiers.push(activityIdentifier)
-      if (!deletedActivityIdentifiersByStateKey[stateKey]) {
-        deletedActivityIdentifiersByStateKey[stateKey] = [activityIdentifier]
-      } else {
-        deletedActivityIdentifiersByStateKey[stateKey].push(activityIdentifier)
-      }
-    })
+  const {
+    notDeletedActivities,
+    stateWithoutDeletedEntitiesByActivities,
+  } = deletionHelpersFrom(state, sortedHydratedActivities)
 
-  Object.keys(deletedActivityIdentifiersByStateKey).forEach(stateKey => {
-    if (!stateWithoutDeletedEntitiesByActivities[stateKey]) {
-      return
-    }
-    stateWithoutDeletedEntitiesByActivities[
-      stateKey
-    ] = stateWithoutDeletedEntitiesByActivities[stateKey].filter(
-      entity =>
-        !deletedActivityIdentifiersByStateKey[stateKey].includes(
-          entity.activityIdentifier
-        )
-    )
-    if (!stateWithoutDeletedEntitiesByActivities[stateKey].length) {
-      delete stateWithoutDeletedEntitiesByActivities[stateKey]
-    }
-  })
-
-  const notDeletedActivities = sortedHydratedActivities.filter(
-    activity => !deletedActivityIdentifiers.includes(activity.entityIdentifier)
+  const {
+    entityDateCreatedsByIdentifier,
+    entityDateModifiedsByIdentifier,
+  } = dateCreatedAndModifiedHelpersFrom(
+    stateWithoutDeletedEntitiesByActivities,
+    notDeletedActivities
   )
-
-  const entityDateCreatedsByIdentifier = {}
-  const entityDateModifiedsByIdentifier = {}
-
-  notDeletedActivities.forEach(activity => {
-    const alreadyCreatedEntity = (
-      stateWithoutDeletedEntitiesByActivities[activity.stateKey] || []
-    ).find(entity => entity.activityIdentifier === activity.entityIdentifier)
-
-    if (
-      typeof entityDateCreatedsByIdentifier[activity.entityIdentifier] ===
-      'undefined'
-    ) {
-      if (alreadyCreatedEntity) {
-        entityDateCreatedsByIdentifier[activity.entityIdentifier] =
-          alreadyCreatedEntity.dateCreated
-      } else {
-        entityDateCreatedsByIdentifier[activity.entityIdentifier] =
-          activity.dateCreated
-        return
-      }
-    }
-    if (
-      entityDateCreatedsByIdentifier[activity.entityIdentifier] !==
-      activity.dateCreated
-    ) {
-      if (alreadyCreatedEntity) {
-        const activityIsNew =
-          !alreadyCreatedEntity.dateModified ||
-          new Date(activity.dateCreated) >
-            new Date(alreadyCreatedEntity.dateModified)
-        if (activityIsNew) {
-          entityDateModifiedsByIdentifier[activity.entityIdentifier] =
-            activity.dateCreated
-          return
-        }
-        entityDateModifiedsByIdentifier[activity.entityIdentifier] =
-          alreadyCreatedEntity.dateModified
-        return
-      }
-      entityDateModifiedsByIdentifier[activity.entityIdentifier] =
-        activity.dateCreated
-    }
-  })
 
   return notDeletedActivities.reduce(
     (aggregation, activity) => ({
