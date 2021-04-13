@@ -165,6 +165,7 @@ export const dateCreatedAndModifiedHelpersFrom = (state, activities) => {
     }
     if (!entity) return true
     entitiesByActivityIdentifier[activity.entityIdentifier] = entity
+    if (!entity.dateModified) return true
     return new Date(activity.dateCreated) > new Date(entity.dateModified)
   })
 

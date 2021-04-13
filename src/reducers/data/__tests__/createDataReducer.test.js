@@ -735,5 +735,86 @@ describe('src | createDataReducer', () => {
         ],
       })
     })
+
+    it('should not cancel deprecated activities when success gives a remote entity without modified time', () => {
+      // given
+      const entityDateCreated = new Date().toISOString()
+      let localActivityDateCreated = new Date(entityDateCreated)
+      localActivityDateCreated.setDate(localActivityDateCreated.getDate() + 1)
+      localActivityDateCreated = localActivityDateCreated.toISOString()
+      let remoteDateModified = new Date(entityDateCreated)
+      remoteDateModified.setDate(remoteDateModified.getDate() + 2)
+      remoteDateModified = remoteDateModified.toISOString()
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated: localActivityDateCreated,
+            entityIdentifier: 1,
+            localIdentifier: 1,
+            id: 1,
+            modelName: 'Foo',
+            patch: {
+              value: 'Local Value',
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated: entityDateCreated,
+            dateModified: localActivityDateCreated,
+            id: 1,
+            value: 'Local Value',
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const foos = [
+        {
+          activityIdentifier: 1,
+          dateCreated: entityDateCreated,
+          id: 1,
+          value: 'Remote Value',
+        },
+      ]
+
+      // when
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { apiPath: '/foos', method: 'GET' }
+        )
+      )
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: localActivityDateCreated,
+            entityIdentifier: 1,
+            localIdentifier: 1,
+            id: 1,
+            modelName: 'Foo',
+            patch: {
+              value: 'Local Value',
+            },
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated: entityDateCreated,
+            dateModified: localActivityDateCreated,
+            id: 1,
+            value: 'Local Value',
+            __tags__: ['/foos'],
+          },
+        ],
+      })
+    })
   })
 })
