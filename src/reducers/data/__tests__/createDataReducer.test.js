@@ -13,7 +13,47 @@ Date.now = jest.spyOn(Date, 'now').mockImplementation(() => 1487076708000)
 
 describe('src | createDataReducer', () => {
   describe('when ACTIVATE_DATA', () => {
-    it('should activate data', () => {
+    it('should activate a created datum', () => {
+      // given
+      const initialState = {}
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const dateCreated = new Date().toISOString()
+      const activity = {
+        dateCreated,
+        entityIdentifier: 1,
+        patch: {
+          value: 1,
+        },
+        tableName: 'foo',
+      }
+
+      // when
+      store.dispatch(activateData([activity]))
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        __activities__: [
+          {
+            ...activity,
+            localIdentifier: `1/${activity.dateCreated}`,
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: null,
+            value: 1,
+          },
+        ],
+      })
+    })
+
+    it('should activate modified data', () => {
       // given
       const firstDateCreated = new Date().toISOString()
       const initialState = {

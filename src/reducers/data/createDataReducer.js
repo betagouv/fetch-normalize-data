@@ -112,7 +112,7 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       return getNormalizedActivatedState(
         nextState,
         { __activities__: nextState.__activities__ },
-        { keepFromActivity }
+        { action, keepFromActivity }
       )
     }
     return nextState

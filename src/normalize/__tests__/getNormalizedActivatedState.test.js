@@ -1,4 +1,5 @@
 import { getNormalizedActivatedState } from '../getNormalizedActivatedState'
+import { ACTIVATE_DATA } from '../../reducers/data/actions'
 
 describe('src | getNormalizedActivatedState', () => {
   it('should create an entity through accumulated patches', () => {
@@ -501,7 +502,9 @@ describe('src | getNormalizedActivatedState', () => {
     }
 
     // when
-    const nextState = getNormalizedActivatedState(state, patch)
+    const nextState = getNormalizedActivatedState(state, patch, {
+      action: { type: ACTIVATE_DATA },
+    })
 
     // then
     const activityDateCreated = new Date(
@@ -564,7 +567,9 @@ describe('src | getNormalizedActivatedState', () => {
     }
 
     // when
-    const nextState = getNormalizedActivatedState(state, patch)
+    const nextState = getNormalizedActivatedState(state, patch, {
+      action: { type: ACTIVATE_DATA },
+    })
 
     // then
     const activityDateCreated = new Date(

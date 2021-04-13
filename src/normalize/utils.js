@@ -1,5 +1,7 @@
 import pluralize from 'pluralize'
 
+import { ACTIVATE_DATA } from '../reducers/data/actions'
+
 export function getDefaultDatumIdKey() {
   return 'id'
 }
@@ -65,12 +67,15 @@ export const merge = (target, source) => {
 
 export const forceLocalActivitiesWithStrictIncreasingDateCreated = (
   state,
-  activities
+  activities,
+  config = {}
 ) => {
+  const takeInAccountEntity =
+    config && config.action && config.action.type === ACTIVATE_DATA
   const lastDateCreatedByIdentifier = {}
   activities.forEach(activity => {
     let lastDateCreated = lastDateCreatedByIdentifier[activity.entityIdentifier]
-    if (!lastDateCreated) {
+    if (!lastDateCreated && takeInAccountEntity) {
       const entity = (state[activity.stateKey] || []).find(
         entity => entity.activityIdentifier === activity.entityIdentifier
       )
@@ -90,14 +95,15 @@ export const forceLocalActivitiesWithStrictIncreasingDateCreated = (
   })
 }
 
-export const sortedHydratedActivitiesFrom = (state, activities) => {
+export const sortedHydratedActivitiesFrom = (state, activities, config) => {
   const hydratedSortedActivities = (activities || []).map(hydratedActivityFrom)
   hydratedSortedActivities.sort((activity1, activity2) =>
     new Date(activity1.dateCreated) < new Date(activity2.dateCreated) ? -1 : 1
   )
   forceLocalActivitiesWithStrictIncreasingDateCreated(
     state,
-    hydratedSortedActivities
+    hydratedSortedActivities,
+    config
   )
   return hydratedSortedActivities
 }

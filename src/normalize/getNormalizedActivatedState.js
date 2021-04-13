@@ -11,7 +11,8 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
 
   const sortedHydratedActivities = sortedHydratedActivitiesFrom(
     state,
-    patch.__activities__
+    patch.__activities__,
+    config
   )
   const hydratedPatch = { ...patch, __activities__: sortedHydratedActivities }
 
