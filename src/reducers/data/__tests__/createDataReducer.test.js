@@ -13,13 +13,12 @@ Date.now = jest.spyOn(Date, 'now').mockImplementation(() => 1487076708000)
 
 describe('src | createDataReducer', () => {
   describe('when ACTIVATE_DATA', () => {
-    it('should activate data', () => {
+    it('should activate a created data', () => {
       // given
       const firstDateCreated = new Date().toISOString()
       const initialState = {
         __activities__: [
           {
-            dateCreated: firstDateCreated,
             entityIdentifier: 1,
             id: 'AE',
             patch: {
@@ -29,11 +28,19 @@ describe('src | createDataReducer', () => {
                 fromFirstActivity: 1,
               },
             },
-            stateKey: 'foos',
             tableName: 'foo',
           },
         ],
-        foos: [],
+        foos: [
+          {
+            activityIdentifier: 1,
+            fromFirstActivity: 1,
+            fromFirstActivityChangedByThird: 1,
+            nestedDatum: {
+              fromFirstActivity: 1,
+            },
+          },
+        ],
       }
       const rootReducer = combineReducers({
         data: createDataReducer(initialState),
@@ -84,22 +91,18 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             ...initialState.__activities__[0],
-            stateKey: 'foos',
           },
           {
             ...activities[0],
             localIdentifier: `1/${activities[0].dateCreated}`,
-            stateKey: 'foos',
           },
           {
             ...activities[1],
             localIdentifier: `2/${activities[1].dateCreated}`,
-            stateKey: 'foos',
           },
           {
             ...activities[2],
             localIdentifier: `1/${activities[2].dateCreated}`,
-            stateKey: 'foos',
           },
         ],
         foos: [
@@ -117,6 +120,94 @@ describe('src | createDataReducer', () => {
           {
             activityIdentifier: 2,
             otherActivity: 'foo',
+          },
+        ],
+      })
+    })
+
+    it('should force to not save activities with same dateCreated', () => {
+      // given
+      const entityIdentifier = 1
+      const initialState = {
+        foos: [],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+
+      const firstDate = new Date()
+      const firstDateCreated = firstDate.toISOString()
+      const nextDateCreated = new Date(firstDate.getTime() + 1000).toISOString()
+      const activities = [
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            textA: 'bar',
+          },
+        },
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            textB: 'bir',
+          },
+        },
+        {
+          entityIdentifier,
+          dateCreated: nextDateCreated,
+          modelName: 'Foo',
+          patch: {
+            textC: 'bor',
+          },
+        },
+      ]
+
+      // when
+      store.dispatch(activateData(activities))
+
+      // then
+      const secondDateCreated = new Date(firstDate.getTime() + 1).toISOString()
+      const nextState = store.getState().data
+      expect(nextState).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: firstDateCreated,
+            entityIdentifier,
+            localIdentifier: `1/${firstDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              textA: 'bar',
+            },
+          },
+          {
+            dateCreated: secondDateCreated,
+            entityIdentifier,
+            localIdentifier: `1/${secondDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              textB: 'bir',
+            },
+          },
+          {
+            dateCreated: nextDateCreated,
+            entityIdentifier,
+            localIdentifier: `1/${nextDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              textC: 'bor',
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: entityIdentifier,
+            textA: 'bar',
+            textB: 'bir',
+            textC: 'bor',
           },
         ],
       })
@@ -467,7 +558,6 @@ describe('src | createDataReducer', () => {
               id: 1,
               value: 'foo',
             },
-            stateKey: 'foos',
             __normalizers__: [{ datumKey: '__activities__' }],
             __tags__: ['/foos'],
           },
@@ -480,7 +570,6 @@ describe('src | createDataReducer', () => {
               id: 1,
               subValue: 'fee',
             },
-            stateKey: 'subFoos',
             __normalizers__: [{ datumKey: '__activities__' }],
             __tags__: ['/foos'],
           },
@@ -493,7 +582,6 @@ describe('src | createDataReducer', () => {
               id: 1,
               subSubValue: 'fuu',
             },
-            stateKey: 'subSubFoos',
             __normalizers__: [{ datumKey: '__activities__' }],
             __tags__: ['/foos'],
           },
@@ -545,7 +633,7 @@ describe('src | createDataReducer', () => {
       })
     })
 
-    it('should not overide the still local __activities__ values', () => {
+    it('should overide the local __activities__ values', () => {
       // given
       const dateCreated = new Date().toISOString()
       const initialState = {
@@ -557,7 +645,7 @@ describe('src | createDataReducer', () => {
             id: 1,
             modelName: 'Foo',
             patch: {
-              notOverridenValue: 'hello',
+              overridenValue: 'hello',
             },
           },
         ],
@@ -567,7 +655,7 @@ describe('src | createDataReducer', () => {
             firstDateCreated: dateCreated,
             id: 1,
             lastDateCreated: dateCreated,
-            notOverridenValue: 'hello',
+            overridenValue: 'hello',
           },
         ],
       }
@@ -580,7 +668,7 @@ describe('src | createDataReducer', () => {
           activityIdentifier: 1,
           id: 1,
           moreValue: 1,
-          notOverridenValue: 'I should not be there',
+          overridenValue: 'I should be there',
         },
       ]
 
@@ -602,9 +690,8 @@ describe('src | createDataReducer', () => {
             id: 1,
             modelName: 'Foo',
             patch: {
-              notOverridenValue: 'hello',
+              overridenValue: 'hello',
             },
-            stateKey: 'foos',
           },
         ],
         foos: [
@@ -612,7 +699,7 @@ describe('src | createDataReducer', () => {
             activityIdentifier: 1,
             id: 1,
             moreValue: 1,
-            notOverridenValue: 'hello',
+            overridenValue: 'I should be there',
             __tags__: ['/foos'],
           },
         ],

@@ -1,5 +1,5 @@
-import { DELETE_REQUESTS, REINITIALIZE_REQUESTS } from './actions'
 import { keyFromConfig } from '../../selectors/selectRequestByConfig'
+import { DELETE_REQUESTS, REINITIALIZE_REQUESTS } from './actions'
 
 const arrayErrorsToErrorsByName = errors =>
   Object.values(errors).reduce((acc, error) => ({ ...acc, ...error }), {})

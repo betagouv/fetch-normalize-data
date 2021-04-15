@@ -44,7 +44,6 @@ describe('src | getNormalizedActivatedState', () => {
           patch: {
             value: 1,
           },
-          stateKey: 'foos',
         },
         {
           dateCreated: lastDateCreated,
@@ -53,7 +52,6 @@ describe('src | getNormalizedActivatedState', () => {
           patch: {
             value: 2,
           },
-          stateKey: 'foos',
         },
       ],
       foos: [
@@ -88,6 +86,7 @@ describe('src | getNormalizedActivatedState', () => {
           dateCreated: lastDateCreated,
           entityIdentifier,
           modelName: 'Foo',
+          patch: {},
           verb: 'delete',
         },
       ],
@@ -106,7 +105,6 @@ describe('src | getNormalizedActivatedState', () => {
           patch: {
             value: 1,
           },
-          stateKey: 'foos',
         },
         {
           dateCreated: lastDateCreated,
@@ -114,7 +112,6 @@ describe('src | getNormalizedActivatedState', () => {
           modelName: 'Foo',
           patch: {},
           verb: 'delete',
-          stateKey: 'foos',
         },
       ],
     })
@@ -163,7 +160,6 @@ describe('src | getNormalizedActivatedState', () => {
           patch: {
             value: 1,
           },
-          stateKey: 'foos',
         },
         {
           dateCreated: lastDateCreated,
@@ -172,7 +168,6 @@ describe('src | getNormalizedActivatedState', () => {
           patch: {
             isSoftDeleted: true,
           },
-          stateKey: 'foos',
         },
       ],
     })
@@ -221,7 +216,6 @@ describe('src | getNormalizedActivatedState', () => {
           patch: {
             value: 1,
           },
-          stateKey: 'foos',
         },
       ],
       foos: [
@@ -278,7 +272,6 @@ describe('src | getNormalizedActivatedState', () => {
               [0.3, 0.4],
             ],
           },
-          stateKey: 'foos',
         },
       ],
       foos: [
@@ -310,7 +303,6 @@ describe('src | getNormalizedActivatedState', () => {
               [0.3, 0.4],
             ],
           },
-          stateKey: 'foos',
         },
       ],
       foos: [
@@ -352,7 +344,6 @@ describe('src | getNormalizedActivatedState', () => {
               [0.7, 0.6],
             ],
           },
-          stateKey: 'foos',
         },
       ],
       foos: [
@@ -362,89 +353,6 @@ describe('src | getNormalizedActivatedState', () => {
             [0.9, 0.8],
             [0.7, 0.6],
           ],
-        },
-      ],
-    })
-  })
-
-  it('should force to not save activities with same dateCreated', () => {
-    // given
-    const entityIdentifier = 1
-    const state = {
-      foos: [],
-    }
-
-    const firstDate = new Date()
-    const firstDateCreated = firstDate.toISOString()
-    const patch = {
-      __activities__: [
-        {
-          dateCreated: firstDateCreated,
-          entityIdentifier,
-          modelName: 'Foo',
-          patch: {
-            textA: 'bar',
-          },
-        },
-        {
-          dateCreated: firstDateCreated,
-          entityIdentifier,
-          modelName: 'Foo',
-          patch: {
-            textB: 'bir',
-          },
-        },
-        {
-          entityIdentifier,
-          modelName: 'Foo',
-          patch: {
-            textC: 'bor',
-          },
-        },
-      ],
-    }
-
-    // when
-    const nextState = getNormalizedActivatedState(state, patch)
-
-    // then
-    const secondDateCreated = new Date(firstDate.getTime() + 1).toISOString()
-    expect(nextState).toStrictEqual({
-      __activities__: [
-        {
-          dateCreated: firstDateCreated,
-          entityIdentifier,
-          modelName: 'Foo',
-          patch: {
-            textA: 'bar',
-          },
-          stateKey: 'foos',
-        },
-        {
-          dateCreated: secondDateCreated,
-          entityIdentifier,
-          modelName: 'Foo',
-          patch: {
-            textB: 'bir',
-          },
-          stateKey: 'foos',
-        },
-        {
-          dateCreated: nextState.__activities__[2].dateCreated,
-          entityIdentifier,
-          modelName: 'Foo',
-          patch: {
-            textC: 'bor',
-          },
-          stateKey: 'foos',
-        },
-      ],
-      foos: [
-        {
-          activityIdentifier: entityIdentifier,
-          textA: 'bar',
-          textB: 'bir',
-          textC: 'bor',
         },
       ],
     })

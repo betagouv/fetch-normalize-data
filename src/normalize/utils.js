@@ -14,27 +14,40 @@ export function getDefaultActivityFrom() {
 }
 
 export function hydratedActivityFrom(activity) {
-  let stateKey = activity.stateKey
-  if (!stateKey) {
+  return {
+    ...activity,
+    dateCreated: activity.dateCreated || new Date().toISOString(),
+    patch: { ...activity.patch },
+  }
+}
+
+const localStateKeyFrom = activity => {
+  let localStateKey = activity.localStateKey
+  if (!localStateKey) {
     if (activity.tableName) {
-      stateKey = pluralize(activity.tableName, 2)
+      localStateKey = pluralize(activity.tableName, 2)
     } else if (activity.modelName) {
-      stateKey = pluralize(
+      localStateKey = pluralize(
         `${activity.modelName[0].toLowerCase()}${activity.modelName.slice(1)}`,
         2
       )
     } else {
       console.warn(
-        'Missing stateKey or tableName or modelName for that activity.'
+        'Missing localStateKey or tableName or modelName for that activity.'
       )
     }
   }
-  return {
-    ...activity,
-    dateCreated: activity.dateCreated || new Date().toISOString(),
-    patch: { ...activity.patch },
-    stateKey,
-  }
+  return localStateKey
+}
+
+export const stateKeysByEntityIdentifierFrom = activities => {
+  const stateKeysByEntityIdentifier = {}
+  activities.forEach(activity => {
+    stateKeysByEntityIdentifier[activity.entityIdentifier] = localStateKeyFrom(
+      activity
+    )
+  })
+  return stateKeysByEntityIdentifier
 }
 
 export const merge = (target, source) => {
@@ -77,11 +90,63 @@ export const forceActivitiesWithStrictIncreasingDateCreated = activities => {
   })
 }
 
-export const sortedHydratedActivitiesFrom = (state, activities) => {
+export const sortedHydratedActivitiesFrom = activities => {
   const hydratedSortedActivities = (activities || []).map(hydratedActivityFrom)
   hydratedSortedActivities.sort((activity1, activity2) =>
     new Date(activity1.dateCreated) < new Date(activity2.dateCreated) ? -1 : 1
   )
   forceActivitiesWithStrictIncreasingDateCreated(hydratedSortedActivities)
   return hydratedSortedActivities
+}
+
+export const deletionHelpersFrom = (state, activities) => {
+  const deletedActivityIdentifiers = []
+  const deletedActivityIdentifiersByStateKey = {}
+  activities
+    .filter(
+      activity =>
+        activity.verb === 'delete' ||
+        (activity.patch && activity.patch.isSoftDeleted)
+    )
+    .forEach(activity => {
+      const activityIdentifier = activity.entityIdentifier
+      const localStateKey = activity.localStateKey
+      deletedActivityIdentifiers.push(activityIdentifier)
+      if (!deletedActivityIdentifiersByStateKey[localStateKey]) {
+        deletedActivityIdentifiersByStateKey[localStateKey] = [
+          activityIdentifier,
+        ]
+      } else {
+        deletedActivityIdentifiersByStateKey[localStateKey].push(
+          activityIdentifier
+        )
+      }
+    })
+
+  const stateWithoutDeletedEntities = { ...state }
+  Object.keys(deletedActivityIdentifiersByStateKey).forEach(localStateKey => {
+    if (!stateWithoutDeletedEntities[localStateKey]) {
+      return
+    }
+    stateWithoutDeletedEntities[localStateKey] = stateWithoutDeletedEntities[
+      localStateKey
+    ].filter(
+      entity =>
+        !deletedActivityIdentifiersByStateKey[localStateKey].includes(
+          entity.activityIdentifier
+        )
+    )
+    if (!stateWithoutDeletedEntities[localStateKey].length) {
+      delete stateWithoutDeletedEntities[localStateKey]
+    }
+  })
+
+  const notDeletedActivities = activities.filter(
+    activity => !deletedActivityIdentifiers.includes(activity.entityIdentifier)
+  )
+
+  return {
+    notDeletedActivities,
+    stateWithoutDeletedEntities,
+  }
 }
