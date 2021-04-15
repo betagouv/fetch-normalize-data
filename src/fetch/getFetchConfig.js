@@ -1,4 +1,4 @@
-import uuid from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 
 const { NAME, VERSION } = process.env
 
@@ -13,7 +13,7 @@ export function getFetchConfig(config) {
   init.headers = {
     AppName: NAME,
     AppVersion: VERSION,
-    'X-Request-ID': uuid(),
+    'X-Request-ID': uuidv4(),
   }
 
   if (method !== 'GET') {
