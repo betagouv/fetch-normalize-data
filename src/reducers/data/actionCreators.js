@@ -1,3 +1,4 @@
+import getConfigWithDefaultValues from '../../fetch/getConfigWithDefaultValues'
 import {
   ACTIVATE_DATA,
   ASSIGN_DATA,
@@ -7,12 +8,11 @@ import {
   SET_DATA,
 } from './actions'
 import getTypeSuffixFromConfig from './getTypeSuffixFromConfig'
-import getConfigWithDefaultValues from '../../fetch/getConfigWithDefaultValues'
 
-export const activateData = (activities, config={}) => ({
+export const activateData = (activities, config = {}) => ({
   activities,
   config,
-  type: ACTIVATE_DATA
+  type: ACTIVATE_DATA,
 })
 
 export const assignData = patch => ({
@@ -40,8 +40,8 @@ export const mergeData = (patch, config = {}) => ({
 
 export const purgeData = key => ({
   key,
+  result: () => null,
   type: 'persist/PURGE',
-  result: () => null
 })
 
 export const requestData = (config = {}) => {
@@ -51,6 +51,9 @@ export const requestData = (config = {}) => {
     type: `REQUEST_DATA_${getTypeSuffixFromConfig(configWithDefaultValues)}`,
   }
 }
+
+export const requestActivities = config =>
+  requestData({ ...config, activitiesAsked: true })
 
 export const reinitializeData = (config = {}) => ({
   config,

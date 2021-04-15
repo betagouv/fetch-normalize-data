@@ -9,10 +9,11 @@ export const selectEntityByKeyAndNormalizer = createCachedSelector(
   (state, key, normalizer) => normalizer.datumKey,
   (entities, stateKey, datumKey) =>
     (entities || []).find(entity => {
-      if (!entity.__normalizers__) return
-      return entity.__normalizers__.find(normalizer =>
-              normalizer.stateKey === stateKey &&
-              normalizer.datumKey === datumKey)
+      if (!entity.__normalizers__) return undefined
+      return entity.__normalizers__.find(
+        normalizer =>
+          normalizer.stateKey === stateKey && normalizer.datumKey === datumKey
+      )
     })
 )(mapArgsToCacheKey)
 

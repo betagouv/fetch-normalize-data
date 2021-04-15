@@ -7,17 +7,15 @@ function mapArgsToCacheKey(state, key, tags, strictness) {
 export default createCachedSelector(
   (state, key) => state.data[key],
   (state, key, tags) => tags,
-  (state, key, strictness='equal') => strictness,
+  (state, key, strictness = 'equal') => strictness,
   (entities, tags, strictness) => {
     if (!entities) return
     const tagsLength = tags.length
-    return entities.filter(
-      entity => {
-        if (strictness === 'equal' && tagsLength != entity.__tags__.length) {
-          return false
-        }
-        return tags.every(tag => entity.__tags__.includes(tag))
+    return entities.filter(entity => {
+      if (strictness === 'equal' && tagsLength !== entity.__tags__.length) {
+        return false
       }
-    )
+      return tags.every(tag => entity.__tags__.includes(tag))
+    })
   }
 )(mapArgsToCacheKey)

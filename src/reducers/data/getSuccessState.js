@@ -25,10 +25,8 @@ export const getSuccessState = (state, action) => {
 
   const stateKey = getStateKeyFromConfig(config)
 
-  if (
-    !stateKey ||
-    !successStatusCodesWithDataOrDatum.includes(status)
-  ) return {}
+  if (!stateKey || !successStatusCodesWithDataOrDatum.includes(status))
+    return {}
 
   const patch = getPatchFromStateKeyAndPayload(stateKey, payload)
 
@@ -42,9 +40,22 @@ export const getSuccessState = (state, action) => {
     }
   }
 
-  return method === 'DELETE'
-    ? getNormalizedDeletedState(state, patch, normalizerConfig)
-    : getNormalizedMergedState(state, patch, normalizerConfig)
+  if (method === 'DELETE') {
+    return getNormalizedDeletedState(state, patch, normalizerConfig)
+  }
+
+  const nextState = getNormalizedMergedState(state, patch, normalizerConfig)
+
+  if (method === 'POST' && nextState.__activities__ && patch.__activities__) {
+    const localIdentifiersOfActivitiesToBeDeleted = patch.__activities__.map(
+      a => a.localIdentifier
+    )
+    nextState.__activities__ = nextState.__activities__.filter(a =>
+      localIdentifiersOfActivitiesToBeDeleted.includes(a.localIdentifier)
+    )
+  }
+
+  return nextState
 }
 
 export default getSuccessState
