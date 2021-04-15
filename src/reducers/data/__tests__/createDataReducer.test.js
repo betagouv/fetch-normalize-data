@@ -13,7 +13,7 @@ Date.now = jest.spyOn(Date, 'now').mockImplementation(() => 1487076708000)
 
 describe('src | createDataReducer', () => {
   describe('when ACTIVATE_DATA', () => {
-    it('should activate data', () => {
+    it('should activate a created data', () => {
       // given
       const firstDateCreated = new Date().toISOString()
       const initialState = {
@@ -22,6 +22,7 @@ describe('src | createDataReducer', () => {
             dateCreated: firstDateCreated,
             entityIdentifier: 1,
             id: 'AE',
+            localIdentifier: `1/${firstDateCreated}`,
             patch: {
               fromFirstActivity: 1,
               fromFirstActivityChangedByThird: 1,
@@ -29,11 +30,21 @@ describe('src | createDataReducer', () => {
                 fromFirstActivity: 1,
               },
             },
-            stateKey: 'foos',
             tableName: 'foo',
           },
         ],
-        foos: [],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated: firstDateCreated,
+            dateModified: null,
+            fromFirstActivity: 1,
+            fromFirstActivityChangedByThird: 1,
+            nestedDatum: {
+              fromFirstActivity: 1,
+            },
+          },
+        ],
       }
       const rootReducer = combineReducers({
         data: createDataReducer(initialState),
@@ -84,27 +95,25 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             ...initialState.__activities__[0],
-            stateKey: 'foos',
           },
           {
             ...activities[0],
-            localIdentifier: `1/${activities[0].dateCreated}`,
-            stateKey: 'foos',
+            localIdentifier: `1/${secondDateCreated}`,
           },
           {
             ...activities[1],
-            localIdentifier: `2/${activities[1].dateCreated}`,
-            stateKey: 'foos',
+            localIdentifier: `2/${secondDateCreated}`,
           },
           {
             ...activities[2],
-            localIdentifier: `1/${activities[2].dateCreated}`,
-            stateKey: 'foos',
+            localIdentifier: `1/${thirdDateCreated}`,
           },
         ],
         foos: [
           {
             activityIdentifier: 1,
+            dateCreated: firstDateCreated,
+            dateModified: thirdDateCreated,
             fromFirstActivity: 1,
             fromFirstActivityChangedByThird: 3,
             fromSecondActivity: 2,
@@ -116,7 +125,334 @@ describe('src | createDataReducer', () => {
           },
           {
             activityIdentifier: 2,
+            dateCreated: secondDateCreated,
+            dateModified: null,
             otherActivity: 'foo',
+          },
+        ],
+      })
+    })
+
+    it('should force to not save activities with same dateCreated', () => {
+      // given
+      const entityIdentifier = 1
+      const initialState = {
+        foos: [],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+
+      const firstDate = new Date()
+      const firstDateCreated = firstDate.toISOString()
+      const nextDateCreated = new Date(firstDate.getTime() + 1000).toISOString()
+      const activities = [
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            textA: 'bar',
+          },
+        },
+        {
+          dateCreated: firstDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            textB: 'bir',
+          },
+        },
+        {
+          entityIdentifier,
+          dateCreated: nextDateCreated,
+          modelName: 'Foo',
+          patch: {
+            textC: 'bor',
+          },
+        },
+      ]
+
+      // when
+      store.dispatch(activateData(activities))
+
+      // then
+      const secondDateCreated = new Date(firstDate.getTime() + 1).toISOString()
+      const nextState = store.getState().data
+      expect(nextState).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: firstDateCreated,
+            entityIdentifier,
+            localIdentifier: `1/${firstDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              textA: 'bar',
+            },
+          },
+          {
+            dateCreated: secondDateCreated,
+            entityIdentifier,
+            localIdentifier: `1/${secondDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              textB: 'bir',
+            },
+          },
+          {
+            dateCreated: nextDateCreated,
+            entityIdentifier,
+            localIdentifier: `1/${nextDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              textC: 'bor',
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: entityIdentifier,
+            dateCreated: firstDateCreated,
+            dateModified: nextDateCreated,
+            textA: 'bar',
+            textB: 'bir',
+            textC: 'bor',
+          },
+        ],
+      })
+    })
+
+    it('should keep items of the entity not related to activity and the entity dateCreated but change dateModified', () => {
+      // given
+      const entityIdentifier = 1
+      const entityDateCreated = new Date().toISOString()
+      const initialState = {
+        foos: [
+          {
+            activityIdentifier: entityIdentifier,
+            dateCreated: entityDateCreated,
+            dateModified: null,
+            notDisappearedValue: 'hello',
+            value: 2,
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const activityDateCreated = new Date(
+        new Date(entityDateCreated).getTime() + 1000
+      ).toISOString()
+      const activities = [
+        {
+          dateCreated: activityDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            value: 1,
+          },
+        },
+      ]
+
+      // when
+      store.dispatch(activateData(activities))
+
+      // then
+      const nextState = store.getState().data
+      expect(nextState).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: activityDateCreated,
+            entityIdentifier,
+            localIdentifier: `${entityIdentifier}/${activityDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              value: 1,
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: entityIdentifier,
+            dateCreated: entityDateCreated,
+            dateModified: activityDateCreated,
+            notDisappearedValue: 'hello',
+            value: 1,
+          },
+        ],
+      })
+    })
+
+    it('should overide an array of numeric', () => {
+      // given
+      const entityIdentifier = 1
+      const firstDateCreated = new Date().toISOString()
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated: firstDateCreated,
+            entityIdentifier,
+            localIdentifier: `0/${firstDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              positions: [
+                [0.1, 0.2],
+                [0.3, 0.4],
+              ],
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: entityIdentifier,
+            dateCreated: firstDateCreated,
+            dateModified: null,
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const secondDateCreated = new Date(
+        new Date(firstDateCreated).getTime() + 1
+      ).toISOString()
+      const activities = [
+        {
+          dateCreated: secondDateCreated,
+          entityIdentifier,
+          localIdentifier: `0/${secondDateCreated}`,
+          modelName: 'Foo',
+          patch: {
+            positions: [
+              [0.9, 0.8],
+              [0.7, 0.6],
+            ],
+          },
+        },
+      ]
+
+      // when
+      store.dispatch(activateData(activities))
+
+      // then
+      const nextState = store.getState().data
+      expect(nextState).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: firstDateCreated,
+            entityIdentifier,
+            localIdentifier: `0/${firstDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              positions: [
+                [0.1, 0.2],
+                [0.3, 0.4],
+              ],
+            },
+          },
+          {
+            dateCreated: secondDateCreated,
+            entityIdentifier,
+            localIdentifier: `0/${secondDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              positions: [
+                [0.9, 0.8],
+                [0.7, 0.6],
+              ],
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: entityIdentifier,
+            dateCreated: firstDateCreated,
+            dateModified: secondDateCreated,
+            positions: [
+              [0.9, 0.8],
+              [0.7, 0.6],
+            ],
+          },
+        ],
+      })
+    })
+
+    it('should delete an entity with isSoftDeleted activity', () => {
+      // given
+      const entityIdentifier = 1
+      const firstDateCreated = new Date().toISOString()
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated: firstDateCreated,
+            entityIdentifier,
+            localIdentifier: `0/${firstDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              positions: [
+                [0.1, 0.2],
+                [0.3, 0.4],
+              ],
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: entityIdentifier,
+            dateCreated: firstDateCreated,
+            dateModified: null,
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const secondDateCreated = new Date(
+        new Date(firstDateCreated).getTime() + 1
+      ).toISOString()
+      const activities = [
+        {
+          dateCreated: secondDateCreated,
+          entityIdentifier,
+          localIdentifier: `0/${secondDateCreated}`,
+          modelName: 'Foo',
+          patch: {
+            isSoftDeleted: true,
+          },
+        },
+      ]
+
+      // when
+      store.dispatch(activateData(activities))
+
+      // then
+      const nextState = store.getState().data
+      expect(nextState).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: firstDateCreated,
+            entityIdentifier,
+            localIdentifier: `0/${firstDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              positions: [
+                [0.1, 0.2],
+                [0.3, 0.4],
+              ],
+            },
+          },
+          {
+            dateCreated: secondDateCreated,
+            entityIdentifier,
+            localIdentifier: `0/${secondDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              isSoftDeleted: true,
+            },
           },
         ],
       })
@@ -467,7 +803,6 @@ describe('src | createDataReducer', () => {
               id: 1,
               value: 'foo',
             },
-            stateKey: 'foos',
             __normalizers__: [{ datumKey: '__activities__' }],
             __tags__: ['/foos'],
           },
@@ -480,7 +815,6 @@ describe('src | createDataReducer', () => {
               id: 1,
               subValue: 'fee',
             },
-            stateKey: 'subFoos',
             __normalizers__: [{ datumKey: '__activities__' }],
             __tags__: ['/foos'],
           },
@@ -493,7 +827,6 @@ describe('src | createDataReducer', () => {
               id: 1,
               subSubValue: 'fuu',
             },
-            stateKey: 'subSubFoos',
             __normalizers__: [{ datumKey: '__activities__' }],
             __tags__: ['/foos'],
           },
@@ -545,7 +878,7 @@ describe('src | createDataReducer', () => {
       })
     })
 
-    it('should not overide the still local __activities__ values', () => {
+    it('should overide the local __activities__ values', () => {
       // given
       const dateCreated = new Date().toISOString()
       const initialState = {
@@ -553,21 +886,18 @@ describe('src | createDataReducer', () => {
           {
             dateCreated,
             entityIdentifier: 1,
-            localIdentifier: 1,
             id: 1,
             modelName: 'Foo',
             patch: {
-              notOverridenValue: 'hello',
+              overridenValue: 'hello',
             },
           },
         ],
         foos: [
           {
             activityIdentifier: 1,
-            firstDateCreated: dateCreated,
             id: 1,
-            lastDateCreated: dateCreated,
-            notOverridenValue: 'hello',
+            overridenValue: 'hello',
           },
         ],
       }
@@ -580,7 +910,7 @@ describe('src | createDataReducer', () => {
           activityIdentifier: 1,
           id: 1,
           moreValue: 1,
-          notOverridenValue: 'I should not be there',
+          overridenValue: 'I should be there',
         },
       ]
 
@@ -598,13 +928,11 @@ describe('src | createDataReducer', () => {
           {
             dateCreated,
             entityIdentifier: 1,
-            localIdentifier: 1,
             id: 1,
             modelName: 'Foo',
             patch: {
-              notOverridenValue: 'hello',
+              overridenValue: 'hello',
             },
-            stateKey: 'foos',
           },
         ],
         foos: [
@@ -612,8 +940,81 @@ describe('src | createDataReducer', () => {
             activityIdentifier: 1,
             id: 1,
             moreValue: 1,
-            notOverridenValue: 'hello',
+            overridenValue: 'I should be there',
             __tags__: ['/foos'],
+          },
+        ],
+      })
+    })
+
+    it('should delete the local activity and replace it by the posted one when post activities', () => {
+      // given
+      const dateCreated = new Date().toISOString()
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated,
+            entityIdentifier: 1,
+            localIdentifier: `1/${dateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              value: 'hello',
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: null,
+            value: 'hello',
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const activities = [
+        {
+          dateCreated,
+          entityIdentifier: 1,
+          id: 1,
+          modelName: 'Foo',
+          patch: {
+            value: 'hello',
+          },
+        },
+      ]
+
+      // when
+      store.dispatch(
+        successData(
+          { data: activities, status: 201 },
+          { apiPath: '/__activities__', method: 'POST' }
+        )
+      )
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated,
+            entityIdentifier: 1,
+            id: 1,
+            modelName: 'Foo',
+            patch: {
+              value: 'hello',
+            },
+            __tags__: ['/__activities__'],
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: null,
+            value: 'hello',
           },
         ],
       })
