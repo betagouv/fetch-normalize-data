@@ -57,6 +57,8 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
+          dateCreated: firstDateCreated,
+          dateModified: lastDateCreated,
           value: 2,
         },
       ],
@@ -221,6 +223,8 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
+          dateCreated: firstDateCreated,
+          dateModified: null,
           notDisappearedValue: 'hello',
           value: 1,
         },
@@ -277,6 +281,8 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
+          dateCreated: firstDateCreated,
+          dateModified: null,
           positions: [
             [0.1, 0.2],
             [0.3, 0.4],
@@ -296,6 +302,7 @@ describe('src | getNormalizedActivatedState', () => {
           dateCreated: firstDateCreated,
           entityIdentifier,
           localIdentifier: `0/${firstDateCreated}`,
+          localStateKey: 'foos',
           modelName: 'Foo',
           patch: {
             positions: [
@@ -308,6 +315,8 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
+          dateCreated: firstDateCreated,
+          dateModified: null,
         },
       ],
     }
@@ -349,6 +358,8 @@ describe('src | getNormalizedActivatedState', () => {
       foos: [
         {
           activityIdentifier: entityIdentifier,
+          dateCreated: firstDateCreated,
+          dateModified: null,
           positions: [
             [0.9, 0.8],
             [0.7, 0.6],

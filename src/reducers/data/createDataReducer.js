@@ -16,6 +16,9 @@ import getDeletedPatchByActivityTag from './getDeletedPatchByActivityTag'
 import getSuccessState from './getSuccessState'
 import reinitializeState from './reinitializeState'
 
+const localIdentifierFrom = activity =>
+  `${activity.entityIdentifier}/${activity.dateCreated}`
+
 export const createDataReducer = (initialState = {}, extraConfig = {}) => {
   const reducer = (state = initialState, action) => {
     const keepFromActivity =
@@ -33,8 +36,7 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
         {
           getDatumIdKey: () => 'localIdentifier',
           getDatumIdValue: activity =>
-            activity.id ||
-            `${activity.entityIdentifier}/${activity.dateCreated}`,
+            activity.id || localIdentifierFrom(activity),
           isMergingDatum: true,
         }
       )
@@ -91,7 +93,36 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       })
     }
 
-    if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
+    if (action.config && action.config.tag === '__ACTIVITIES__') {
+      let nextState = { ...state }
+      action.payload.data.forEach(payloadActivity => {
+        const payloadLocalIdentifier = localIdentifierFrom(payloadActivity)
+        const storedActivities = []
+        const otherActivities = []
+        state.__activities__.forEach(activity => {
+          if (payloadLocalIdentifier === activity.localIdentifier) {
+            storedActivities.push(activity)
+          } else {
+            otherActivities.push(activity)
+          }
+        })
+        if (storedActivities.length > 1) {
+          console.warn('Weird...')
+        } else if (storedActivities.length) {
+          const patch = {
+            [storedActivities[0].localStateKey]: [payloadActivity.entity],
+          }
+          nextState = {
+            ...nextState,
+            ...getNormalizedMergedState(nextState, patch, action.config),
+            __activities__: otherActivities,
+          }
+        }
+      })
+      return nextState
+    } else if (
+      /SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)
+    ) {
       const successState = getSuccessState(state, action)
       return Object.keys(successState).length
         ? { ...state, ...successState }
