@@ -19,8 +19,11 @@ describe('src | createDataReducer', () => {
       const initialState = {
         __activities__: [
           {
+            dateCreated: firstDateCreated,
             entityIdentifier: 1,
             id: 'AE',
+            localIdentifier: `1/${firstDateCreated}`,
+            localStateKey: 'foos',
             patch: {
               fromFirstActivity: 1,
               fromFirstActivityChangedByThird: 1,
@@ -34,6 +37,8 @@ describe('src | createDataReducer', () => {
         foos: [
           {
             activityIdentifier: 1,
+            dateCreated: firstDateCreated,
+            dateModified: null,
             fromFirstActivity: 1,
             fromFirstActivityChangedByThird: 1,
             nestedDatum: {
@@ -94,20 +99,25 @@ describe('src | createDataReducer', () => {
           },
           {
             ...activities[0],
-            localIdentifier: `1/${activities[0].dateCreated}`,
+            localIdentifier: `1/${secondDateCreated}`,
+            localStateKey: 'foos',
           },
           {
             ...activities[1],
-            localIdentifier: `2/${activities[1].dateCreated}`,
+            localIdentifier: `2/${secondDateCreated}`,
+            localStateKey: 'foos',
           },
           {
             ...activities[2],
-            localIdentifier: `1/${activities[2].dateCreated}`,
+            localIdentifier: `1/${thirdDateCreated}`,
+            localStateKey: 'foos',
           },
         ],
         foos: [
           {
             activityIdentifier: 1,
+            dateCreated: firstDateCreated,
+            dateModified: thirdDateCreated,
             fromFirstActivity: 1,
             fromFirstActivityChangedByThird: 3,
             fromSecondActivity: 2,
@@ -119,6 +129,8 @@ describe('src | createDataReducer', () => {
           },
           {
             activityIdentifier: 2,
+            dateCreated: secondDateCreated,
+            dateModified: null,
             otherActivity: 'foo',
           },
         ],
@@ -178,6 +190,7 @@ describe('src | createDataReducer', () => {
             dateCreated: firstDateCreated,
             entityIdentifier,
             localIdentifier: `1/${firstDateCreated}`,
+            localStateKey: 'foos',
             modelName: 'Foo',
             patch: {
               textA: 'bar',
@@ -187,6 +200,7 @@ describe('src | createDataReducer', () => {
             dateCreated: secondDateCreated,
             entityIdentifier,
             localIdentifier: `1/${secondDateCreated}`,
+            localStateKey: 'foos',
             modelName: 'Foo',
             patch: {
               textB: 'bir',
@@ -196,6 +210,7 @@ describe('src | createDataReducer', () => {
             dateCreated: nextDateCreated,
             entityIdentifier,
             localIdentifier: `1/${nextDateCreated}`,
+            localStateKey: 'foos',
             modelName: 'Foo',
             patch: {
               textC: 'bor',
@@ -205,6 +220,8 @@ describe('src | createDataReducer', () => {
         foos: [
           {
             activityIdentifier: entityIdentifier,
+            dateCreated: firstDateCreated,
+            dateModified: nextDateCreated,
             textA: 'bar',
             textB: 'bir',
             textC: 'bor',
@@ -641,7 +658,6 @@ describe('src | createDataReducer', () => {
           {
             dateCreated,
             entityIdentifier: 1,
-            localIdentifier: 1,
             id: 1,
             modelName: 'Foo',
             patch: {
@@ -652,9 +668,7 @@ describe('src | createDataReducer', () => {
         foos: [
           {
             activityIdentifier: 1,
-            firstDateCreated: dateCreated,
             id: 1,
-            lastDateCreated: dateCreated,
             overridenValue: 'hello',
           },
         ],
@@ -686,7 +700,6 @@ describe('src | createDataReducer', () => {
           {
             dateCreated,
             entityIdentifier: 1,
-            localIdentifier: 1,
             id: 1,
             modelName: 'Foo',
             patch: {
@@ -701,6 +714,74 @@ describe('src | createDataReducer', () => {
             moreValue: 1,
             overridenValue: 'I should be there',
             __tags__: ['/foos'],
+          },
+        ],
+      })
+    })
+
+    it('should delete local activities and overide related entities', () => {
+      // given
+      const dateCreated = new Date().toISOString()
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated,
+            entityIdentifier: 1,
+            localIdentifier: `1/${dateCreated}`,
+            localStateKey: 'foos',
+            modelName: 'Foo',
+            patch: {
+              value: 'hello',
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: null,
+            value: 'hello',
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const activities = [
+        {
+          dateCreated,
+          entity: {
+            activityIdentifier: 1,
+            id: 1,
+            value: 'hello',
+          },
+          entityIdentifier: 1,
+          id: 1,
+          modelName: 'Foo',
+          patch: {
+            value: 'hello',
+          },
+        },
+      ]
+
+      // when
+      store.dispatch(
+        successData(
+          { data: activities, status: 201 },
+          { apiPath: '/__activities__', method: 'POST', tag: '__ACTIVITIES__' }
+        )
+      )
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        __activities__: [],
+        foos: [
+          {
+            activityIdentifier: 1,
+            id: 1,
+            value: 'hello',
+            __tags__: ['__ACTIVITIES__'],
           },
         ],
       })

@@ -13,14 +13,6 @@ export function getDefaultActivityFrom() {
   return {}
 }
 
-export function hydratedActivityFrom(activity) {
-  return {
-    ...activity,
-    dateCreated: activity.dateCreated || new Date().toISOString(),
-    patch: { ...activity.patch },
-  }
-}
-
 const localStateKeyFrom = activity => {
   let localStateKey = activity.localStateKey
   if (!localStateKey) {
@@ -38,6 +30,15 @@ const localStateKeyFrom = activity => {
     }
   }
   return localStateKey
+}
+
+export function hydratedActivityFrom(activity) {
+  return {
+    ...activity,
+    dateCreated: activity.dateCreated || new Date().toISOString(),
+    localStateKey: localStateKeyFrom(activity),
+    patch: { ...activity.patch },
+  }
 }
 
 export const stateKeysByEntityIdentifierFrom = activities => {
@@ -148,5 +149,46 @@ export const deletionHelpersFrom = (state, activities) => {
   return {
     notDeletedActivities,
     stateWithoutDeletedEntities,
+  }
+}
+
+export const dateCreatedAndModifiedHelpersFrom = (state, activities) => {
+  const entityDateCreatedsByIdentifier = {}
+  const entityDateModifiedsByIdentifier = {}
+
+  const entitiesByActivityIdentifier = {}
+
+  activities.forEach(activity => {
+    const entity = entitiesByActivityIdentifier[activity.entityIdentifier]
+    if (
+      typeof entityDateCreatedsByIdentifier[activity.entityIdentifier] ===
+      'undefined'
+    ) {
+      if (entity) {
+        entityDateCreatedsByIdentifier[activity.entityIdentifier] =
+          entity.dateCreated
+      } else {
+        entityDateCreatedsByIdentifier[activity.entityIdentifier] =
+          activity.dateCreated
+        return
+      }
+    }
+    if (
+      entityDateCreatedsByIdentifier[activity.entityIdentifier] !==
+      activity.dateCreated
+    ) {
+      if (entity) {
+        entityDateModifiedsByIdentifier[activity.entityIdentifier] =
+          activity.dateCreated
+        return
+      }
+      entityDateModifiedsByIdentifier[activity.entityIdentifier] =
+        activity.dateCreated
+    }
+  })
+
+  return {
+    entityDateCreatedsByIdentifier,
+    entityDateModifiedsByIdentifier,
   }
 }
