@@ -1,5 +1,4 @@
 import getNormalizedActivatedState from '../../normalize/getNormalizedActivatedState'
-import getNormalizedSuccessActivitiesAskedState from '../../normalize/getNormalizedSuccessActivitiesAskedState'
 import getNormalizedDeletedState from '../../normalize/getNormalizedDeletedState'
 import getNormalizedMergedState from '../../normalize/getNormalizedMergedState'
 import {
@@ -99,9 +98,6 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
     }
 
     if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
-      if (action.config && action.config.activitiesAsked) {
-        return getNormalizedSuccessActivitiesAskedState(state, action)
-      }
       const successState = getSuccessState(state, action)
       return Object.keys(successState).length
         ? { ...state, ...successState }
