@@ -23,7 +23,6 @@ describe('src | createDataReducer', () => {
             entityIdentifier: 1,
             id: 'AE',
             localIdentifier: `1/${firstDateCreated}`,
-            localStateKey: 'foos',
             patch: {
               fromFirstActivity: 1,
               fromFirstActivityChangedByThird: 1,
@@ -100,17 +99,14 @@ describe('src | createDataReducer', () => {
           {
             ...activities[0],
             localIdentifier: `1/${secondDateCreated}`,
-            localStateKey: 'foos',
           },
           {
             ...activities[1],
             localIdentifier: `2/${secondDateCreated}`,
-            localStateKey: 'foos',
           },
           {
             ...activities[2],
             localIdentifier: `1/${thirdDateCreated}`,
-            localStateKey: 'foos',
           },
         ],
         foos: [
@@ -190,7 +186,6 @@ describe('src | createDataReducer', () => {
             dateCreated: firstDateCreated,
             entityIdentifier,
             localIdentifier: `1/${firstDateCreated}`,
-            localStateKey: 'foos',
             modelName: 'Foo',
             patch: {
               textA: 'bar',
@@ -200,7 +195,6 @@ describe('src | createDataReducer', () => {
             dateCreated: secondDateCreated,
             entityIdentifier,
             localIdentifier: `1/${secondDateCreated}`,
-            localStateKey: 'foos',
             modelName: 'Foo',
             patch: {
               textB: 'bir',
@@ -210,7 +204,6 @@ describe('src | createDataReducer', () => {
             dateCreated: nextDateCreated,
             entityIdentifier,
             localIdentifier: `1/${nextDateCreated}`,
-            localStateKey: 'foos',
             modelName: 'Foo',
             patch: {
               textC: 'bor',
@@ -728,7 +721,6 @@ describe('src | createDataReducer', () => {
             dateCreated,
             entityIdentifier: 1,
             localIdentifier: `1/${dateCreated}`,
-            localStateKey: 'foos',
             modelName: 'Foo',
             patch: {
               value: 'hello',

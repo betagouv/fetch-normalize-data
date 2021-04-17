@@ -16,7 +16,7 @@ export function getDefaultActivityFrom() {
 export const localIdentifierFrom = activity =>
   `${activity.entityIdentifier}/${activity.dateCreated}`
 
-const localStateKeyFrom = activity => {
+const stateKeyFrom = activity => {
   let localStateKey = activity.localStateKey
   if (!localStateKey) {
     if (activity.tableName) {
@@ -39,7 +39,6 @@ export function hydratedActivityFrom(activity) {
   return {
     ...activity,
     dateCreated: activity.dateCreated || new Date().toISOString(),
-    localStateKey: localStateKeyFrom(activity),
     patch: { ...activity.patch },
   }
 }
@@ -47,7 +46,7 @@ export function hydratedActivityFrom(activity) {
 export const stateKeysByEntityIdentifierFrom = activities => {
   const stateKeysByEntityIdentifier = {}
   activities.forEach(activity => {
-    stateKeysByEntityIdentifier[activity.entityIdentifier] = localStateKeyFrom(
+    stateKeysByEntityIdentifier[activity.entityIdentifier] = stateKeyFrom(
       activity
     )
   })
