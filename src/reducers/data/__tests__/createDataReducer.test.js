@@ -769,7 +769,7 @@ describe('src | createDataReducer', () => {
       store.dispatch(
         successData(
           { data: activities, status: 201 },
-          { apiPath: '/__activities__', method: 'POST', tag: '__ACTIVITIES__' }
+          { activitiesAsked: true, apiPath: '/__activities__', method: 'POST' }
         )
       )
 
@@ -781,7 +781,7 @@ describe('src | createDataReducer', () => {
             activityIdentifier: 1,
             id: 1,
             value: 'hello',
-            __tags__: ['__ACTIVITIES__'],
+            __tags__: ['/__activities__'],
           },
         ],
       })
