@@ -154,11 +154,29 @@ export const deletionHelpersFrom = (state, activities) => {
   }
 }
 
-export const dateCreatedAndModifiedHelpersFrom = (state, activities) => {
+export const dateCreatedAndModifiedHelpersFrom = (
+  state,
+  activities,
+  stateKeysByEntityIdentifier
+) => {
   const entityDateCreatedsByIdentifier = {}
   const entityDateModifiedsByIdentifier = {}
 
   const entitiesByActivityIdentifier = {}
+  activities.forEach(activity => {
+    if (
+      typeof entityDateCreatedsByIdentifier[activity.entityIdentifier] ===
+      'undefined'
+    ) {
+      const stateKey = stateKeysByEntityIdentifier[activity.entityIdentifier]
+      const entity = (state[stateKey] || []).find(
+        e => e.activityIdentifier === activity.entityIdentifier
+      )
+      if (entity) {
+        entitiesByActivityIdentifier[activity.entityIdentifier] = entity
+      }
+    }
+  })
 
   activities.forEach(activity => {
     const entity = entitiesByActivityIdentifier[activity.entityIdentifier]

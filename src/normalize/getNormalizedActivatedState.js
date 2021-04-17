@@ -22,8 +22,9 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
     entityDateCreatedsByIdentifier,
     entityDateModifiedsByIdentifier,
   } = dateCreatedAndModifiedHelpersFrom(
-    stateWithoutDeletedEntities,
-    notDeletedActivities
+    state,
+    notDeletedActivities,
+    stateKeysByEntityIdentifier
   )
 
   return notDeletedActivities.reduce(

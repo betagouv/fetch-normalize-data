@@ -222,6 +222,163 @@ describe('src | createDataReducer', () => {
         ],
       })
     })
+
+    it('should keep items of the entity not related to activity and the entity dateCreated but change dateModified', () => {
+      // given
+      const entityIdentifier = 1
+      const entityDateCreated = new Date().toISOString()
+      const initialState = {
+        foos: [
+          {
+            activityIdentifier: entityIdentifier,
+            dateCreated: entityDateCreated,
+            dateModified: null,
+            notDisappearedValue: 'hello',
+            value: 2,
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const activityDateCreated = new Date(
+        new Date(entityDateCreated).getTime() + 1000
+      ).toISOString()
+      const activities = [
+        {
+          dateCreated: activityDateCreated,
+          entityIdentifier,
+          modelName: 'Foo',
+          patch: {
+            value: 1,
+          },
+        },
+      ]
+
+      // when
+      store.dispatch(activateData(activities))
+
+      // then
+      const nextState = store.getState().data
+      expect(nextState).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: activityDateCreated,
+            entityIdentifier,
+            localIdentifier: `${entityIdentifier}/${activityDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              value: 1,
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: entityIdentifier,
+            dateCreated: entityDateCreated,
+            dateModified: activityDateCreated,
+            notDisappearedValue: 'hello',
+            value: 1,
+          },
+        ],
+      })
+    })
+
+    it('should overide an array of numeric', () => {
+      // given
+      const entityIdentifier = 1
+      const firstDateCreated = new Date().toISOString()
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated: firstDateCreated,
+            entityIdentifier,
+            localIdentifier: `0/${firstDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              positions: [
+                [0.1, 0.2],
+                [0.3, 0.4],
+              ],
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: entityIdentifier,
+            dateCreated: firstDateCreated,
+            dateModified: null,
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const secondDateCreated = new Date(
+        new Date(firstDateCreated).getTime() + 1
+      ).toISOString()
+      const activities = [
+        {
+          dateCreated: secondDateCreated,
+          entityIdentifier,
+          localIdentifier: `0/${secondDateCreated}`,
+          modelName: 'Foo',
+          patch: {
+            positions: [
+              [0.9, 0.8],
+              [0.7, 0.6],
+            ],
+          },
+        },
+      ]
+
+      // when
+      store.dispatch(activateData(activities))
+
+      // then
+      const nextState = store.getState().data
+      expect(nextState).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: firstDateCreated,
+            entityIdentifier,
+            localIdentifier: `0/${firstDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              positions: [
+                [0.1, 0.2],
+                [0.3, 0.4],
+              ],
+            },
+          },
+          {
+            dateCreated: secondDateCreated,
+            entityIdentifier,
+            localIdentifier: `0/${secondDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              positions: [
+                [0.9, 0.8],
+                [0.7, 0.6],
+              ],
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: entityIdentifier,
+            dateCreated: firstDateCreated,
+            dateModified: secondDateCreated,
+            positions: [
+              [0.9, 0.8],
+              [0.7, 0.6],
+            ],
+          },
+        ],
+      })
+    })
   })
 
   describe('when ASSIGN_DATA', () => {
