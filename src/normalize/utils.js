@@ -13,6 +13,9 @@ export function getDefaultActivityFrom() {
   return {}
 }
 
+export const localIdentifierFrom = activity =>
+  `${activity.entityIdentifier}/${activity.dateCreated}`
+
 const localStateKeyFrom = activity => {
   let localStateKey = activity.localStateKey
   if (!localStateKey) {

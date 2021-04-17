@@ -1,8 +1,10 @@
 import getNormalizedActivatedState from '../../normalize/getNormalizedActivatedState'
+import getNormalizedSuccessActivitiesAskedState from '../../normalize/getNormalizedSuccessActivitiesAskedState'
 import getNormalizedDeletedState from '../../normalize/getNormalizedDeletedState'
 import getNormalizedMergedState from '../../normalize/getNormalizedMergedState'
 import {
   getDefaultActivityFrom,
+  localIdentifierFrom,
   sortedHydratedActivitiesFrom,
 } from '../../normalize/utils'
 import {
@@ -15,9 +17,6 @@ import {
 import getDeletedPatchByActivityTag from './getDeletedPatchByActivityTag'
 import getSuccessState from './getSuccessState'
 import reinitializeState from './reinitializeState'
-
-const localIdentifierFrom = activity =>
-  `${activity.entityIdentifier}/${activity.dateCreated}`
 
 export const createDataReducer = (initialState = {}, extraConfig = {}) => {
   const reducer = (state = initialState, action) => {
@@ -88,41 +87,21 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       typeof action.payload !== 'undefined' &&
       typeof action.payload.__activities__ !== 'undefined'
     ) {
-      return getNormalizedActivatedState(state, action.payload, {
-        keepFromActivity,
-      })
+      return getNormalizedActivatedState(
+        state,
+        {
+          __activities__: action.payload.__activities__.filter(
+            a => a.localIdentifier
+          ),
+        },
+        { keepFromActivity }
+      )
     }
 
-    if (action.config && action.config.tag === '__ACTIVITIES__') {
-      let nextState = { ...state }
-      action.payload.data.forEach(payloadActivity => {
-        const payloadLocalIdentifier = localIdentifierFrom(payloadActivity)
-        const storedActivities = []
-        const otherActivities = []
-        state.__activities__.forEach(activity => {
-          if (payloadLocalIdentifier === activity.localIdentifier) {
-            storedActivities.push(activity)
-          } else {
-            otherActivities.push(activity)
-          }
-        })
-        if (storedActivities.length > 1) {
-          console.warn('Weird...')
-        } else if (storedActivities.length) {
-          const patch = {
-            [storedActivities[0].localStateKey]: [payloadActivity.entity],
-          }
-          nextState = {
-            ...nextState,
-            ...getNormalizedMergedState(nextState, patch, action.config),
-            __activities__: otherActivities,
-          }
-        }
-      })
-      return nextState
-    } else if (
-      /SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)
-    ) {
+    if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
+      if (action.config && action.config.activitiesAsked) {
+        return getNormalizedSuccessActivitiesAskedState(state, action)
+      }
       const successState = getSuccessState(state, action)
       return Object.keys(successState).length
         ? { ...state, ...successState }
