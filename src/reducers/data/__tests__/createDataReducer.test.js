@@ -719,7 +719,7 @@ describe('src | createDataReducer', () => {
       })
     })
 
-    it('should delete local activities and overide related entities', () => {
+    it('should delete the local activity and replace it by the posted one when post activities', () => {
       // given
       const dateCreated = new Date().toISOString()
       const initialState = {
@@ -751,11 +751,6 @@ describe('src | createDataReducer', () => {
       const activities = [
         {
           dateCreated,
-          entity: {
-            activityIdentifier: 1,
-            id: 1,
-            value: 'hello',
-          },
           entityIdentifier: 1,
           id: 1,
           modelName: 'Foo',
@@ -769,19 +764,30 @@ describe('src | createDataReducer', () => {
       store.dispatch(
         successData(
           { data: activities, status: 201 },
-          { activitiesAsked: true, apiPath: '/__activities__', method: 'POST' }
+          { apiPath: '/__activities__', method: 'POST' }
         )
       )
 
       // then
       expect(store.getState().data).toStrictEqual({
-        __activities__: [],
+        __activities__: [
+          {
+            dateCreated,
+            entityIdentifier: 1,
+            id: 1,
+            modelName: 'Foo',
+            patch: {
+              value: 'hello',
+            },
+            __tags__: ['/__activities__'],
+          },
+        ],
         foos: [
           {
             activityIdentifier: 1,
-            id: 1,
+            dateCreated,
+            dateModified: null,
             value: 'hello',
-            __tags__: ['/__activities__'],
           },
         ],
       })
