@@ -16,7 +16,11 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
   const {
     notDeletedActivities,
     stateWithoutDeletedEntities,
-  } = deletionHelpersFrom(state, patch.__activities__)
+  } = deletionHelpersFrom(
+    state,
+    patch.__activities__,
+    stateKeysByEntityIdentifier
+  )
 
   const {
     entityDateCreatedsByIdentifier,

@@ -102,7 +102,11 @@ export const sortedHydratedActivitiesFrom = activities => {
   return hydratedSortedActivities
 }
 
-export const deletionHelpersFrom = (state, activities) => {
+export const deletionHelpersFrom = (
+  state,
+  activities,
+  stateKeysByEntityIdentifier
+) => {
   const deletedActivityIdentifiers = []
   const deletedActivityIdentifiersByStateKey = {}
   activities
@@ -113,16 +117,12 @@ export const deletionHelpersFrom = (state, activities) => {
     )
     .forEach(activity => {
       const activityIdentifier = activity.entityIdentifier
-      const localStateKey = activity.localStateKey
+      const stateKey = stateKeysByEntityIdentifier[activityIdentifier]
       deletedActivityIdentifiers.push(activityIdentifier)
-      if (!deletedActivityIdentifiersByStateKey[localStateKey]) {
-        deletedActivityIdentifiersByStateKey[localStateKey] = [
-          activityIdentifier,
-        ]
+      if (!deletedActivityIdentifiersByStateKey[stateKey]) {
+        deletedActivityIdentifiersByStateKey[stateKey] = [activityIdentifier]
       } else {
-        deletedActivityIdentifiersByStateKey[localStateKey].push(
-          activityIdentifier
-        )
+        deletedActivityIdentifiersByStateKey[stateKey].push(activityIdentifier)
       }
     })
 
