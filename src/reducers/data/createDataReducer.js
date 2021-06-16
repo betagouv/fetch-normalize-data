@@ -1,14 +1,3 @@
-import {
-  ACTIVATE_DATA,
-  ASSIGN_DATA,
-  DELETE_DATA,
-  MERGE_DATA,
-  REINITIALIZE_DATA,
-} from './actions'
-import getSuccessState from './getSuccessState'
-import getDeletedPatchByActivityTag from './getDeletedPatchByActivityTag'
-import reinitializeState from './reinitializeState'
-
 import getNormalizedActivatedState from '../../normalize/getNormalizedActivatedState'
 import getNormalizedDeletedState from '../../normalize/getNormalizedDeletedState'
 import getNormalizedMergedState from '../../normalize/getNormalizedMergedState'
@@ -16,6 +5,16 @@ import {
   getDefaultActivityFrom,
   sortedHydratedActivitiesFrom,
 } from '../../normalize/utils'
+import {
+  ACTIVATE_DATA,
+  ASSIGN_DATA,
+  DELETE_DATA,
+  MERGE_DATA,
+  REINITIALIZE_DATA,
+} from './actions'
+import getDeletedPatchByActivityTag from './getDeletedPatchByActivityTag'
+import getSuccessState from './getSuccessState'
+import reinitializeState from './reinitializeState'
 
 export const createDataReducer = (initialState = {}, extraConfig = {}) => {
   const wrappedReducer = (state, action) => {
