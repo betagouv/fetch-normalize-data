@@ -102,12 +102,11 @@ export const sortedHydratedActivitiesFrom = activities => {
   return hydratedSortedActivities
 }
 
-export const deletionHelpersFrom = (
+export const deletedActivityIdentifiersByStateKeyFrom = (
   state,
   activities,
   stateKeysByEntityIdentifier
 ) => {
-  const deletedActivityIdentifiers = []
   const deletedActivityIdentifiersByStateKey = {}
   activities
     .filter(
@@ -118,14 +117,31 @@ export const deletionHelpersFrom = (
     .forEach(activity => {
       const activityIdentifier = activity.entityIdentifier
       const stateKey = stateKeysByEntityIdentifier[activityIdentifier]
-      deletedActivityIdentifiers.push(activityIdentifier)
       if (!deletedActivityIdentifiersByStateKey[stateKey]) {
         deletedActivityIdentifiersByStateKey[stateKey] = [activityIdentifier]
       } else {
         deletedActivityIdentifiersByStateKey[stateKey].push(activityIdentifier)
       }
     })
+  return deletedActivityIdentifiersByStateKey
+}
 
+export const notDeletedActivitiesFrom = (
+  activities,
+  deletedActivityIdentifiersByStateKey
+) => {
+  const deletedActivityIdentifiers = Object.values(
+    deletedActivityIdentifiersByStateKey
+  ).reduce((agg, list) => agg.concat(list), [])
+  return activities.filter(
+    activity => !deletedActivityIdentifiers.includes(activity.entityIdentifier)
+  )
+}
+
+export const stateWithoutDeletedEntitiesFrom = (
+  state,
+  deletedActivityIdentifiersByStateKey
+) => {
   const stateWithoutDeletedEntities = { ...state }
   Object.keys(deletedActivityIdentifiersByStateKey).forEach(localStateKey => {
     if (!stateWithoutDeletedEntities[localStateKey]) {
@@ -144,14 +160,7 @@ export const deletionHelpersFrom = (
     }
   })
 
-  const notDeletedActivities = activities.filter(
-    activity => !deletedActivityIdentifiers.includes(activity.entityIdentifier)
-  )
-
-  return {
-    notDeletedActivities,
-    stateWithoutDeletedEntities,
-  }
+  return stateWithoutDeletedEntities
 }
 
 export const dateCreatedAndModifiedsByEntityIdentifierFrom = (

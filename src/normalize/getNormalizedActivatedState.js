@@ -1,9 +1,11 @@
 import getNormalizedMergedState from './getNormalizedMergedState'
 import {
   dateCreatedAndModifiedsByEntityIdentifierFrom,
-  deletionHelpersFrom,
+  deletedActivityIdentifiersByStateKeyFrom,
   getDefaultActivityFrom,
+  notDeletedActivitiesFrom,
   stateKeysByEntityIdentifierFrom,
+  stateWithoutDeletedEntitiesFrom,
 } from './utils'
 
 export function getNormalizedActivatedState(state, patch, config = {}) {
@@ -13,13 +15,18 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
     patch.__activities__
   )
 
-  const {
-    notDeletedActivities,
-    stateWithoutDeletedEntities,
-  } = deletionHelpersFrom(
+  const deletedActivityIdentifiersByStateKey = deletedActivityIdentifiersByStateKeyFrom(
     state,
     patch.__activities__,
     stateKeysByEntityIdentifier
+  )
+  const notDeletedActivities = notDeletedActivitiesFrom(
+    patch.__activities__,
+    deletedActivityIdentifiersByStateKey
+  )
+  const stateWithoutDeletedEntities = stateWithoutDeletedEntitiesFrom(
+    state,
+    deletedActivityIdentifiersByStateKey
   )
 
   const {
