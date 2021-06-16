@@ -1,6 +1,5 @@
 import { combineReducers, createStore } from 'redux'
 
-import createDataReducer from '../createDataReducer'
 import {
   activateData,
   assignData,
@@ -8,6 +7,7 @@ import {
   reinitializeData,
   successData,
 } from '../actionCreators'
+import createDataReducer from '../createDataReducer'
 
 Date.now = jest.spyOn(Date, 'now').mockImplementation(() => 1487076708000)
 
@@ -165,8 +165,8 @@ describe('src | createDataReducer', () => {
           },
         },
         {
-          entityIdentifier,
           dateCreated: nextDateCreated,
+          entityIdentifier,
           modelName: 'Foo',
           patch: {
             textC: 'bor',
@@ -991,7 +991,12 @@ describe('src | createDataReducer', () => {
       store.dispatch(
         successData(
           { data: activities, status: 201 },
-          { apiPath: '/__activities__', method: 'POST' }
+          {
+            apiPath: '/__activities__',
+            body: activities,
+            deleteRequestedActivities: true,
+            method: 'POST',
+          }
         )
       )
 
