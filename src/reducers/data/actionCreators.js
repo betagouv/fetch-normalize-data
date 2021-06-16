@@ -53,7 +53,7 @@ export const requestData = (config = {}) => {
 }
 
 export const requestActivities = config =>
-  requestData({ ...config, activitiesAsked: true })
+  requestData({ ...config, deleteRequestedActivities: true })
 
 export const reinitializeData = (config = {}) => ({
   config,
