@@ -154,7 +154,7 @@ export const deletionHelpersFrom = (
   }
 }
 
-export const dateCreatedAndModifiedHelpersFrom = (
+export const dateCreatedAndModifiedsByEntityIdentifierFrom = (
   state,
   activities,
   stateKeysByEntityIdentifier

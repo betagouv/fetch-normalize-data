@@ -1,6 +1,6 @@
 import getNormalizedMergedState from './getNormalizedMergedState'
 import {
-  dateCreatedAndModifiedHelpersFrom,
+  dateCreatedAndModifiedsByEntityIdentifierFrom,
   deletionHelpersFrom,
   getDefaultActivityFrom,
   stateKeysByEntityIdentifierFrom,
@@ -25,7 +25,7 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
   const {
     entityDateCreatedsByIdentifier,
     entityDateModifiedsByIdentifier,
-  } = dateCreatedAndModifiedHelpersFrom(
+  } = dateCreatedAndModifiedsByEntityIdentifierFrom(
     state,
     notDeletedActivities,
     stateKeysByEntityIdentifier
