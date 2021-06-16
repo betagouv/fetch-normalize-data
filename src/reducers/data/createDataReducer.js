@@ -3,6 +3,7 @@ import getNormalizedDeletedState from '../../normalize/getNormalizedDeletedState
 import getNormalizedMergedState from '../../normalize/getNormalizedMergedState'
 import {
   getDefaultActivityFrom,
+  localIdentifierFrom,
   sortedHydratedActivitiesFrom,
 } from '../../normalize/utils'
 import {
@@ -17,7 +18,7 @@ import getSuccessState from './getSuccessState'
 import reinitializeState from './reinitializeState'
 
 export const createDataReducer = (initialState = {}, extraConfig = {}) => {
-  const wrappedReducer = (state, action) => {
+  const reducer = (state = initialState, action) => {
     const keepFromActivity =
       (action.config || {}).keepFromActivity ||
       extraConfig.keepFromActivity ||
@@ -25,7 +26,6 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
 
     if (action.type === ACTIVATE_DATA) {
       const sortedHydratedActivities = sortedHydratedActivitiesFrom(
-        state,
         (state.__activities__ || []).concat(action.activities)
       )
       const { __activities__: nextActivities } = getNormalizedMergedState(
@@ -34,14 +34,19 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
         {
           getDatumIdKey: () => 'localIdentifier',
           getDatumIdValue: activity =>
-            activity.id ||
-            `${activity.entityIdentifier}/${activity.dateCreated}`,
+            activity.id || localIdentifierFrom(activity),
           isMergingDatum: true,
         }
       )
-      return nextActivities.length
+      const nextState = nextActivities.length
         ? { ...state, __activities__: nextActivities }
         : state
+
+      return getNormalizedActivatedState(
+        nextState,
+        { __activities__: nextState.__activities__ },
+        { keepFromActivity }
+      )
     }
 
     if (action.type === ASSIGN_DATA) {
@@ -81,9 +86,15 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       typeof action.payload !== 'undefined' &&
       typeof action.payload.__activities__ !== 'undefined'
     ) {
-      return getNormalizedActivatedState(state, action.payload, {
-        keepFromActivity,
-      })
+      return getNormalizedActivatedState(
+        state,
+        {
+          __activities__: action.payload.__activities__.filter(
+            a => a.localIdentifier
+          ),
+        },
+        { keepFromActivity }
+      )
     }
 
     if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
@@ -95,28 +106,6 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
 
     return state
   }
-
-  const reducer = (state = initialState, action) => {
-    const keepFromActivity =
-      (action.config || {}).keepFromActivity ||
-      extraConfig.keepFromActivity ||
-      getDefaultActivityFrom
-
-    const nextState = wrappedReducer(state, action)
-    if (
-      state.__activities__ !== nextState.__activities__ ||
-      (nextState.__activities__ &&
-        nextState.__activities__.some(activity => activity.localIdentifier))
-    ) {
-      return getNormalizedActivatedState(
-        nextState,
-        { __activities__: nextState.__activities__ },
-        { keepFromActivity }
-      )
-    }
-    return nextState
-  }
-
   return reducer
 }
 

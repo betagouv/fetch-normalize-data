@@ -1,6 +1,5 @@
 import { combineReducers, createStore } from 'redux'
 
-import createDataReducer from '../createDataReducer'
 import {
   activateData,
   assignData,
@@ -8,12 +7,13 @@ import {
   reinitializeData,
   successData,
 } from '../actionCreators'
+import createDataReducer from '../createDataReducer'
 
 Date.now = jest.spyOn(Date, 'now').mockImplementation(() => 1487076708000)
 
 describe('src | createDataReducer', () => {
   describe('when ACTIVATE_DATA', () => {
-    it('should activate data', () => {
+    it.only('should activate a created data', () => {
       // given
       const firstDateCreated = new Date().toISOString()
       const initialState = {
@@ -22,6 +22,7 @@ describe('src | createDataReducer', () => {
             dateCreated: firstDateCreated,
             entityIdentifier: 1,
             id: 'AE',
+            localIdentifier: `1/${firstDateCreated}`,
             patch: {
               fromFirstActivity: 1,
               fromFirstActivityChangedByThird: 1,
@@ -33,7 +34,18 @@ describe('src | createDataReducer', () => {
             tableName: 'foo',
           },
         ],
-        foos: [],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated: firstDateCreated,
+            dateModified: null,
+            fromFirstActivity: 1,
+            fromFirstActivityChangedByThird: 1,
+            nestedDatum: {
+              fromFirstActivity: 1,
+            },
+          },
+        ],
       }
       const rootReducer = combineReducers({
         data: createDataReducer(initialState),
@@ -88,17 +100,17 @@ describe('src | createDataReducer', () => {
           },
           {
             ...activities[0],
-            localIdentifier: `1/${activities[0].dateCreated}`,
+            localIdentifier: `1/${secondDateCreated}`,
             stateKey: 'foos',
           },
           {
             ...activities[1],
-            localIdentifier: `2/${activities[1].dateCreated}`,
+            localIdentifier: `2/${secondDateCreated}`,
             stateKey: 'foos',
           },
           {
             ...activities[2],
-            localIdentifier: `1/${activities[2].dateCreated}`,
+            localIdentifier: `1/${thirdDateCreated}`,
             stateKey: 'foos',
           },
         ],

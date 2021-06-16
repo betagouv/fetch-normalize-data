@@ -10,7 +10,7 @@ export default createCachedSelector(
   state => state.data,
   (state, activityIdentifier) => activityIdentifier,
   (data, activityIdentifier) => {
-    if (!activityIdentifier) return
+    if (!activityIdentifier) return undefined
     const __activities__ = data.__activities__
     const firstActivity = selectEntityByKeyAndJoin(
       { data: { __activities__ } },
@@ -36,7 +36,7 @@ export default createCachedSelector(
         key === '__activities__' ||
         !Array.isArray(data[key])
       )
-        return
+        return undefined
       entityFoundByBruteSearch = selectEntityByKeyAndJoin(
         { data: { [key]: data[key] } },
         key,

@@ -37,6 +37,9 @@ export function hydratedActivityFrom(activity) {
   }
 }
 
+export const localIdentifierFrom = activity =>
+  `${activity.entityIdentifier}/${activity.dateCreated}`
+
 export const merge = (target, source) => {
   for (const key of Object.keys(source)) {
     if (source[key] instanceof Object) {
