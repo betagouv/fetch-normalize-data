@@ -173,22 +173,21 @@ export const dateCreatedAndModifiedsByEntityIdentifierFrom = (
 
   const entitiesByActivityIdentifier = {}
   activities.forEach(activity => {
-    if (
-      typeof entityDateCreatedsByIdentifier[activity.entityIdentifier] ===
-      'undefined'
-    ) {
+    let entity
+    const alreadySetEntity =
+      entitiesByActivityIdentifier[activity.entityIdentifier]
+    if (typeof alreadySetEntity === 'undefined') {
       const stateKey = stateKeysByEntityIdentifier[activity.entityIdentifier]
-      const entity = (state[stateKey] || []).find(
+      entity = (state[stateKey] || []).find(
         e => e.activityIdentifier === activity.entityIdentifier
       )
       if (entity) {
         entitiesByActivityIdentifier[activity.entityIdentifier] = entity
       }
+    } else {
+      entity = alreadySetEntity
     }
-  })
 
-  activities.forEach(activity => {
-    const entity = entitiesByActivityIdentifier[activity.entityIdentifier]
     if (
       typeof entityDateCreatedsByIdentifier[activity.entityIdentifier] ===
       'undefined'
@@ -206,11 +205,6 @@ export const dateCreatedAndModifiedsByEntityIdentifierFrom = (
       entityDateCreatedsByIdentifier[activity.entityIdentifier] !==
       activity.dateCreated
     ) {
-      if (entity) {
-        entityDateModifiedsByIdentifier[activity.entityIdentifier] =
-          activity.dateCreated
-        return
-      }
       entityDateModifiedsByIdentifier[activity.entityIdentifier] =
         activity.dateCreated
     }
