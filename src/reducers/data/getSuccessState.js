@@ -50,8 +50,8 @@ export const getSuccessState = (state, action) => {
     const localIdentifiersOfActivitiesToBeDeleted = action.config.body.map(
       a => a.localIdentifier
     )
-    nextState.__activities__ = nextState.__activities__.filter(a =>
-      localIdentifiersOfActivitiesToBeDeleted.includes(a.localIdentifier)
+    nextState.__activities__ = nextState.__activities__.filter(
+      a => !localIdentifiersOfActivitiesToBeDeleted.includes(a.localIdentifier)
     )
   }
 

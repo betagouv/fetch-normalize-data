@@ -947,15 +947,27 @@ describe('src | createDataReducer', () => {
       })
     })
 
-    it('should delete the local activity and replace it by the posted one when post activities', () => {
+    it('should delete the local activity', () => {
       // given
-      const dateCreated = new Date().toISOString()
+      const firstDateCreated = new Date().toISOString()
+      const secondDateCreated = new Date(
+        new Date(firstDateCreated).getTime() + 1
+      ).toISOString()
       const initialState = {
         __activities__: [
           {
-            dateCreated,
+            dateCreated: firstDateCreated,
             entityIdentifier: 1,
-            localIdentifier: `1/${dateCreated}`,
+            localIdentifier: `1/${firstDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              value: 'hello',
+            },
+          },
+          {
+            dateCreated: secondDateCreated,
+            entityIdentifier: 1,
+            localIdentifier: `1/${secondDateCreated}`,
             modelName: 'Foo',
             patch: {
               value: 'hello',
@@ -965,7 +977,7 @@ describe('src | createDataReducer', () => {
         foos: [
           {
             activityIdentifier: 1,
-            dateCreated,
+            dateCreated: firstDateCreated,
             dateModified: null,
             value: 'hello',
           },
@@ -975,25 +987,14 @@ describe('src | createDataReducer', () => {
         data: createDataReducer(initialState),
       })
       const store = createStore(rootReducer)
-      const activities = [
-        {
-          dateCreated,
-          entityIdentifier: 1,
-          id: 1,
-          modelName: 'Foo',
-          patch: {
-            value: 'hello',
-          },
-        },
-      ]
 
       // when
       store.dispatch(
         successData(
-          { data: activities, status: 201 },
+          { data: [], status: 201 },
           {
             apiPath: '/__activities__',
-            body: activities,
+            body: initialState.__activities__,
             deleteRequestedActivities: true,
             method: 'POST',
           }
@@ -1002,22 +1003,11 @@ describe('src | createDataReducer', () => {
 
       // then
       expect(store.getState().data).toStrictEqual({
-        __activities__: [
-          {
-            dateCreated,
-            entityIdentifier: 1,
-            id: 1,
-            modelName: 'Foo',
-            patch: {
-              value: 'hello',
-            },
-            __tags__: ['/__activities__'],
-          },
-        ],
+        __activities__: [],
         foos: [
           {
             activityIdentifier: 1,
-            dateCreated,
+            dateCreated: firstDateCreated,
             dateModified: null,
             value: 'hello',
           },
