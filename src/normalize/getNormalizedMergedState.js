@@ -28,7 +28,11 @@ export function getNormalizedMergedState(state, patch, config = {}) {
     normalize({ [patchKey]: nextData }, { doWithNormalizedPatch, ...config })
 
     if (isMergingArray) {
-      const previousData = state[patchKey]
+      const previousData = getMergedData(
+        nextState[patchKey] || [],
+        state[patchKey],
+        config
+      )
       nextData = getMergedData(nextData, previousData, config)
     }
 
