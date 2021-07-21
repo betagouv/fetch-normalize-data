@@ -770,7 +770,7 @@ describe('src | getNormalizedMergedState', () => {
       expect(nextState).toStrictEqual(expectedNextState)
     })
 
-    it('merge with a collection that appears twice in the normalizer config', () => {
+    it('should merge with a collection that appears twice in the normalizer config', () => {
       // given
       const state = {}
       const patch = {
@@ -832,6 +832,102 @@ describe('src | getNormalizedMergedState', () => {
         foos: [
           { id: 'B', __normalizers__: [{ datumKey: 'foos' }] },
           { id: 'C', __normalizers__: [{ datumKey: 'foos' }] },
+        ],
+      }
+      expect(nextState).toStrictEqual(expectedNextState)
+    })
+
+    it.only('should merge', () => {
+      // given
+      const state = {
+        dossiers: [
+          {
+            id: 'A',
+            measurements: [
+              {
+                id: 'B',
+                isSoftDeleted: false,
+              },
+            ],
+            sketches: [
+              {
+                id: 'C',
+                measurements: [
+                  {
+                    id: 'D',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      }
+      const patch = {
+        dossiers: [
+          {
+            id: 'A',
+            measurements: [
+              {
+                id: 'B',
+                isSoftDeleted: true,
+              },
+            ],
+            sketches: [
+              {
+                id: 'C',
+                measurements: [
+                  {
+                    id: 'D',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      }
+      const config = {
+        normalizer: {
+          dossiers: {
+            normalizer: {
+              measurements: 'measurements',
+              sketches: {
+                normalizer: {
+                  measurements: 'measurements',
+                },
+                stateKey: 'sketches',
+              },
+            },
+            stateKey: 'dossiers',
+          },
+        },
+      }
+
+      // when
+      const nextState = getNormalizedMergedState(state, patch, config)
+
+      // then
+      const expectedNextState = {
+        dossiers: [
+          {
+            id: 'A',
+            measurements: { stateKey: 'measurements', type: '__normalizer__' },
+            sketches: { stateKey: 'sketches', type: '__normalizer__' },
+          },
+        ],
+        measurements: [
+          {
+            id: 'B',
+            isSoftDeleted: true,
+            __normalizers__: [{ datumKey: 'measurements' }],
+          },
+          { id: 'D', __normalizers__: [{ datumKey: 'measurements' }] },
+        ],
+        sketches: [
+          {
+            id: 'C',
+            measurements: { stateKey: 'measurements', type: '__normalizer__' },
+            __normalizers__: [{ datumKey: 'sketches' }],
+          },
         ],
       }
       expect(nextState).toStrictEqual(expectedNextState)
