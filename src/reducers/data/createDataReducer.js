@@ -89,6 +89,7 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       return getNormalizedActivatedState(
         state,
         {
+          ...action.payload,
           __activities__: action.payload.__activities__.filter(
             a => a.localIdentifier
           ),
