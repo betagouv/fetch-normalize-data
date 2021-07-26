@@ -776,6 +776,7 @@ describe('src | getNormalizedMergedState', () => {
         dossiers: [
           {
             id: 'A',
+            measurements: { stateKey: 'measurements', type: '__normalizer__' },
             sketches: { stateKey: 'sketches', type: '__normalizer__' },
           },
         ],
@@ -892,7 +893,6 @@ describe('src | getNormalizedMergedState', () => {
       // when
       const nextState = getNormalizedMergedState(state, patch)
 
-      // then
       // then
       const expectedNextState = {
         foos: [
