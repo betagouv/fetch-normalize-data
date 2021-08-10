@@ -878,26 +878,34 @@ describe('src | createDataReducer', () => {
       })
     })
 
-    it('should overide the local __activities__ values', () => {
+    it('should not overide the local activity for entity.dateModified undefined', () => {
       // given
       const dateCreated = new Date().toISOString()
+      const dateModified = new Date(
+        new Date(dateCreated).getTime() + 1
+      ).toISOString()
+
+      const valueModifiedByActivityThatShouldStayInPlace = 'hello'
+      const valueFromBackendThatShouldNotBeConsidered = 'byebye'
+
       const initialState = {
         __activities__: [
           {
-            dateCreated,
+            dateCreated: dateModified,
             entityIdentifier: 1,
             id: 1,
             modelName: 'Foo',
             patch: {
-              overridenValue: 'hello',
+              value: valueModifiedByActivityThatShouldStayInPlace,
             },
           },
         ],
         foos: [
           {
             activityIdentifier: 1,
+            dateCreated,
             id: 1,
-            overridenValue: 'hello',
+            value: valueModifiedByActivityThatShouldStayInPlace,
           },
         ],
       }
@@ -908,9 +916,10 @@ describe('src | createDataReducer', () => {
       const foos = [
         {
           activityIdentifier: 1,
+          dateCreated,
           id: 1,
           moreValue: 1,
-          overridenValue: 'I should be there',
+          value: valueFromBackendThatShouldNotBeConsidered,
         },
       ]
 
@@ -926,28 +935,199 @@ describe('src | createDataReducer', () => {
       expect(store.getState().data).toStrictEqual({
         __activities__: [
           {
-            dateCreated,
+            dateCreated: dateModified,
             entityIdentifier: 1,
             id: 1,
             modelName: 'Foo',
             patch: {
-              overridenValue: 'hello',
+              value: valueModifiedByActivityThatShouldStayInPlace,
             },
           },
         ],
         foos: [
           {
             activityIdentifier: 1,
+            dateCreated,
+            dateModified,
             id: 1,
             moreValue: 1,
-            overridenValue: 'I should be there',
+            value: valueModifiedByActivityThatShouldStayInPlace,
             __tags__: ['/foos'],
           },
         ],
       })
     })
 
-    it('should delete the local activity', () => {
+    it('should not overide the local activity for entity.dateModified smaller than max of activity.dateCreated', () => {
+      // given
+      const dateCreated = new Date().toISOString()
+      const dateModifiedFromBackend = new Date(
+        new Date(dateCreated).getTime() + 1
+      ).toISOString()
+      const dateModifiedFromLocal = new Date(
+        new Date(dateCreated).getTime() + 2
+      ).toISOString()
+
+      const valueModifiedByActivityThatShouldStayInPlace = 'hello'
+      const valueFromBackendThatShouldNotBeConsidered = 'byebye'
+
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            entityIdentifier: 1,
+            id: 1,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldStayInPlace,
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            id: 1,
+            value: valueModifiedByActivityThatShouldStayInPlace,
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const foos = [
+        {
+          activityIdentifier: 1,
+          dateCreated,
+          dateModified: dateModifiedFromBackend,
+          id: 1,
+          moreValue: 1,
+          value: valueFromBackendThatShouldNotBeConsidered,
+        },
+      ]
+
+      // when
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { apiPath: '/foos', method: 'GET' }
+        )
+      )
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            entityIdentifier: 1,
+            id: 1,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldStayInPlace,
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromLocal,
+            id: 1,
+            moreValue: 1,
+            value: valueModifiedByActivityThatShouldStayInPlace,
+            __tags__: ['/foos'],
+          },
+        ],
+      })
+    })
+
+    it('should overide the local activity for entity.dateModified greater than max of activity.dateCreated', () => {
+      // given
+      const dateCreated = new Date().toISOString()
+      const dateModifiedFromLocal = new Date(
+        new Date(dateCreated).getTime() + 1
+      ).toISOString()
+      const dateModifiedFromBackend = new Date(
+        new Date(dateCreated).getTime() + 2
+      ).toISOString()
+
+      const valueModifiedByActivityThatShouldNotStayInPlace = 'hello'
+      const valueFromBackendThatShouldBeConsidered = 'byebye'
+
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            entityIdentifier: 1,
+            id: 1,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldNotStayInPlace,
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromLocal,
+            id: 1,
+            value: valueModifiedByActivityThatShouldNotStayInPlace,
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const foos = [
+        {
+          activityIdentifier: 1,
+          dateCreated,
+          dateModified: dateModifiedFromBackend,
+          id: 1,
+          moreValue: 1,
+          value: valueFromBackendThatShouldBeConsidered,
+        },
+      ]
+
+      // when
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { apiPath: '/foos', method: 'GET' }
+        )
+      )
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            entityIdentifier: 1,
+            id: 1,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldNotStayInPlace,
+            },
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromBackend,
+            id: 1,
+            moreValue: 1,
+            value: valueFromBackendThatShouldBeConsidered,
+            __tags__: ['/foos'],
+          },
+        ],
+      })
+    })
+
+    it('should delete the local activities', () => {
       // given
       const firstDateCreated = new Date().toISOString()
       const secondDateCreated = new Date(
@@ -970,7 +1150,7 @@ describe('src | createDataReducer', () => {
             localIdentifier: `1/${secondDateCreated}`,
             modelName: 'Foo',
             patch: {
-              value: 'hello',
+              value: 'rehello',
             },
           },
         ],
@@ -978,8 +1158,8 @@ describe('src | createDataReducer', () => {
           {
             activityIdentifier: 1,
             dateCreated: firstDateCreated,
-            dateModified: null,
-            value: 'hello',
+            dateModified: secondDateCreated,
+            value: 'rehello',
           },
         ],
       }
@@ -1008,8 +1188,8 @@ describe('src | createDataReducer', () => {
           {
             activityIdentifier: 1,
             dateCreated: firstDateCreated,
-            dateModified: null,
-            value: 'hello',
+            dateModified: secondDateCreated,
+            value: 'rehello',
           },
         ],
       })

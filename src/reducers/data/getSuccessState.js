@@ -46,15 +46,6 @@ export const getSuccessState = (state, action) => {
 
   const nextState = getNormalizedMergedState(state, patch, normalizerConfig)
 
-  if (action.config.deleteRequestedActivities) {
-    const localIdentifiersOfActivitiesToBeDeleted = action.config.body.map(
-      a => a.localIdentifier
-    )
-    nextState.__activities__ = nextState.__activities__.filter(
-      a => !localIdentifiersOfActivitiesToBeDeleted.includes(a.localIdentifier)
-    )
-  }
-
   return nextState
 }
 

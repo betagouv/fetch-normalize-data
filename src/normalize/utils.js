@@ -163,31 +163,46 @@ export const stateWithoutDeletedEntitiesFrom = (
   return stateWithoutDeletedEntities
 }
 
-export const dateCreatedAndModifiedsByEntityIdentifierFrom = (
+export const entitiesByActivityIdentifierFrom = (
   state,
   activities,
   stateKeysByEntityIdentifier
 ) => {
+  const entitiesByActivityIdentifier = {}
+  activities.forEach(activity => {
+    const stateKey = stateKeysByEntityIdentifier[activity.entityIdentifier]
+    const entity = (state[stateKey] || []).find(
+      e => e.activityIdentifier === activity.entityIdentifier
+    )
+    if (entity) {
+      entitiesByActivityIdentifier[activity.entityIdentifier] = entity
+    }
+  })
+  return entitiesByActivityIdentifier
+}
+
+export const notDeprecatedActivitiesFrom = (
+  activities,
+  entitiesByActivityIdentifier
+) =>
+  activities.filter(activity => {
+    const entity = entitiesByActivityIdentifier[activity.entityIdentifier]
+    if (entity && entity.dateModified) {
+      return entity.dateModified < activity.dateCreated
+    }
+    return true
+  })
+
+export const dateCreatedAndModifiedsByEntityIdentifierFrom = (
+  state,
+  activities,
+  entitiesByActivityIdentifier
+) => {
   const entityDateCreatedsByIdentifier = {}
   const entityDateModifiedsByIdentifier = {}
 
-  const entitiesByActivityIdentifier = {}
   activities.forEach(activity => {
-    let entity
-    const alreadySetEntity =
-      entitiesByActivityIdentifier[activity.entityIdentifier]
-    if (typeof alreadySetEntity === 'undefined') {
-      const stateKey = stateKeysByEntityIdentifier[activity.entityIdentifier]
-      entity = (state[stateKey] || []).find(
-        e => e.activityIdentifier === activity.entityIdentifier
-      )
-      if (entity) {
-        entitiesByActivityIdentifier[activity.entityIdentifier] = entity
-      }
-    } else {
-      entity = alreadySetEntity
-    }
-
+    const entity = entitiesByActivityIdentifier[activity.entityIdentifier]
     if (
       typeof entityDateCreatedsByIdentifier[activity.entityIdentifier] ===
       'undefined'
