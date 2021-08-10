@@ -100,9 +100,31 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
 
     if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
       const successState = getSuccessState(state, action)
-      return Object.keys(successState).length
-        ? { ...state, ...successState }
-        : state
+      let nextState = state
+
+      if (Object.keys(successState).length) {
+        nextState = { ...state, ...successState }
+
+        if (state.__activities__) {
+          nextState = getNormalizedActivatedState(
+            nextState,
+            { __activities__: state.__activities__ },
+            { keepFromActivity }
+          )
+        }
+      }
+
+      if (action.config.deleteRequestedActivities) {
+        const localIdentifiersOfActivitiesToBeDeleted = action.config.body.map(
+          a => a.localIdentifier
+        )
+        nextState.__activities__ = nextState.__activities__.filter(
+          a =>
+            !localIdentifiersOfActivitiesToBeDeleted.includes(a.localIdentifier)
+        )
+      }
+
+      return nextState
     }
 
     return state
