@@ -44,7 +44,10 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
     entitiesByActivityIdentifier
   )
 
-  if (notDeletedActivities.length > notDeprecatedActivities.length) {
+  if (
+    onDeprecatedActivities &&
+    notDeletedActivities.length > notDeprecatedActivities.length
+  ) {
     onDeprecatedActivities(state, patch, {
       notDeprecatedActivities,
       notDeletedActivities,
