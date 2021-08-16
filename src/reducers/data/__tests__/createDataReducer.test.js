@@ -1107,6 +1107,7 @@ describe('src | createDataReducer', () => {
             dateCreated: dateModifiedFromLocal,
             entityIdentifier: 1,
             id: 1,
+            isDeprecated: true,
             modelName: 'Foo',
             patch: {
               value: valueModifiedByActivityThatShouldNotStayInPlace,

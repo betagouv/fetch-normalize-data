@@ -2,17 +2,16 @@ import getNormalizedMergedState from './getNormalizedMergedState'
 import {
   dateCreatedAndModifiedsByEntityIdentifierFrom,
   deletedActivityIdentifiersByStateKeyFrom,
+  deprecatedAndNotDeprecatedActivitiesFrom,
   entitiesByActivityIdentifierFrom,
   getDefaultActivityFrom,
   notDeletedActivitiesFrom,
-  notDeprecatedActivitiesFrom,
   stateKeysByEntityIdentifierFrom,
   stateWithoutDeletedEntitiesFrom,
 } from './utils'
 
 export function getNormalizedActivatedState(state, patch, config = {}) {
   const keepFromActivity = config.keepFromActivity || getDefaultActivityFrom
-  const onDeprecatedActivities = config.onDeprecatedActivities
 
   const stateKeysByEntityIdentifier = stateKeysByEntityIdentifierFrom(
     patch.__activities__
@@ -39,20 +38,13 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
     stateKeysByEntityIdentifier
   )
 
-  const notDeprecatedActivities = notDeprecatedActivitiesFrom(
+  const {
+    deprecatedActivities,
+    notDeprecatedActivities,
+  } = deprecatedAndNotDeprecatedActivitiesFrom(
     notDeletedActivities,
     entitiesByActivityIdentifier
   )
-
-  if (
-    onDeprecatedActivities &&
-    notDeletedActivities.length > notDeprecatedActivities.length
-  ) {
-    onDeprecatedActivities(state, patch, {
-      notDeprecatedActivities,
-      notDeletedActivities,
-    })
-  }
 
   const {
     entityDateCreatedsByIdentifier,
@@ -63,7 +55,7 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
     entitiesByActivityIdentifier
   )
 
-  return notDeprecatedActivities.reduce(
+  const normalizedActivatedState = notDeprecatedActivities.reduce(
     (aggregation, activity) => ({
       ...aggregation,
       ...getNormalizedMergedState(
@@ -91,6 +83,22 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
     }),
     { ...stateWithoutDeletedEntities, ...patch }
   )
+
+  if (deprecatedActivities.length) {
+    const deprecatedActivityLocalIdentifiers = deprecatedActivities.map(
+      a => a.localIdentifier
+    )
+    normalizedActivatedState.__activities__ = normalizedActivatedState.__activities__.map(
+      a => ({
+        ...a,
+        isDeprecated: deprecatedActivityLocalIdentifiers.includes(
+          a.localIdentifier
+        ),
+      })
+    )
+  }
+
+  return normalizedActivatedState
 }
 
 export default getNormalizedActivatedState
