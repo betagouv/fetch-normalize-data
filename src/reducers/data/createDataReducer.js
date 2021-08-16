@@ -28,9 +28,9 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       (action.config || {}).keepFromActivity ||
       extraConfig.keepFromActivity ||
       getDefaultActivityFrom
-    const onDeprecatedActivites =
-      (action.config || {}).onDeprecatedActivites ||
-      extraConfig.onDeprecatedActivites ||
+    const onDeprecatedActivities =
+      (action.config || {}).onDeprecatedActivities ||
+      extraConfig.onDeprecatedActivities ||
       defaultHandleDeprecatedActivities
 
     if (action.type === ACTIVATE_DATA) {
@@ -118,7 +118,7 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
           nextState = getNormalizedActivatedState(
             nextState,
             { __activities__: state.__activities__ },
-            { keepFromActivity, onDeprecatedActivites }
+            { keepFromActivity, onDeprecatedActivities }
           )
         }
       }
