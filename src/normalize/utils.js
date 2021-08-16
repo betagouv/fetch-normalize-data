@@ -181,17 +181,29 @@ export const entitiesByActivityIdentifierFrom = (
   return entitiesByActivityIdentifier
 }
 
-export const notDeprecatedActivitiesFrom = (
+export const deprecatedAndNotDeprecatedActivitiesFrom = (
   activities,
   entitiesByActivityIdentifier
-) =>
-  activities.filter(activity => {
+) => {
+  const deprecatedActivities = []
+  const notDeprecatedActivities = []
+  activities.forEach(activity => {
     const entity = entitiesByActivityIdentifier[activity.entityIdentifier]
-    if (entity && entity.dateModified) {
-      return entity.dateModified < activity.dateCreated
+    if (
+      entity &&
+      entity.dateModified &&
+      entity.dateModified > activity.dateCreated
+    ) {
+      deprecatedActivities.push(activity)
+      return
     }
-    return true
+    notDeprecatedActivities.push(activity)
   })
+  return {
+    deprecatedActivities,
+    notDeprecatedActivities,
+  }
+}
 
 export const dateCreatedAndModifiedsByEntityIdentifierFrom = (
   state,

@@ -17,21 +17,12 @@ import getDeletedPatchByActivityTag from './getDeletedPatchByActivityTag'
 import getSuccessState from './getSuccessState'
 import reinitializeState from './reinitializeState'
 
-const defaultHandleDeprecatedActivities = () =>
-  console.debug(
-    'The local state found some deprecated activities, by default the application will not anymore consider them.'
-  )
-
 export const createDataReducer = (initialState = {}, extraConfig = {}) => {
   const reducer = (state = initialState, action) => {
     const keepFromActivity =
       (action.config || {}).keepFromActivity ||
       extraConfig.keepFromActivity ||
       getDefaultActivityFrom
-    const onDeprecatedActivities =
-      (action.config || {}).onDeprecatedActivities ||
-      extraConfig.onDeprecatedActivities ||
-      defaultHandleDeprecatedActivities
 
     if (action.type === ACTIVATE_DATA) {
       const sortedHydratedActivities = sortedHydratedActivitiesFrom(
@@ -118,7 +109,7 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
           nextState = getNormalizedActivatedState(
             nextState,
             { __activities__: state.__activities__ },
-            { keepFromActivity, onDeprecatedActivities }
+            { keepFromActivity }
           )
         }
       }
