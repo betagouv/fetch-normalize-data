@@ -12,7 +12,7 @@ import {
 
 export function getNormalizedActivatedState(state, patch, config = {}) {
   const keepFromActivity = config.keepFromActivity || getDefaultActivityFrom
-  const onDeprecatedActivites = config.onDeprecatedActivites
+  const onDeprecatedActivities = config.onDeprecatedActivities
 
   const stateKeysByEntityIdentifier = stateKeysByEntityIdentifierFrom(
     patch.__activities__
@@ -45,7 +45,7 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
   )
 
   if (notDeletedActivities.length > notDeprecatedActivities.length) {
-    onDeprecatedActivites(state, patch, {
+    onDeprecatedActivities(state, patch, {
       notDeprecatedActivities,
       notDeletedActivities,
     })
