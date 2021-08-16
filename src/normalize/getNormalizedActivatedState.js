@@ -10,15 +10,9 @@ import {
   stateWithoutDeletedEntitiesFrom,
 } from './utils'
 
-const defaultOnDeprecatedActivities = () =>
-  console.debug(
-    'The local state found some deprecated activities, by default the application will not anymore consider them.'
-  )
-
 export function getNormalizedActivatedState(state, patch, config = {}) {
   const keepFromActivity = config.keepFromActivity || getDefaultActivityFrom
-  const onDeprecatedActivites =
-    config.onDeprecatedActivites || defaultOnDeprecatedActivities
+  const onDeprecatedActivites = config.onDeprecatedActivites
 
   const stateKeysByEntityIdentifier = stateKeysByEntityIdentifierFrom(
     patch.__activities__
