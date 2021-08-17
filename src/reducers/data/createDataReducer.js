@@ -81,23 +81,6 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
       return reinitializeState(state, initialState, action.config)
     }
 
-    if (
-      action.type === 'persist/REHYDRATE' &&
-      typeof action.payload !== 'undefined' &&
-      typeof action.payload.__activities__ !== 'undefined'
-    ) {
-      return getNormalizedActivatedState(
-        state,
-        {
-          ...action.payload,
-          __activities__: action.payload.__activities__.filter(
-            a => a.localIdentifier
-          ),
-        },
-        { keepFromActivity }
-      )
-    }
-
     if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
       const successState = getSuccessState(state, action)
       let nextState = state
