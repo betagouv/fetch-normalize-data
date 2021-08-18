@@ -39,7 +39,7 @@ export function hydratedActivityFrom(activity) {
   return {
     ...activity,
     dateCreated: activity.dateCreated || new Date().toISOString(),
-    isDeprecated: false,
+    deprecatedKeys: null,
     patch: { ...activity.patch },
   }
 }
@@ -195,7 +195,15 @@ export const deprecatedAndNotDeprecatedActivitiesFrom = (
       entity.lastBackendDateModified &&
       entity.lastBackendDateModified > activity.dateCreated
     ) {
-      deprecatedActivities.push(activity)
+      const deprecatedKeys = []
+      Object.keys(activity.patch).forEach(key => {
+        if (entity[key] !== activity.patch[key]) {
+          deprecatedKeys.push(key)
+        }
+      })
+      if (deprecatedKeys.length > 0) {
+        deprecatedActivities.push({ ...activity, deprecatedKeys })
+      }
       return
     }
     notDeprecatedActivities.push(activity)
