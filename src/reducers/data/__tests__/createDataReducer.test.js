@@ -22,7 +22,7 @@ describe('src | createDataReducer', () => {
             dateCreated: firstDateCreated,
             entityIdentifier: 1,
             id: 'AE',
-            isDeprecated: false,
+            deprecatedKeys: [],
             localIdentifier: `1/${firstDateCreated}`,
             patch: {
               fromFirstActivity: 1,
@@ -99,17 +99,17 @@ describe('src | createDataReducer', () => {
           },
           {
             ...activities[0],
-            isDeprecated: false,
+            deprecatedKeys: null,
             localIdentifier: `1/${secondDateCreated}`,
           },
           {
             ...activities[1],
-            isDeprecated: false,
+            deprecatedKeys: null,
             localIdentifier: `2/${secondDateCreated}`,
           },
           {
             ...activities[2],
-            isDeprecated: false,
+            deprecatedKeys: null,
             localIdentifier: `1/${thirdDateCreated}`,
           },
         ],
@@ -189,7 +189,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: firstDateCreated,
             entityIdentifier,
-            isDeprecated: false,
+            deprecatedKeys: null,
             localIdentifier: `1/${firstDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -198,8 +198,8 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: secondDateCreated,
+            deprecatedKeys: null,
             entityIdentifier,
-            isDeprecated: false,
             localIdentifier: `1/${secondDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -208,8 +208,8 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: nextDateCreated,
+            deprecatedKeys: null,
             entityIdentifier,
-            isDeprecated: false,
             localIdentifier: `1/${nextDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -272,8 +272,8 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: activityDateCreated,
+            deprecatedKeys: null,
             entityIdentifier,
-            isDeprecated: false,
             localIdentifier: `${entityIdentifier}/${activityDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -301,8 +301,8 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: firstDateCreated,
+            deprecatedKeys: null,
             entityIdentifier,
-            isDeprecated: false,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -352,8 +352,8 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: firstDateCreated,
+            deprecatedKeys: null,
             entityIdentifier,
-            isDeprecated: false,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -365,8 +365,8 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: secondDateCreated,
+            deprecatedKeys: null,
             entityIdentifier,
-            isDeprecated: false,
             localIdentifier: `0/${secondDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -399,8 +399,8 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: firstDateCreated,
+            deprecatedKeys: null,
             entityIdentifier,
-            isDeprecated: false,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -447,8 +447,8 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: firstDateCreated,
+            deprecatedKeys: null,
             entityIdentifier,
-            isDeprecated: false,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -460,8 +460,8 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: secondDateCreated,
+            deprecatedKeys: null,
             entityIdentifier,
-            isDeprecated: false,
             localIdentifier: `0/${secondDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -541,8 +541,8 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: fromFirstActivityDateCreated,
+            deprecatedKeys: null,
             entityIdentifier: 1,
-            isDeprecated: false,
             localIdentifier: `1/${fromFirstActivityDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -551,8 +551,8 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: fromSecondActivityDateCreated,
+            deprecatedKeys: null,
             entityIdentifier: 1,
-            isDeprecated: false,
             localIdentifier: `1/${fromSecondActivityDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -561,8 +561,8 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: fromThirdActivityDateCreated,
+            deprecatedKeys: null,
             entityIdentifier: 1,
-            isDeprecated: false,
             localIdentifier: `1/${fromThirdActivityDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -1234,9 +1234,9 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: dateModifiedFromLocal,
+            deprecatedKeys: ['value'],
             entityIdentifier: 1,
             id: 1,
-            isDeprecated: true,
             modelName: 'Foo',
             patch: {
               value: valueModifiedByActivityThatShouldNotStayInPlace,
