@@ -84,7 +84,7 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
     { ...stateWithoutDeletedEntities, ...patch }
   )
 
-  if (deprecatedActivities.length) {
+  if (deprecatedActivities.length > 0) {
     const deprecatedActivityLocalIdentifiers = deprecatedActivities.map(
       a => a.localIdentifier
     )
