@@ -13,6 +13,12 @@ export function getPatchFromStateKeyAndPayload(stateKey, payload) {
       data = []
     }
   }
+
+  data = data.map(datum => ({
+    lastBackendDateModified: datum.dateModified,
+    ...datum,
+  }))
+
   const patch = { [stateKey]: data }
 
   return patch
