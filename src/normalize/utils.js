@@ -39,6 +39,7 @@ export function hydratedActivityFrom(activity) {
   return {
     ...activity,
     dateCreated: activity.dateCreated || new Date().toISOString(),
+    isDeprecated: false,
     patch: { ...activity.patch },
   }
 }
@@ -191,8 +192,8 @@ export const deprecatedAndNotDeprecatedActivitiesFrom = (
     const entity = entitiesByActivityIdentifier[activity.entityIdentifier]
     if (
       entity &&
-      entity.dateModified &&
-      entity.dateModified > activity.dateCreated
+      entity.lastBackendDateModified &&
+      entity.lastBackendDateModified > activity.dateCreated
     ) {
       deprecatedActivities.push(activity)
       return
