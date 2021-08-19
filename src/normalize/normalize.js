@@ -14,13 +14,13 @@ export function normalizeDataAtItem(data, datumKey, stateKey, config) {
     if (Array.isArray(normalizedValue)) {
       normalizedValue = normalizedValue.map(entity => ({
         ...entity,
-        __normalizers__: [{ datumKey }]
+        __normalizers__: [{ datumKey }],
       }))
       normalizedData = normalizedData.concat(normalizedValue)
     } else if (normalizedValue) {
       normalizedValue = {
         ...normalizedValue,
-        __normalizers__: [{ datumKey }]
+        __normalizers__: [{ datumKey }],
       }
       normalizedData.push(normalizedValue)
     }
@@ -38,6 +38,7 @@ export function normalizeDataAtItem(data, datumKey, stateKey, config) {
 // MUTATING FUNCTION
 export function normalizeData(data, config) {
   const {
+    cacheKey: globalCacheKey,
     isMergingDatum: globalIsMergingDatum,
     isMutatingDatum: globalIsMutatingDatum,
     normalizer,
@@ -47,15 +48,18 @@ export function normalizeData(data, config) {
 
   Object.keys(normalizer).forEach(datumKey => {
     const {
+      cacheKey,
       isMergingDatum,
       isMutatingDatum,
       process,
       resolve,
       stateKey,
     } = reshapedNormalizer[datumKey]
+
     const subNormalizer = reshapedNormalizer[datumKey].normalizer || {}
 
     const subConfig = Object.assign({}, config, {
+      cacheKey: typeof cacheKey !== 'undefined' ? cacheKey : globalCacheKey,
       isMergingDatum:
         typeof isMergingDatum !== 'undefined'
           ? isMergingDatum
