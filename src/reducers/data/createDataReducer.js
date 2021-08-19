@@ -1,10 +1,16 @@
-import getNormalizedActivatedState from '../../normalize/getNormalizedActivatedState'
+import normalizedActivatedStateFrom, {
+  mergedActivitiesFrom,
+} from '../../normalize/getNormalizedActivatedState'
 import getNormalizedDeletedState from '../../normalize/getNormalizedDeletedState'
 import getNormalizedMergedState from '../../normalize/getNormalizedMergedState'
 import {
-  getDefaultActivityFrom,
-  localIdentifierFrom,
+  activitiesWithDeprecationInfoFrom,
+  dateCreatedAndModifiedsByEntityIdentifierFrom,
+  deletedActivityIdentifiersByStateKeyFrom,
+  entitiesByActivityIdentifierFrom,
+  notDeletedActivitiesFrom,
   sortedHydratedActivitiesFrom,
+  stateWithoutDeletedEntitiesFrom,
 } from '../../normalize/utils'
 import {
   ACTIVATE_DATA,
@@ -17,27 +23,47 @@ import getDeletedPatchByActivityTag from './getDeletedPatchByActivityTag'
 import getSuccessState from './getSuccessState'
 import reinitializeState from './reinitializeState'
 
-export const createDataReducer = (initialState = {}, extraConfig = {}) => {
+export const createDataReducer = (initialState = {}) => {
   const reducer = (state = initialState, action) => {
-    const keepFromActivity =
-      (action.config || {}).keepFromActivity ||
-      extraConfig.keepFromActivity ||
-      getDefaultActivityFrom
-
     if (action.type === ACTIVATE_DATA) {
+      //const sortedHydratedActivities = sortedHydratedActivitiesFrom(
+      //  (state.__activities__ || []).concat(action.activities)
+      //)
       const sortedHydratedActivities = sortedHydratedActivitiesFrom(
-        (state.__activities__ || []).concat(action.activities)
+        action.activities
       )
-      const { __activities__: nextActivities } = getNormalizedMergedState(
+
+      const deletedActivityIdentifiersByStateKey = deletedActivityIdentifiersByStateKeyFrom(
         state,
-        { __activities__: sortedHydratedActivities },
-        {
-          getDatumIdKey: () => 'localIdentifier',
-          getDatumIdValue: activity =>
-            activity.id || localIdentifierFrom(activity),
-          isMergingDatum: true,
-        }
+        sortedHydratedActivities
       )
+      const notDeletedActivities = notDeletedActivitiesFrom(
+        sortedHydratedActivities,
+        deletedActivityIdentifiersByStateKey
+      )
+
+      const stateWithoutDeletedEntities = stateWithoutDeletedEntitiesFrom(
+        state,
+        deletedActivityIdentifiersByStateKey
+      )
+
+      const entitiesByActivityIdentifier = entitiesByActivityIdentifierFrom(
+        state,
+        sortedHydratedActivities
+      )
+
+      const {
+        entityDateCreatedsByIdentifier,
+        entityDateModifiedsByIdentifier,
+      } = dateCreatedAndModifiedsByEntityIdentifierFrom(
+        state,
+        notDeletedActivities,
+        entitiesByActivityIdentifier
+      )
+
+      /*
+      const { __activities__: nextActivities } = getNormalizedMergedActivitiesState(state, sortedHydratedActivities)
+
       const nextState = nextActivities.length
         ? { ...state, __activities__: nextActivities }
         : state
@@ -47,6 +73,22 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
         { __activities__: nextState.__activities__ },
         { keepFromActivity }
       )
+      */
+
+      const activateState = normalizedActivatedStateFrom(
+        stateWithoutDeletedEntities,
+        notDeletedActivities,
+        {
+          entityDateCreatedsByIdentifier,
+          entityDateModifiedsByIdentifier,
+        }
+      )
+      activateState.__activities__ = mergedActivitiesFrom(
+        state.__activities__,
+        sortedHydratedActivities
+      )
+
+      return activateState
     }
 
     if (action.type === ASSIGN_DATA) {
@@ -89,10 +131,42 @@ export const createDataReducer = (initialState = {}, extraConfig = {}) => {
         nextState = { ...state, ...successState }
 
         if (state.__activities__) {
-          nextState = getNormalizedActivatedState(
+          const previousEntitiesByActivityIdentifier = entitiesByActivityIdentifierFrom(
+            state,
+            state.__activities__
+          )
+
+          const nextEntitiesByActivityIdentifier = entitiesByActivityIdentifierFrom(
             nextState,
-            { __activities__: state.__activities__ },
-            { keepFromActivity }
+            state.__activities__
+          )
+
+          nextState.__activities__ = activitiesWithDeprecationInfoFrom(
+            state.__activities__,
+            previousEntitiesByActivityIdentifier,
+            nextEntitiesByActivityIdentifier
+          )
+
+          const notDeprecatedActivities = nextState.__activities__.filter(
+            a => !a.deprecatedKeys || a.deprecatedKeys.length === 0
+          )
+
+          const {
+            entityDateCreatedsByIdentifier,
+            entityDateModifiedsByIdentifier,
+          } = dateCreatedAndModifiedsByEntityIdentifierFrom(
+            state,
+            notDeprecatedActivities,
+            nextEntitiesByActivityIdentifier
+          )
+
+          nextState = normalizedActivatedStateFrom(
+            nextState,
+            notDeprecatedActivities,
+            {
+              entityDateCreatedsByIdentifier,
+              entityDateModifiedsByIdentifier,
+            }
           )
         }
       }

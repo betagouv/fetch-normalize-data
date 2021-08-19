@@ -15,7 +15,7 @@ export function getPatchFromStateKeyAndPayload(stateKey, payload) {
   }
 
   data = data.map(datum => ({
-    lastBackendDateModified: datum.dateModified,
+    lastRemoteDateModified: datum.dateModified,
     ...datum,
   }))
 

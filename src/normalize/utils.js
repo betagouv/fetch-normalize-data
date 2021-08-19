@@ -9,13 +9,6 @@ export function getDefaultDatumIdValue(datum, index) {
   return index
 }
 
-export function getDefaultActivityFrom() {
-  return {}
-}
-
-export const localIdentifierFrom = activity =>
-  `${activity.entityIdentifier}/${activity.dateCreated}`
-
 const stateKeyFrom = activity => {
   let localStateKey = activity.localStateKey
   if (!localStateKey) {
@@ -40,7 +33,9 @@ export function hydratedActivityFrom(activity) {
     ...activity,
     dateCreated: activity.dateCreated || new Date().toISOString(),
     deprecatedKeys: null,
+    entityHasBeenModified: false,
     patch: { ...activity.patch },
+    stateKey: stateKeyFrom(activity),
   }
 }
 
@@ -103,11 +98,7 @@ export const sortedHydratedActivitiesFrom = activities => {
   return hydratedSortedActivities
 }
 
-export const deletedActivityIdentifiersByStateKeyFrom = (
-  state,
-  activities,
-  stateKeysByEntityIdentifier
-) => {
+export const deletedActivityIdentifiersByStateKeyFrom = (state, activities) => {
   const deletedActivityIdentifiersByStateKey = {}
   activities
     .filter(
@@ -117,7 +108,7 @@ export const deletedActivityIdentifiersByStateKeyFrom = (
     )
     .forEach(activity => {
       const activityIdentifier = activity.entityIdentifier
-      const stateKey = stateKeysByEntityIdentifier[activityIdentifier]
+      const stateKey = activity.stateKey
       if (!deletedActivityIdentifiersByStateKey[stateKey]) {
         deletedActivityIdentifiersByStateKey[stateKey] = [activityIdentifier]
       } else {
@@ -164,14 +155,10 @@ export const stateWithoutDeletedEntitiesFrom = (
   return stateWithoutDeletedEntities
 }
 
-export const entitiesByActivityIdentifierFrom = (
-  state,
-  activities,
-  stateKeysByEntityIdentifier
-) => {
+export const entitiesByActivityIdentifierFrom = (state, activities) => {
   const entitiesByActivityIdentifier = {}
   activities.forEach(activity => {
-    const stateKey = stateKeysByEntityIdentifier[activity.entityIdentifier]
+    const stateKey = activity.stateKey
     const entity = (state[stateKey] || []).find(
       e => e.activityIdentifier === activity.entityIdentifier
     )
@@ -182,37 +169,45 @@ export const entitiesByActivityIdentifierFrom = (
   return entitiesByActivityIdentifier
 }
 
-export const deprecatedAndNotDeprecatedActivitiesFrom = (
+export const activitiesWithDeprecationInfoFrom = (
   activities,
-  entitiesByActivityIdentifier
-) => {
-  const deprecatedActivities = []
-  const notDeprecatedActivities = []
-  activities.forEach(activity => {
-    const entity = entitiesByActivityIdentifier[activity.entityIdentifier]
+  previousEntitiesByActivityIdentifier,
+  nextEntitiesByActivityIdentifier
+) =>
+  activities.map(activity => {
+    const activityWithDeprecationInfo = {
+      ...activity,
+      deprecatedKeys: null,
+      entityHasBeenModified: false,
+    }
+    const previousEntity =
+      previousEntitiesByActivityIdentifier[activity.entityIdentifier]
+    const nextEntity =
+      nextEntitiesByActivityIdentifier[activity.entityIdentifier]
+
+    console.log({ previousEntity, nextEntity })
+
     if (
-      entity &&
-      entity.lastBackendDateModified &&
-      entity.lastBackendDateModified > activity.dateCreated
+      nextEntity &&
+      nextEntity.lastRemoteDateModified &&
+      nextEntity.lastRemoteDateModified > activity.dateCreated
     ) {
+      activityWithDeprecationInfo.entityHasBeenModified = true
+
+      console.log({ activity })
+
       const deprecatedKeys = []
       Object.keys(activity.patch).forEach(key => {
-        if (entity[key] !== activity.patch[key]) {
+        if (previousEntity[key] !== activity.patch[key]) {
           deprecatedKeys.push(key)
         }
       })
       if (deprecatedKeys.length > 0) {
-        deprecatedActivities.push({ ...activity, deprecatedKeys })
+        activityWithDeprecationInfo.deprecatedKeys = deprecatedKeys
       }
-      return
     }
-    notDeprecatedActivities.push(activity)
+    return activityWithDeprecationInfo
   })
-  return {
-    deprecatedActivities,
-    notDeprecatedActivities,
-  }
-}
 
 export const dateCreatedAndModifiedsByEntityIdentifierFrom = (
   state,
@@ -237,12 +232,18 @@ export const dateCreatedAndModifiedsByEntityIdentifierFrom = (
         return
       }
     }
+
     if (
       entityDateCreatedsByIdentifier[activity.entityIdentifier] !==
       activity.dateCreated
     ) {
-      entityDateModifiedsByIdentifier[activity.entityIdentifier] =
-        activity.dateCreated
+      if (new Date(entity.dateModified) < new Date(activity.dateCreated)) {
+        entityDateModifiedsByIdentifier[activity.entityIdentifier] =
+          activity.dateCreated
+      } else {
+        entityDateModifiedsByIdentifier[activity.entityIdentifier] =
+          entity.dateModified
+      }
     }
   })
 
