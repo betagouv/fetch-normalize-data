@@ -1,4 +1,4 @@
-const getDeletedPatchByActivityTags = (patch, tags) => {
+export function getDeletedPatchByActivityTags(patch, tags) {
   const deletedPatch = {}
   Object.keys(patch).forEach(key => {
     const filteredEntities = patch[key].filter(
