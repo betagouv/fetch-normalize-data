@@ -411,6 +411,90 @@ describe('src | createDataReducer', () => {
       })
     })
 
+    it('should delete an entity with a delete activity', () => {
+      // given
+      const entityIdentifier = 1
+      const firstDateCreated = new Date().toISOString()
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated: firstDateCreated,
+            deprecation: null,
+            entityHasBeenModified: false,
+            entityIdentifier,
+            localIdentifier: `0/${firstDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              positions: [
+                [0.1, 0.2],
+                [0.3, 0.4],
+              ],
+            },
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: entityIdentifier,
+            dateCreated: firstDateCreated,
+            dateModified: null,
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const secondDateCreated = new Date(
+        new Date(firstDateCreated).getTime() + 1
+      ).toISOString()
+      const activities = [
+        {
+          dateCreated: secondDateCreated,
+          entityIdentifier,
+          localIdentifier: `0/${secondDateCreated}`,
+          modelName: 'Foo',
+          verb: 'delete',
+        },
+      ]
+
+      // when
+      store.dispatch(activateData(activities))
+
+      // then
+      const nextState = store.getState().data
+      expect(nextState).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: firstDateCreated,
+            deprecation: null,
+            entityHasBeenModified: false,
+            entityIdentifier,
+            localIdentifier: `0/${firstDateCreated}`,
+            modelName: 'Foo',
+            patch: {
+              positions: [
+                [0.1, 0.2],
+                [0.3, 0.4],
+              ],
+            },
+            stateKey: 'foos',
+          },
+          {
+            dateCreated: secondDateCreated,
+            deprecation: null,
+            entityHasBeenModified: false,
+            entityIdentifier,
+            localIdentifier: `0/${secondDateCreated}`,
+            modelName: 'Foo',
+            patch: {},
+            stateKey: 'foos',
+            verb: 'delete',
+          },
+        ],
+      })
+    })
+
     it('should delete an entity with isSoftDeleted activity', () => {
       // given
       const entityIdentifier = 1
@@ -1111,7 +1195,7 @@ describe('src | createDataReducer', () => {
       })
     })
 
-    it.only('should not overide the local activity for entity.__remote__.dateModified greater than max of activity.dateCreated and items in patch that are not different from previous entity', () => {
+    it('should not overide the local activity for entity.__remote__.dateModified greater than max of activity.dateCreated and items in patch that are not different from previous entity', () => {
       // given
       const dateCreated = new Date().toISOString()
       const dateModifiedFromLocal = new Date(

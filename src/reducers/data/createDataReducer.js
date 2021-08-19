@@ -1,4 +1,4 @@
-import normalizedActivatedStateFrom, {
+import getNormalizedActivatedState, {
   mergedActivitiesFrom,
 } from '../../normalize/getNormalizedActivatedState'
 import getNormalizedDeletedState from '../../normalize/getNormalizedDeletedState'
@@ -76,7 +76,7 @@ export const createDataReducer = (initialState = {}) => {
       )
       */
 
-      const activateState = normalizedActivatedStateFrom(
+      const activateState = getNormalizedActivatedState(
         stateWithoutDeletedEntities,
         notDeletedActivities,
         {
@@ -161,7 +161,7 @@ export const createDataReducer = (initialState = {}) => {
             nextEntitiesByActivityIdentifier
           )
 
-          nextState = normalizedActivatedStateFrom(
+          nextState = getNormalizedActivatedState(
             nextState,
             notDeprecatedActivities,
             {

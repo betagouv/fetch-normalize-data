@@ -38,7 +38,7 @@ const activatedEntityFrom = (activity, config = {}) => {
   return activatedEntity
 }
 
-export function normalizedActivatedStateFrom(state, activities, config = {}) {
+export function getNormalizedActivatedState(state, activities, config = {}) {
   return activities.reduce(
     (aggregation, activity) => ({
       ...aggregation,
@@ -58,4 +58,4 @@ export function normalizedActivatedStateFrom(state, activities, config = {}) {
   )
 }
 
-export default normalizedActivatedStateFrom
+export default getNormalizedActivatedState
