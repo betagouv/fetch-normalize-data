@@ -7,6 +7,7 @@ import {
   activitiesWithDeprecationInfoFrom,
   dateCreatedAndModifiedsByEntityIdentifierFrom,
   deletedActivityIdentifiersByStateKeyFrom,
+  deprecatedActivitiesFrom,
   entitiesByActivityIdentifierFrom,
   notDeletedActivitiesFrom,
   sortedHydratedActivitiesFrom,
@@ -147,8 +148,8 @@ export const createDataReducer = (initialState = {}) => {
             nextEntitiesByActivityIdentifier
           )
 
-          const notDeprecatedActivities = nextState.__activities__.filter(
-            a => !a.deprecatedKeys || a.deprecatedKeys.length === 0
+          const notDeprecatedActivities = deprecatedActivitiesFrom(
+            nextState.__activities__
           )
 
           const {
