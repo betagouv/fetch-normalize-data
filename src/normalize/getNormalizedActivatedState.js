@@ -1,6 +1,6 @@
 import pluralize from 'pluralize'
 
-import getActivatedState, { mergedActivitiesFrom } from './getActivatedState'
+import getActivateState, { mergedActivitiesFrom } from './getActivateState'
 import {
   dateCreatedAndModifiedsByEntityIdentifierFrom,
   entitiesByActivityIdentifierFrom,
@@ -147,7 +147,7 @@ export function getNormalizedActivatedState(state, activities) {
     entitiesByActivityIdentifier
   )
 
-  const activateState = getActivatedState(
+  const activateState = getActivateState(
     stateWithoutDeletedEntities,
     notDeletedActivities,
     {

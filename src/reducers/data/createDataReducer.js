@@ -1,7 +1,7 @@
 import getNormalizedActivatedState from '../../normalize/getNormalizedActivatedState'
 import getNormalizedDeletedState from '../../normalize/getNormalizedDeletedState'
 import getNormalizedMergedState from '../../normalize/getNormalizedMergedState'
-import getNormalizedSuccessState from '../../normalize/getNormalizedSuccessState'
+import getNormalizedSucceedState from '../../normalize/getNormalizedSucceedState'
 
 import {
   ACTIVATE_DATA,
@@ -52,7 +52,7 @@ export const createDataReducer = (initialState = {}) => {
     }
 
     if (/SUCCESS_DATA_(DELETE|GET|POST|PUT|PATCH)_(.*)/.test(action.type)) {
-      return getNormalizedSuccessState(state, action)
+      return getNormalizedSucceedState(state, action)
     }
 
     return state

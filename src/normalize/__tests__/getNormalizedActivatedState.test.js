@@ -1,6 +1,6 @@
-import { getActivatedState } from '../getActivatedState'
+import { getActivateState } from '../getActivateState'
 
-describe('src | getActivatedState', () => {
+describe('src | getActivateState', () => {
   it('should create an entity through accumulated patches', () => {
     // given
     const state = {}
@@ -26,7 +26,7 @@ describe('src | getActivatedState', () => {
     ]
 
     // when
-    const nextState = getActivatedState(state, activities)
+    const nextState = getActivateState(state, activities)
 
     // then
     expect(nextState).toStrictEqual({
@@ -59,7 +59,7 @@ describe('src | getActivatedState', () => {
     ]
 
     // when
-    const nextState = getActivatedState(state, activities)
+    const nextState = getActivateState(state, activities)
 
     // then
     expect(nextState).toStrictEqual({
