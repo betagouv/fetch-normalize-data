@@ -1,6 +1,6 @@
-import { getNormalizedActivatedState } from '../getNormalizedActivatedState'
+import { getActivatedState } from '../getActivatedState'
 
-describe('src | getNormalizedActivatedState', () => {
+describe('src | getActivatedState', () => {
   it('should create an entity through accumulated patches', () => {
     // given
     const state = {}
@@ -26,7 +26,7 @@ describe('src | getNormalizedActivatedState', () => {
     ]
 
     // when
-    const nextState = getNormalizedActivatedState(state, activities)
+    const nextState = getActivatedState(state, activities)
 
     // then
     expect(nextState).toStrictEqual({
@@ -59,7 +59,7 @@ describe('src | getNormalizedActivatedState', () => {
     ]
 
     // when
-    const nextState = getNormalizedActivatedState(state, activities)
+    const nextState = getActivatedState(state, activities)
 
     // then
     expect(nextState).toStrictEqual({

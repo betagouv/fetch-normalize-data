@@ -1,7 +1,7 @@
-import getStateKeyFromConfig from '../../fetch/stateKey/getStateKeyFromConfig'
-import { successStatusCodesWithDataOrDatum } from '../../fetch/status'
-import getNormalizedDeletedState from '../../normalize/getNormalizedDeletedState'
-import getNormalizedMergedState from '../../normalize/getNormalizedMergedState'
+import getStateKeyFromConfig from '../fetch/stateKey/getStateKeyFromConfig'
+import { successStatusCodesWithDataOrDatum } from '../fetch/status'
+import getNormalizedDeletedState from './getNormalizedDeletedState'
+import getNormalizedMergedState from './getNormalizedMergedState'
 
 export function getPatchFromStateKeyAndPayload(stateKey, payload) {
   const { datum } = payload
