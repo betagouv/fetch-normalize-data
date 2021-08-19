@@ -1,3 +1,4 @@
+import uniq from 'lodash.uniq'
 import pluralize from 'pluralize'
 
 export function getDefaultDatumIdKey() {
@@ -32,7 +33,7 @@ export function hydratedActivityFrom(activity) {
   return {
     ...activity,
     dateCreated: activity.dateCreated || new Date().toISOString(),
-    deprecatedKeys: null,
+    deprecation: null,
     entityHasBeenModified: false,
     patch: { ...activity.patch },
     stateKey: stateKeyFrom(activity),
@@ -169,6 +170,22 @@ export const entitiesByActivityIdentifierFrom = (state, activities) => {
   return entitiesByActivityIdentifier
 }
 
+export const diffFrom = (previousEntity, nextEntity) => {
+  const diff = {}
+  const sharedKeys = uniq(
+    Object.keys(previousEntity).concat(Object.keys(nextEntity))
+  )
+  sharedKeys.forEach(key => {
+    if (['__remote__', 'dateModified', '__tags__'].includes(key)) return
+    const previousRemoteValue = previousEntity.__remote__[key]
+    const nextRemoteValue = nextEntity.__remote__[key]
+    if (previousRemoteValue !== nextRemoteValue) {
+      diff[key] = { previous: previousRemoteValue, next: nextRemoteValue }
+    }
+  })
+  return diff
+}
+
 export const activitiesWithDeprecationInfoFrom = (
   activities,
   previousEntitiesByActivityIdentifier,
@@ -177,7 +194,7 @@ export const activitiesWithDeprecationInfoFrom = (
   activities.map(activity => {
     const activityWithDeprecationInfo = {
       ...activity,
-      deprecatedKeys: null,
+      deprecation: null,
       entityHasBeenModified: false,
     }
     const previousEntity =
@@ -185,25 +202,22 @@ export const activitiesWithDeprecationInfoFrom = (
     const nextEntity =
       nextEntitiesByActivityIdentifier[activity.entityIdentifier]
 
-    console.log({ previousEntity, nextEntity })
-
     if (
       nextEntity &&
-      nextEntity.lastRemoteDateModified &&
-      nextEntity.lastRemoteDateModified > activity.dateCreated
+      nextEntity.__remote__ &&
+      nextEntity.__remote__.dateModified &&
+      nextEntity.__remote__.dateModified > activity.dateCreated
     ) {
       activityWithDeprecationInfo.entityHasBeenModified = true
-
-      console.log({ activity })
-
-      const deprecatedKeys = []
+      const diff = diffFrom(previousEntity, nextEntity)
+      const deprecation = {}
       Object.keys(activity.patch).forEach(key => {
-        if (previousEntity[key] !== activity.patch[key]) {
-          deprecatedKeys.push(key)
+        if (diff[key]) {
+          deprecation[key] = diff[key]
         }
       })
-      if (deprecatedKeys.length > 0) {
-        activityWithDeprecationInfo.deprecatedKeys = deprecatedKeys
+      if (Object.keys(deprecation).length > 0) {
+        activityWithDeprecationInfo.deprecation = deprecation
       }
     }
     return activityWithDeprecationInfo
@@ -237,7 +251,11 @@ export const dateCreatedAndModifiedsByEntityIdentifierFrom = (
       entityDateCreatedsByIdentifier[activity.entityIdentifier] !==
       activity.dateCreated
     ) {
-      if (new Date(entity.dateModified) < new Date(activity.dateCreated)) {
+      if (
+        !entity ||
+        !entity.dateModified ||
+        new Date(activity.dateCreated) >= new Date(entity.dateModified)
+      ) {
         entityDateModifiedsByIdentifier[activity.entityIdentifier] =
           activity.dateCreated
       } else {
@@ -252,3 +270,9 @@ export const dateCreatedAndModifiedsByEntityIdentifierFrom = (
     entityDateModifiedsByIdentifier,
   }
 }
+
+export const deprecatedActivitiesFrom = activities =>
+  activities.filter(
+    activity =>
+      !activity.deprecation || Object.keys(activity.deprecation).length === 0
+  )

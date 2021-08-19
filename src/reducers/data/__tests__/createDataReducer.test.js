@@ -22,7 +22,7 @@ describe('src | createDataReducer', () => {
             dateCreated: firstDateCreated,
             entityIdentifier: 1,
             id: 'AE',
-            deprecatedKeys: [],
+            deprecation: [],
             entityHasBeenModified: false,
             localIdentifier: `1/${firstDateCreated}`,
             patch: {
@@ -99,21 +99,21 @@ describe('src | createDataReducer', () => {
           initialState.__activities__[0],
           {
             ...activities[0],
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             localIdentifier: `1/${secondDateCreated}`,
             stateKey: 'foos',
           },
           {
             ...activities[1],
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             localIdentifier: `2/${secondDateCreated}`,
             stateKey: 'foos',
           },
           {
             ...activities[2],
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             localIdentifier: `1/${thirdDateCreated}`,
             stateKey: 'foos',
@@ -195,7 +195,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: firstDateCreated,
             entityIdentifier,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             localIdentifier: `1/${firstDateCreated}`,
             modelName: 'Foo',
@@ -206,7 +206,7 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: secondDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `1/${secondDateCreated}`,
@@ -218,7 +218,7 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: nextDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `1/${nextDateCreated}`,
@@ -284,7 +284,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: activityDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `${entityIdentifier}/${activityDateCreated}`,
@@ -315,7 +315,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: firstDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
@@ -368,7 +368,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: firstDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
@@ -383,7 +383,7 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: secondDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${secondDateCreated}`,
@@ -419,7 +419,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: firstDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
@@ -469,7 +469,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: firstDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
@@ -484,7 +484,7 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: secondDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${secondDateCreated}`,
@@ -515,7 +515,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: fromFirstActivityDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromFirstActivityDateCreated}`,
@@ -527,7 +527,7 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: fromSecondActivityDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromSecondActivityDateCreated}`,
@@ -573,7 +573,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: fromFirstActivityDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromFirstActivityDateCreated}`,
@@ -585,7 +585,7 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: fromSecondActivityDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromSecondActivityDateCreated}`,
@@ -597,7 +597,7 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: fromThirdActivityDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromThirdActivityDateCreated}`,
@@ -756,7 +756,7 @@ describe('src | createDataReducer', () => {
       // then
       const expectedFoos = foos.map(foo => ({
         ...foo,
-        lastRemoteDateModified: undefined,
+        __remote__: foo,
         __tags__: ['/foos'],
       }))
       expect(store.getState().data).toStrictEqual({
@@ -791,7 +791,7 @@ describe('src | createDataReducer', () => {
       // then
       const expectedFoos = foos.map(foo => ({
         ...foo,
-        lastRemoteDateModified: undefined,
+        __remote__: foo,
         __tags__: ['/foos-one', '/foos-two'],
       }))
       expect(store.getState().data).toStrictEqual({
@@ -835,7 +835,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: dateModified,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier: 1,
             id: 1,
@@ -884,7 +884,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: dateModified,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier: 1,
             id: 1,
@@ -901,17 +901,17 @@ describe('src | createDataReducer', () => {
             activityIdentifier: 1,
             dateCreated,
             dateModified,
-            lastRemoteDateModified: undefined,
             id: 1,
             moreValue: 1,
             value: valueModifiedByActivityThatShouldStayInPlace,
+            __remote__: foos[0],
             __tags__: ['/foos'],
           },
         ],
       })
     })
 
-    it('should not overide the local activity for entity.lastRemoteDateModified smaller than max of activity.dateCreated', () => {
+    it('should not overide the local activity for entity.__remote__.dateModified smaller than max of activity.dateCreated', () => {
       // given
       const dateCreated = new Date().toISOString()
       const dateModifiedFromRemote = new Date(
@@ -928,7 +928,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: dateModifiedFromLocal,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier: 1,
             id: 1,
@@ -977,7 +977,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: dateModifiedFromLocal,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier: 1,
             id: 1,
@@ -994,17 +994,17 @@ describe('src | createDataReducer', () => {
             activityIdentifier: 1,
             dateCreated,
             dateModified: dateModifiedFromLocal,
-            lastRemoteDateModified: dateModifiedFromRemote,
             id: 1,
             moreValue: 1,
             value: valueModifiedByActivityThatShouldStayInPlace,
+            __remote__: foos[0],
             __tags__: ['/foos'],
           },
         ],
       })
     })
 
-    it('should overide the local activity for entity.lastRemoteDateModified greater than max of activity.dateCreated and items in patch that are different from previous entity', () => {
+    it('should overide the local activity for entity.__remote__.dateModified greater than max of activity.dateCreated and items in patch that are different from previous entity', () => {
       // given
       const dateCreated = new Date().toISOString()
       const dateModifiedFromLocal = new Date(
@@ -1014,6 +1014,7 @@ describe('src | createDataReducer', () => {
         new Date(dateCreated).getTime() + 2
       ).toISOString()
 
+      const initialValueFromPreviousRemote = 'euh'
       const valueModifiedByActivityThatShouldNotStayInPlace = 'hello'
       const valueFromRemoteThatShouldBeConsidered = 'byebye'
 
@@ -1021,7 +1022,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: dateModifiedFromLocal,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier: 1,
             id: 1,
@@ -1040,6 +1041,13 @@ describe('src | createDataReducer', () => {
             dateModified: dateModifiedFromLocal,
             id: 1,
             value: valueModifiedByActivityThatShouldNotStayInPlace,
+            __remote__: {
+              activityIdentifier: 1,
+              dateCreated,
+              dateModified: null,
+              id: 1,
+              value: initialValueFromPreviousRemote,
+            },
           },
         ],
       }
@@ -1071,7 +1079,12 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: dateModifiedFromLocal,
-            deprecatedKeys: ['value'],
+            deprecation: {
+              value: {
+                previous: initialValueFromPreviousRemote,
+                next: valueFromRemoteThatShouldBeConsidered,
+              },
+            },
             entityHasBeenModified: true,
             entityIdentifier: 1,
             id: 1,
@@ -1088,17 +1101,17 @@ describe('src | createDataReducer', () => {
             activityIdentifier: 1,
             dateCreated,
             dateModified: dateModifiedFromRemote,
-            lastRemoteDateModified: dateModifiedFromRemote,
             id: 1,
             moreValue: 1,
             value: valueFromRemoteThatShouldBeConsidered,
+            __remote__: foos[0],
             __tags__: ['/foos'],
           },
         ],
       })
     })
 
-    it('should not overide the local activity for entity.lastRemoteDateModified greater than max of activity.dateCreated and items in patch that are not different from previous entity', () => {
+    it.only('should not overide the local activity for entity.__remote__.dateModified greater than max of activity.dateCreated and items in patch that are not different from previous entity', () => {
       // given
       const dateCreated = new Date().toISOString()
       const dateModifiedFromLocal = new Date(
@@ -1117,7 +1130,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: dateModifiedFromLocal,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier: 1,
             id: 1,
@@ -1136,6 +1149,13 @@ describe('src | createDataReducer', () => {
             dateModified: dateModifiedFromLocal,
             id: 1,
             value: valueModifiedByActivityThatShouldStayInPlace,
+            __remote__: {
+              activityIdentifier: 1,
+              dateCreated,
+              dateModified: null,
+              id: 1,
+              value: oldValueReturnedByRemote,
+            },
           },
         ],
       }
@@ -1167,7 +1187,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: dateModifiedFromLocal,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: true,
             entityIdentifier: 1,
             id: 1,
@@ -1185,9 +1205,9 @@ describe('src | createDataReducer', () => {
             dateCreated,
             dateModified: dateModifiedFromRemote,
             id: 1,
-            lastRemoteDateModified: dateModifiedFromRemote,
             moreValue: valueFromRemoteThatShouldNotCreateDeprecation,
             value: valueModifiedByActivityThatShouldStayInPlace,
+            __remote__: foos[0],
             __tags__: ['/foos'],
           },
         ],
@@ -1204,7 +1224,7 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: firstDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${firstDateCreated}`,
@@ -1216,7 +1236,7 @@ describe('src | createDataReducer', () => {
           },
           {
             dateCreated: secondDateCreated,
-            deprecatedKeys: null,
+            deprecation: null,
             entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${secondDateCreated}`,
