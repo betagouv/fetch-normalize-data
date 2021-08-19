@@ -8,7 +8,7 @@ export function getMergedData(nextData, previousData, config) {
     return nextData
   }
 
-  const { isMergingDatum, isMutatingDatum, resolve } = config
+  const { cacheKey, isMergingDatum, isMutatingDatum, resolve } = config
   const getDatumIdValue = config.getDatumIdValue || getDefaultDatumIdValue
   const isMutatingArray =
     typeof config.isMutatingArray === 'undefined'
@@ -70,6 +70,17 @@ export function getMergedData(nextData, previousData, config) {
     }
 
     mergedData[resolvedIndex] = datum
+
+    if (cacheKey) {
+      const cache = { ...nextDatum }
+      if (cache.__normalizers__) {
+        delete cache.__normalizers__
+      }
+      if (cache.__tags__) {
+        delete cache.__tags__
+      }
+      mergedData[resolvedIndex][cacheKey] = cache
+    }
   })
 
   return mergedData

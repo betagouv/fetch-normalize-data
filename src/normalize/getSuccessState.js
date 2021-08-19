@@ -14,11 +14,6 @@ export function getPatchFromStateKeyAndPayload(stateKey, payload) {
     }
   }
 
-  data = data.map(datum => ({
-    __remote__: datum,
-    ...datum,
-  }))
-
   const patch = { [stateKey]: data }
 
   return patch
@@ -36,9 +31,16 @@ export const getSuccessState = (state, action) => {
 
   const patch = getPatchFromStateKeyAndPayload(stateKey, payload)
 
-  const normalizerConfig = Object.assign({ normalizer }, config)
+  const deleteOrMergeConfig = Object.assign(
+    {
+      cacheKey: '__remote__',
+      normalizer,
+    },
+    config
+  )
+
   if (normalizer) {
-    normalizerConfig.normalizer = {
+    deleteOrMergeConfig.normalizer = {
       [stateKey]: {
         normalizer,
         stateKey,
@@ -47,10 +49,10 @@ export const getSuccessState = (state, action) => {
   }
 
   if (method === 'DELETE') {
-    return getNormalizedDeletedState(state, patch, normalizerConfig)
+    return getNormalizedDeletedState(state, patch, deleteOrMergeConfig)
   }
 
-  const nextState = getNormalizedMergedState(state, patch, normalizerConfig)
+  const nextState = getNormalizedMergedState(state, patch, deleteOrMergeConfig)
 
   return nextState
 }

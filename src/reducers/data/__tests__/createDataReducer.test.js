@@ -1204,7 +1204,6 @@ describe('src | createDataReducer', () => {
       const dateModifiedFromRemote = new Date(
         new Date(dateCreated).getTime() + 2
       ).toISOString()
-
       const valueFromRemoteThatShouldNotCreateDeprecation = 'byebye'
 
       const oldValueReturnedByRemote = 'old hello'
@@ -1293,6 +1292,299 @@ describe('src | createDataReducer', () => {
             value: valueModifiedByActivityThatShouldStayInPlace,
             __remote__: foos[0],
             __tags__: ['/foos'],
+          },
+        ],
+      })
+    })
+
+    it('should overide the local activity for nested entity.__remote__.dateModified greater than max of activity.dateCreated and items in patch that are different from previous entity', () => {
+      // given
+      const dateCreated = new Date().toISOString()
+      const dateModifiedFromLocal = new Date(
+        new Date(dateCreated).getTime() + 1
+      ).toISOString()
+      const dateModifiedFromRemote = new Date(
+        new Date(dateCreated).getTime() + 2
+      ).toISOString()
+
+      const initialValueFromPreviousRemote = 'euh'
+      const valueModifiedByActivityThatShouldNotStayInPlace = 'hello'
+      const valueFromRemoteThatShouldBeConsidered = 'byebye'
+
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            deprecation: null,
+            entityHasBeenModified: false,
+            entityIdentifier: 1,
+            id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldNotStayInPlace,
+            },
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromLocal,
+            id: 1,
+            value: valueModifiedByActivityThatShouldNotStayInPlace,
+            __normalizers__: [{ datumKey: 'foo' }],
+            __remote__: {
+              activityIdentifier: 1,
+              dateCreated,
+              dateModified: null,
+              id: 1,
+              value: initialValueFromPreviousRemote,
+            },
+            __tags__: ['/bars'],
+          },
+        ],
+        bars: [
+          {
+            activityIdentifier: 2,
+            dateCreated,
+            dateModified: null,
+            foo: { stateKey: 'foos', type: '__normalizer__' },
+            id: 1,
+            __remote__: {
+              activityIdentifier: 2,
+              dateCreated,
+              dateModified: null,
+              id: 1,
+            },
+            __tags__: ['/bars'],
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const bars = [
+        {
+          activityIdentifier: 2,
+          dateCreated,
+          dateModified: null,
+          id: 1,
+          foo: {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromRemote,
+            id: 1,
+            moreValue: 1,
+            value: valueFromRemoteThatShouldBeConsidered,
+          },
+        },
+      ]
+
+      // when
+      store.dispatch(
+        successData(
+          { data: bars, status: 200 },
+          { apiPath: '/bars', method: 'GET', normalizer: { foo: 'foos' } }
+        )
+      )
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            deprecation: {
+              value: {
+                previous: initialValueFromPreviousRemote,
+                next: valueFromRemoteThatShouldBeConsidered,
+              },
+            },
+            entityHasBeenModified: true,
+            entityIdentifier: 1,
+            id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldNotStayInPlace,
+            },
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromRemote,
+            id: 1,
+            moreValue: 1,
+            value: valueFromRemoteThatShouldBeConsidered,
+            __normalizers__: [{ datumKey: 'foo' }],
+            __remote__: bars[0].foo,
+            __tags__: ['/bars'],
+          },
+        ],
+        bars: [
+          {
+            activityIdentifier: 2,
+            dateCreated,
+            dateModified: null,
+            foo: { stateKey: 'foos', type: '__normalizer__' },
+            id: 1,
+            __remote__: {
+              activityIdentifier: 2,
+              dateCreated,
+              dateModified: null,
+              foo: { stateKey: 'foos', type: '__normalizer__' },
+              id: 1,
+            },
+            __tags__: ['/bars'],
+          },
+        ],
+      })
+    })
+
+    it('should not overide the local activity for nested entity.__remote__.dateModified greater than max of activity.dateCreated and items in patch that are not different from previous entity', () => {
+      // given
+      const dateCreated = new Date().toISOString()
+      const dateModifiedFromLocal = new Date(
+        new Date(dateCreated).getTime() + 1
+      ).toISOString()
+      const dateModifiedFromRemote = new Date(
+        new Date(dateCreated).getTime() + 2
+      ).toISOString()
+      const valueFromRemoteThatShouldNotCreateDeprecation = 'byebye'
+
+      const oldValueReturnedByRemote = 'old hello'
+      const valueModifiedByActivityThatShouldStayInPlace = 'hello'
+
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            deprecation: null,
+            entityHasBeenModified: false,
+            entityIdentifier: 1,
+            id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldStayInPlace,
+            },
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromLocal,
+            id: 1,
+            value: valueModifiedByActivityThatShouldStayInPlace,
+            __normalizers__: [{ datumKey: 'foo' }],
+            __remote__: {
+              activityIdentifier: 1,
+              dateCreated,
+              dateModified: null,
+              id: 1,
+              value: oldValueReturnedByRemote,
+            },
+            __tags__: ['/bars'],
+          },
+        ],
+        bars: [
+          {
+            activityIdentifier: 2,
+            dateCreated,
+            dateModified: null,
+            foo: { stateKey: 'foos', type: '__normalizer__' },
+            id: 1,
+            __remote__: {
+              activityIdentifier: 2,
+              dateCreated,
+              dateModified: null,
+              id: 1,
+            },
+            __tags__: ['/bars'],
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const bars = [
+        {
+          activityIdentifier: 2,
+          dateCreated,
+          dateModified: null,
+          id: 1,
+          foo: {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromRemote,
+            id: 1,
+            moreValue: valueFromRemoteThatShouldNotCreateDeprecation,
+            value: oldValueReturnedByRemote,
+          },
+        },
+      ]
+
+      // when
+      store.dispatch(
+        successData(
+          { data: bars, status: 200 },
+          { apiPath: '/bars', method: 'GET', normalizer: { foo: 'foos' } }
+        )
+      )
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            deprecation: null,
+            entityHasBeenModified: true,
+            entityIdentifier: 1,
+            id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldStayInPlace,
+            },
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromRemote,
+            id: 1,
+            moreValue: valueFromRemoteThatShouldNotCreateDeprecation,
+            value: valueModifiedByActivityThatShouldStayInPlace,
+            __normalizers__: [{ datumKey: 'foo' }],
+            __remote__: bars[0].foo,
+            __tags__: ['/bars'],
+          },
+        ],
+        bars: [
+          {
+            activityIdentifier: 2,
+            dateCreated,
+            dateModified: null,
+            foo: { stateKey: 'foos', type: '__normalizer__' },
+            id: 1,
+            __remote__: {
+              activityIdentifier: 2,
+              dateCreated,
+              dateModified: null,
+              foo: { stateKey: 'foos', type: '__normalizer__' },
+              id: 1,
+            },
+            __tags__: ['/bars'],
           },
         ],
       })
