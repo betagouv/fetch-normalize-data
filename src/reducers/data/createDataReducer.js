@@ -10,7 +10,7 @@ import {
   MERGE_DATA,
   REINITIALIZE_DATA,
 } from './actions'
-import getDeletedPatchByActivityTag from './getDeletedPatchByActivityTag'
+import getDeletedPatchByActivityTags from './getDeletedPatchByActivityTags'
 import reinitializeState from './reinitializeState'
 
 export const createDataReducer = (initialState = {}) => {
@@ -28,7 +28,7 @@ export const createDataReducer = (initialState = {}) => {
     if (action.type === DELETE_DATA) {
       let patch = action.patch || state
       if (action.config.tags) {
-        patch = getDeletedPatchByActivityTag(patch, action.config.tags)
+        patch = getDeletedPatchByActivityTags(patch, action.config.tags)
       }
       const deleteState = getNormalizedDeletedState(state, patch, action.config)
       return Object.keys(deleteState).length
