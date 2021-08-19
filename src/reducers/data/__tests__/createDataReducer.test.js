@@ -23,6 +23,7 @@ describe('src | createDataReducer', () => {
             entityIdentifier: 1,
             id: 'AE',
             deprecatedKeys: [],
+            entityHasBeenModified: false,
             localIdentifier: `1/${firstDateCreated}`,
             patch: {
               fromFirstActivity: 1,
@@ -31,6 +32,7 @@ describe('src | createDataReducer', () => {
                 fromFirstActivity: 1,
               },
             },
+            stateKey: 'foos',
             tableName: 'foo',
           },
         ],
@@ -94,23 +96,27 @@ describe('src | createDataReducer', () => {
       // then
       expect(store.getState().data).toStrictEqual({
         __activities__: [
-          {
-            ...initialState.__activities__[0],
-          },
+          initialState.__activities__[0],
           {
             ...activities[0],
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             localIdentifier: `1/${secondDateCreated}`,
+            stateKey: 'foos',
           },
           {
             ...activities[1],
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             localIdentifier: `2/${secondDateCreated}`,
+            stateKey: 'foos',
           },
           {
             ...activities[2],
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             localIdentifier: `1/${thirdDateCreated}`,
+            stateKey: 'foos',
           },
         ],
         foos: [
@@ -190,31 +196,37 @@ describe('src | createDataReducer', () => {
             dateCreated: firstDateCreated,
             entityIdentifier,
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             localIdentifier: `1/${firstDateCreated}`,
             modelName: 'Foo',
             patch: {
               textA: 'bar',
             },
+            stateKey: 'foos',
           },
           {
             dateCreated: secondDateCreated,
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `1/${secondDateCreated}`,
             modelName: 'Foo',
             patch: {
               textB: 'bir',
             },
+            stateKey: 'foos',
           },
           {
             dateCreated: nextDateCreated,
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `1/${nextDateCreated}`,
             modelName: 'Foo',
             patch: {
               textC: 'bor',
             },
+            stateKey: 'foos',
           },
         ],
         foos: [
@@ -273,12 +285,14 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: activityDateCreated,
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `${entityIdentifier}/${activityDateCreated}`,
             modelName: 'Foo',
             patch: {
               value: 1,
             },
+            stateKey: 'foos',
           },
         ],
         foos: [
@@ -302,6 +316,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: firstDateCreated,
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
@@ -311,6 +326,7 @@ describe('src | createDataReducer', () => {
                 [0.3, 0.4],
               ],
             },
+            stateKey: 'foos',
           },
         ],
         foos: [
@@ -353,6 +369,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: firstDateCreated,
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
@@ -362,10 +379,12 @@ describe('src | createDataReducer', () => {
                 [0.3, 0.4],
               ],
             },
+            stateKey: 'foos',
           },
           {
             dateCreated: secondDateCreated,
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${secondDateCreated}`,
             modelName: 'Foo',
@@ -375,6 +394,7 @@ describe('src | createDataReducer', () => {
                 [0.7, 0.6],
               ],
             },
+            stateKey: 'foos',
           },
         ],
         foos: [
@@ -400,6 +420,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: firstDateCreated,
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
@@ -409,6 +430,7 @@ describe('src | createDataReducer', () => {
                 [0.3, 0.4],
               ],
             },
+            stateKey: 'foos',
           },
         ],
         foos: [
@@ -448,6 +470,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: firstDateCreated,
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
@@ -457,16 +480,19 @@ describe('src | createDataReducer', () => {
                 [0.3, 0.4],
               ],
             },
+            stateKey: 'foos',
           },
           {
             dateCreated: secondDateCreated,
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${secondDateCreated}`,
             modelName: 'Foo',
             patch: {
               isSoftDeleted: true,
             },
+            stateKey: 'foos',
           },
         ],
       })
@@ -489,21 +515,27 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: fromFirstActivityDateCreated,
+            deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromFirstActivityDateCreated}`,
             modelName: 'Foo',
             patch: {
               value: fromFirstActivityValue,
             },
+            stateKey: 'foos',
           },
           {
             dateCreated: fromSecondActivityDateCreated,
+            deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromSecondActivityDateCreated}`,
             modelName: 'Foo',
             patch: {
               value: fromSecondActivityValue,
             },
+            stateKey: 'foos',
           },
         ],
         foos: [
@@ -542,32 +574,38 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: fromFirstActivityDateCreated,
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromFirstActivityDateCreated}`,
             modelName: 'Foo',
             patch: {
               value: fromFirstActivityValue,
             },
+            stateKey: 'foos',
           },
           {
             dateCreated: fromSecondActivityDateCreated,
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromSecondActivityDateCreated}`,
             modelName: 'Foo',
             patch: {
               value: fromSecondActivityValue,
             },
+            stateKey: 'foos',
           },
           {
             dateCreated: fromThirdActivityDateCreated,
             deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromThirdActivityDateCreated}`,
             modelName: 'Foo',
             patch: {
               value: fromThirdActivityValue,
             },
+            stateKey: 'foos',
           },
         ],
         foos: [
@@ -718,7 +756,7 @@ describe('src | createDataReducer', () => {
       // then
       const expectedFoos = foos.map(foo => ({
         ...foo,
-        lastBackendDateModified: undefined,
+        lastRemoteDateModified: undefined,
         __tags__: ['/foos'],
       }))
       expect(store.getState().data).toStrictEqual({
@@ -753,7 +791,7 @@ describe('src | createDataReducer', () => {
       // then
       const expectedFoos = foos.map(foo => ({
         ...foo,
-        lastBackendDateModified: undefined,
+        lastRemoteDateModified: undefined,
         __tags__: ['/foos-one', '/foos-two'],
       }))
       expect(store.getState().data).toStrictEqual({
@@ -783,228 +821,6 @@ describe('src | createDataReducer', () => {
       expect(store.getState().data).toStrictEqual({ bars: [] })
     })
 
-    it('should merge appeared twice nested entities with their activities when we normalize', () => {
-      // given
-      const initialState = {}
-      const rootReducer = combineReducers({
-        data: createDataReducer(initialState),
-      })
-      const store = createStore(rootReducer)
-      const firstDateCreated = new Date().toISOString()
-      const foos = [
-        {
-          __activities__: [
-            {
-              dateCreated: firstDateCreated,
-              entityIdentifier: 1,
-              id: 1,
-              modelName: 'Foo',
-              patch: {
-                id: 1,
-                value: 'foo',
-              },
-            },
-          ],
-          activityIdentifier: 1,
-          id: 1,
-          subFoo: {
-            __activities__: [
-              {
-                dateCreated: firstDateCreated,
-                entityIdentifier: 2,
-                id: 2,
-                modelName: 'SubFoo',
-                patch: {
-                  id: 1,
-                  subValue: 'fee',
-                },
-              },
-            ],
-            activityIdentifier: 2,
-            id: 1,
-            subValue: 'fee',
-            subSubFoo: {
-              __activities__: [
-                {
-                  dateCreated: firstDateCreated,
-                  entityIdentifier: 3,
-                  id: 3,
-                  modelName: 'SubSubFoo',
-                  patch: {
-                    id: 1,
-                    subSubValue: 'fuu',
-                  },
-                },
-              ],
-              activityIdentifier: 3,
-              id: 1,
-              subSubValue: 'fuu',
-            },
-          },
-          sameSubFoo: {
-            __activities__: [
-              {
-                dateCreated: firstDateCreated,
-                entityIdentifier: 2,
-                id: 2,
-                modelName: 'SubFoo',
-                patch: {
-                  id: 1,
-                  subValue: 'fee',
-                },
-              },
-            ],
-            activityIdentifier: 2,
-            id: 1,
-            subValue: 'fee',
-            subSubFoo: {
-              __activities__: [
-                {
-                  dateCreated: firstDateCreated,
-                  entityIdentifier: 3,
-                  id: 3,
-                  modelName: 'SubSubFoo',
-                  patch: {
-                    id: 1,
-                    subSubValue: 'fuu',
-                  },
-                },
-              ],
-              activityIdentifier: 3,
-              id: 1,
-              subSubValue: 'fuu',
-            },
-          },
-          value: 'foo',
-        },
-      ]
-
-      // when
-      store.dispatch(
-        successData(
-          { data: foos, status: 200 },
-          {
-            apiPath: '/foos',
-            method: 'GET',
-            normalizer: {
-              __activities__: '__activities__',
-              subFoo: {
-                normalizer: {
-                  __activities__: '__activities__',
-                  subSubFoo: {
-                    normalizer: {
-                      __activities__: '__activities__',
-                    },
-                    stateKey: 'subSubFoos',
-                  },
-                },
-                stateKey: 'subFoos',
-              },
-              sameSubFoo: {
-                normalizer: {
-                  __activities__: '__activities__',
-                  subSubFoo: {
-                    normalizer: {
-                      __activities__: '__activities__',
-                    },
-                    stateKey: 'subSubFoos',
-                  },
-                },
-                stateKey: 'subFoos',
-              },
-            },
-          }
-        )
-      )
-
-      // then
-      expect(store.getState().data).toStrictEqual({
-        __activities__: [
-          {
-            dateCreated: firstDateCreated,
-            entityIdentifier: 1,
-            id: 1,
-            modelName: 'Foo',
-            patch: {
-              id: 1,
-              value: 'foo',
-            },
-            __normalizers__: [{ datumKey: '__activities__' }],
-            __tags__: ['/foos'],
-          },
-          {
-            dateCreated: firstDateCreated,
-            entityIdentifier: 2,
-            id: 2,
-            modelName: 'SubFoo',
-            patch: {
-              id: 1,
-              subValue: 'fee',
-            },
-            __normalizers__: [{ datumKey: '__activities__' }],
-            __tags__: ['/foos'],
-          },
-          {
-            dateCreated: firstDateCreated,
-            entityIdentifier: 3,
-            id: 3,
-            modelName: 'SubSubFoo',
-            patch: {
-              id: 1,
-              subSubValue: 'fuu',
-            },
-            __normalizers__: [{ datumKey: '__activities__' }],
-            __tags__: ['/foos'],
-          },
-        ],
-        foos: [
-          {
-            __activities__: {
-              stateKey: '__activities__',
-              type: '__normalizer__',
-            },
-            activityIdentifier: 1,
-            lastBackendDateModified: undefined,
-            id: 1,
-            sameSubFoo: { stateKey: 'subFoos', type: '__normalizer__' },
-            subFoo: { stateKey: 'subFoos', type: '__normalizer__' },
-            value: 'foo',
-            __tags__: ['/foos'],
-          },
-        ],
-        subFoos: [
-          {
-            __activities__: {
-              stateKey: '__activities__',
-              type: '__normalizer__',
-            },
-            activityIdentifier: 2,
-            id: 1,
-            subSubFoo: { stateKey: 'subSubFoos', type: '__normalizer__' },
-            subValue: 'fee',
-            __normalizers__: [
-              { datumKey: 'subFoo' },
-              { datumKey: 'sameSubFoo' },
-            ],
-            __tags__: ['/foos'],
-          },
-        ],
-        subSubFoos: [
-          {
-            __activities__: {
-              stateKey: '__activities__',
-              type: '__normalizer__',
-            },
-            activityIdentifier: 3,
-            id: 1,
-            subSubValue: 'fuu',
-            __normalizers__: [{ datumKey: 'subSubFoo' }],
-            __tags__: ['/foos'],
-          },
-        ],
-      })
-    })
-
     it('should not overide the local activity for entity.dateModified undefined', () => {
       // given
       const dateCreated = new Date().toISOString()
@@ -1013,24 +829,29 @@ describe('src | createDataReducer', () => {
       ).toISOString()
 
       const valueModifiedByActivityThatShouldStayInPlace = 'hello'
-      const valueFromBackendThatShouldNotBeConsidered = 'byebye'
+      const valueFromRemoteThatShouldNotBeConsidered = 'byebye'
 
       const initialState = {
         __activities__: [
           {
             dateCreated: dateModified,
+            deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier: 1,
             id: 1,
+            localIdentifier: `1/${dateModified}`,
             modelName: 'Foo',
             patch: {
               value: valueModifiedByActivityThatShouldStayInPlace,
             },
+            stateKey: 'foos',
           },
         ],
         foos: [
           {
             activityIdentifier: 1,
             dateCreated,
+            dateModified: null,
             id: 1,
             value: valueModifiedByActivityThatShouldStayInPlace,
           },
@@ -1046,7 +867,7 @@ describe('src | createDataReducer', () => {
           dateCreated,
           id: 1,
           moreValue: 1,
-          value: valueFromBackendThatShouldNotBeConsidered,
+          value: valueFromRemoteThatShouldNotBeConsidered,
         },
       ]
 
@@ -1063,12 +884,16 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: dateModified,
+            deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier: 1,
             id: 1,
+            localIdentifier: `1/${dateModified}`,
             modelName: 'Foo',
             patch: {
               value: valueModifiedByActivityThatShouldStayInPlace,
             },
+            stateKey: 'foos',
           },
         ],
         foos: [
@@ -1076,7 +901,7 @@ describe('src | createDataReducer', () => {
             activityIdentifier: 1,
             dateCreated,
             dateModified,
-            lastBackendDateModified: undefined,
+            lastRemoteDateModified: undefined,
             id: 1,
             moreValue: 1,
             value: valueModifiedByActivityThatShouldStayInPlace,
@@ -1086,10 +911,10 @@ describe('src | createDataReducer', () => {
       })
     })
 
-    it('should not overide the local activity for entity.dateModified smaller than max of activity.dateCreated', () => {
+    it('should not overide the local activity for entity.lastRemoteDateModified smaller than max of activity.dateCreated', () => {
       // given
       const dateCreated = new Date().toISOString()
-      const dateModifiedFromBackend = new Date(
+      const dateModifiedFromRemote = new Date(
         new Date(dateCreated).getTime() + 1
       ).toISOString()
       const dateModifiedFromLocal = new Date(
@@ -1097,18 +922,22 @@ describe('src | createDataReducer', () => {
       ).toISOString()
 
       const valueModifiedByActivityThatShouldStayInPlace = 'hello'
-      const valueFromBackendThatShouldNotBeConsidered = 'byebye'
+      const valueFromRemoteThatShouldNotBeConsidered = 'byebye'
 
       const initialState = {
         __activities__: [
           {
             dateCreated: dateModifiedFromLocal,
+            deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier: 1,
             id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
             modelName: 'Foo',
             patch: {
               value: valueModifiedByActivityThatShouldStayInPlace,
             },
+            stateKey: 'foos',
           },
         ],
         foos: [
@@ -1128,10 +957,10 @@ describe('src | createDataReducer', () => {
         {
           activityIdentifier: 1,
           dateCreated,
-          dateModified: dateModifiedFromBackend,
+          dateModified: dateModifiedFromRemote,
           id: 1,
           moreValue: 1,
-          value: valueFromBackendThatShouldNotBeConsidered,
+          value: valueFromRemoteThatShouldNotBeConsidered,
         },
       ]
 
@@ -1148,12 +977,16 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: dateModifiedFromLocal,
+            deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier: 1,
             id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
             modelName: 'Foo',
             patch: {
               value: valueModifiedByActivityThatShouldStayInPlace,
             },
+            stateKey: 'foos',
           },
         ],
         foos: [
@@ -1161,7 +994,7 @@ describe('src | createDataReducer', () => {
             activityIdentifier: 1,
             dateCreated,
             dateModified: dateModifiedFromLocal,
-            lastBackendDateModified: dateModifiedFromBackend,
+            lastRemoteDateModified: dateModifiedFromRemote,
             id: 1,
             moreValue: 1,
             value: valueModifiedByActivityThatShouldStayInPlace,
@@ -1171,29 +1004,33 @@ describe('src | createDataReducer', () => {
       })
     })
 
-    it('should overide the local activity for entity.dateModified greater than max of activity.dateCreated', () => {
+    it('should overide the local activity for entity.lastRemoteDateModified greater than max of activity.dateCreated and items in patch that are different from previous entity', () => {
       // given
       const dateCreated = new Date().toISOString()
       const dateModifiedFromLocal = new Date(
         new Date(dateCreated).getTime() + 1
       ).toISOString()
-      const dateModifiedFromBackend = new Date(
+      const dateModifiedFromRemote = new Date(
         new Date(dateCreated).getTime() + 2
       ).toISOString()
 
       const valueModifiedByActivityThatShouldNotStayInPlace = 'hello'
-      const valueFromBackendThatShouldBeConsidered = 'byebye'
+      const valueFromRemoteThatShouldBeConsidered = 'byebye'
 
       const initialState = {
         __activities__: [
           {
             dateCreated: dateModifiedFromLocal,
+            deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier: 1,
             id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
             modelName: 'Foo',
             patch: {
               value: valueModifiedByActivityThatShouldNotStayInPlace,
             },
+            stateKey: 'foos',
           },
         ],
         foos: [
@@ -1214,10 +1051,10 @@ describe('src | createDataReducer', () => {
         {
           activityIdentifier: 1,
           dateCreated,
-          dateModified: dateModifiedFromBackend,
+          dateModified: dateModifiedFromRemote,
           id: 1,
           moreValue: 1,
-          value: valueFromBackendThatShouldBeConsidered,
+          value: valueFromRemoteThatShouldBeConsidered,
         },
       ]
 
@@ -1235,23 +1072,122 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: dateModifiedFromLocal,
             deprecatedKeys: ['value'],
+            entityHasBeenModified: true,
             entityIdentifier: 1,
             id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
             modelName: 'Foo',
             patch: {
               value: valueModifiedByActivityThatShouldNotStayInPlace,
             },
+            stateKey: 'foos',
           },
         ],
         foos: [
           {
             activityIdentifier: 1,
             dateCreated,
-            dateModified: dateModifiedFromBackend,
-            lastBackendDateModified: dateModifiedFromBackend,
+            dateModified: dateModifiedFromRemote,
+            lastRemoteDateModified: dateModifiedFromRemote,
             id: 1,
             moreValue: 1,
-            value: valueFromBackendThatShouldBeConsidered,
+            value: valueFromRemoteThatShouldBeConsidered,
+            __tags__: ['/foos'],
+          },
+        ],
+      })
+    })
+
+    it('should not overide the local activity for entity.lastRemoteDateModified greater than max of activity.dateCreated and items in patch that are not different from previous entity', () => {
+      // given
+      const dateCreated = new Date().toISOString()
+      const dateModifiedFromLocal = new Date(
+        new Date(dateCreated).getTime() + 1
+      ).toISOString()
+      const dateModifiedFromRemote = new Date(
+        new Date(dateCreated).getTime() + 2
+      ).toISOString()
+
+      const valueFromRemoteThatShouldNotCreateDeprecation = 'byebye'
+
+      const oldValueReturnedByRemote = 'old hello'
+      const valueModifiedByActivityThatShouldStayInPlace = 'hello'
+
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            deprecatedKeys: null,
+            entityHasBeenModified: false,
+            entityIdentifier: 1,
+            id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldStayInPlace,
+            },
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromLocal,
+            id: 1,
+            value: valueModifiedByActivityThatShouldStayInPlace,
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const foos = [
+        {
+          activityIdentifier: 1,
+          dateCreated,
+          dateModified: dateModifiedFromRemote,
+          id: 1,
+          moreValue: valueFromRemoteThatShouldNotCreateDeprecation,
+          value: oldValueReturnedByRemote,
+        },
+      ]
+
+      // when
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { apiPath: '/foos', method: 'GET' }
+        )
+      )
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            deprecatedKeys: null,
+            entityHasBeenModified: true,
+            entityIdentifier: 1,
+            id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldStayInPlace,
+            },
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromRemote,
+            id: 1,
+            lastRemoteDateModified: dateModifiedFromRemote,
+            moreValue: valueFromRemoteThatShouldNotCreateDeprecation,
+            value: valueModifiedByActivityThatShouldStayInPlace,
             __tags__: ['/foos'],
           },
         ],
@@ -1268,21 +1204,27 @@ describe('src | createDataReducer', () => {
         __activities__: [
           {
             dateCreated: firstDateCreated,
+            deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${firstDateCreated}`,
             modelName: 'Foo',
             patch: {
               value: 'hello',
             },
+            stateKey: 'foos',
           },
           {
             dateCreated: secondDateCreated,
+            deprecatedKeys: null,
+            entityHasBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${secondDateCreated}`,
             modelName: 'Foo',
             patch: {
               value: 'rehello',
             },
+            stateKey: 'foos',
           },
         ],
         foos: [

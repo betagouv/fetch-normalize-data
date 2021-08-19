@@ -1,15 +1,20 @@
 import getNormalizedMergedState from './getNormalizedMergedState'
-import {
-  dateCreatedAndModifiedsByEntityIdentifierFrom,
-  deletedActivityIdentifiersByStateKeyFrom,
-  deprecatedAndNotDeprecatedActivitiesFrom,
-  entitiesByActivityIdentifierFrom,
-  getDefaultActivityFrom,
-  notDeletedActivitiesFrom,
-  stateKeysByEntityIdentifierFrom,
-  stateWithoutDeletedEntitiesFrom,
-} from './utils'
 
+export const localIdentifierFrom = activity =>
+  `${activity.entityIdentifier}/${activity.dateCreated}`
+
+export const mergedActivitiesFrom = (stateActivities, patchActivities) =>
+  getNormalizedMergedState(
+    { __activities__: stateActivities },
+    { __activities__: patchActivities },
+    {
+      getDatumIdKey: () => 'localIdentifier',
+      getDatumIdValue: activity => activity.id || localIdentifierFrom(activity),
+      isMergingDatum: true,
+    }
+  ).__activities__
+
+/*
 export function getNormalizedActivatedState(state, patch, config = {}) {
   const keepFromActivity = config.keepFromActivity || getDefaultActivityFrom
 
@@ -38,13 +43,13 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
     stateKeysByEntityIdentifier
   )
 
-  const {
-    deprecatedActivities,
-    notDeprecatedActivities,
-  } = deprecatedAndNotDeprecatedActivitiesFrom(
+  const activitiesWithDeprecationInfo = activitiesWithDeprecationInfoFrom(
     notDeletedActivities,
     entitiesByActivityIdentifier
   )
+
+  const notDeprecatedActivities = activitiesWithDeprecationInfo.filter(a =>
+    a.deprecatedKeys && a.deprecatedKeys.length > 0)
 
   const {
     entityDateCreatedsByIdentifier,
@@ -55,7 +60,7 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
     entitiesByActivityIdentifier
   )
 
-  const normalizedActivatedState = notDeprecatedActivities.reduce(
+  let normalizedActivatedState = notDeprecatedActivities.reduce(
     (aggregation, activity) => ({
       ...aggregation,
       ...getNormalizedMergedState(
@@ -84,22 +89,57 @@ export function getNormalizedActivatedState(state, patch, config = {}) {
     { ...stateWithoutDeletedEntities, ...patch }
   )
 
-  if (deprecatedActivities.length > 0) {
-    normalizedActivatedState.__activities__ = normalizedActivatedState.__activities__.map(
-      a => ({
-        ...a,
-        deprecatedKeys:
-          (
-            deprecatedActivities.find(
-              deprecatedActivity =>
-                a.localIdentifier === deprecatedActivity.localIdentifier
-            ) || {}
-          ).deprecatedKeys || [],
-      })
-    )
-  }
+
+  //normalizedActivatedState = getNormalizedMergedActivitiesState(
+  //  normalizedActivatedState,
+  //  activitiesWithDeprecationInfo)
 
   return normalizedActivatedState
 }
+*/
 
-export default getNormalizedActivatedState
+const activatedEntityFrom = (activity, config = {}) => {
+  const {
+    entityDateCreatedsByIdentifier,
+    entityDateModifiedsByIdentifier,
+  } = config
+
+  const activatedEntity = {
+    activityIdentifier: activity.entityIdentifier,
+    ...activity.patch,
+  }
+
+  if (entityDateCreatedsByIdentifier) {
+    activatedEntity.dateCreated =
+      entityDateCreatedsByIdentifier[activity.entityIdentifier]
+  }
+
+  if (entityDateModifiedsByIdentifier) {
+    activatedEntity.dateModified =
+      entityDateModifiedsByIdentifier[activity.entityIdentifier] || null
+  }
+
+  return activatedEntity
+}
+
+export function normalizedActivatedStateFrom(state, activities, config = {}) {
+  return activities.reduce(
+    (aggregation, activity) => ({
+      ...aggregation,
+      ...getNormalizedMergedState(
+        aggregation,
+        {
+          [activity.stateKey]: [activatedEntityFrom(activity, config)],
+        },
+        {
+          getDatumIdKey: () => 'activityIdentifier',
+          getDatumIdValue: entity => entity.activityIdentifier,
+          isMergingDatum: true,
+        }
+      ),
+    }),
+    state
+  )
+}
+
+export default normalizedActivatedStateFrom
