@@ -1,6 +1,6 @@
 import uniq from 'lodash.uniq'
 
-import getActivatedState from './getActivatedState'
+import getActivateState from './getActivateState'
 import getSuccessState from './getSuccessState'
 import {
   dateCreatedAndModifiedsByEntityIdentifierFrom,
@@ -103,7 +103,7 @@ export function getNormalizedSuccessState(state, action) {
         nextEntitiesByActivityIdentifier
       )
 
-      nextState = getActivatedState(nextState, notDeprecatedActivities, {
+      nextState = getActivateState(nextState, notDeprecatedActivities, {
         entityDateCreatedsByIdentifier,
         entityDateModifiedsByIdentifier,
       })
