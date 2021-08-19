@@ -15,13 +15,15 @@ export const deprecatedActivitiesFrom = activities =>
 
 export const diffFrom = (previousEntity, nextEntity) => {
   const diff = {}
+  const previousEntityRemote = previousEntity.__remote__ || {}
+  const nextEntityRemote = nextEntity.__remote__ || {}
   const sharedKeys = uniq(
-    Object.keys(previousEntity).concat(Object.keys(nextEntity))
+    Object.keys(previousEntityRemote).concat(Object.keys(nextEntityRemote))
   )
   sharedKeys.forEach(key => {
-    if (['__remote__', 'dateModified', '__tags__'].includes(key)) return
-    const previousRemoteValue = previousEntity.__remote__[key]
-    const nextRemoteValue = nextEntity.__remote__[key]
+    if (['__remote__', 'dateModified'].includes(key)) return
+    const previousRemoteValue = previousEntityRemote[key]
+    const nextRemoteValue = nextEntityRemote[key]
     if (previousRemoteValue !== nextRemoteValue) {
       diff[key] = { previous: previousRemoteValue, next: nextRemoteValue }
     }
