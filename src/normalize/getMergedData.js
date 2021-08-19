@@ -76,6 +76,9 @@ export function getMergedData(nextData, previousData, config) {
       if (cache.__normalizers__) {
         delete cache.__normalizers__
       }
+      if (cache.__remote__) {
+        delete cache.__remote__
+      }
       if (cache.__tags__) {
         delete cache.__tags__
       }
