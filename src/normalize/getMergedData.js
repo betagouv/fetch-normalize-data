@@ -72,12 +72,16 @@ export function getMergedData(nextData, previousData, config) {
     mergedData[resolvedIndex] = datum
 
     if (cacheKey) {
-      const cache = { ...nextDatum }
+      const previousCache = (previousDatum || {})[cacheKey] || {}
+      const cache = {
+        ...previousCache,
+        ...nextDatum,
+      }
+      if (cache[cacheKey]) {
+        delete cache[cacheKey]
+      }
       if (cache.__normalizers__) {
         delete cache.__normalizers__
-      }
-      if (cache.__remote__) {
-        delete cache.__remote__
       }
       if (cache.__tags__) {
         delete cache.__tags__
