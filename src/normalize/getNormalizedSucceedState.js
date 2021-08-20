@@ -1,11 +1,10 @@
 import uniq from 'lodash.uniq'
 
-import getActivateState from './getActivateState'
-import getSuccessState from './getSuccessState'
-import {
+import getActivateState, {
   dateCreatedAndModifiedsByEntityIdentifierFrom,
   entitiesByActivityIdentifierFrom,
-} from './utils'
+} from './getActivateState'
+import getSuccessState from './getSuccessState'
 
 export const deprecatedActivitiesFrom = activities =>
   activities.filter(
