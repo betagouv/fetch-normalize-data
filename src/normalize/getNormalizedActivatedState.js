@@ -1,10 +1,10 @@
 import pluralize from 'pluralize'
 
-import getActivateState, { mergedActivitiesFrom } from './getActivateState'
-import {
+import getActivateState, {
   dateCreatedAndModifiedsByEntityIdentifierFrom,
   entitiesByActivityIdentifierFrom,
-} from './utils'
+  mergedActivitiesFrom,
+} from './getActivateState'
 
 const stateKeyFrom = activity => {
   let localStateKey = activity.localStateKey

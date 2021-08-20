@@ -1,5 +1,4 @@
-import getUnifiedData from './getUnifiedData'
-import { getDefaultDatumIdValue } from './utils'
+import getUnifiedData, { getDefaultDatumIdValue } from './getUnifiedData'
 
 export function getNormalizedDeletedState(state, patch, config) {
   const getDatumIdValue = config.getDatumIdValue || getDefaultDatumIdValue

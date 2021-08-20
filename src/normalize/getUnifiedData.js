@@ -1,6 +1,13 @@
 import uniqBy from 'lodash.uniqby'
 
-import { getDefaultDatumIdKey, getDefaultDatumIdValue } from '../normalize/utils'
+export function getDefaultDatumIdKey() {
+  return 'id'
+}
+
+export function getDefaultDatumIdValue(datum, index) {
+  if (typeof datum.id !== 'undefined') return datum.id
+  return index
+}
 
 export function getUnifiedDatum(datum, index, config) {
   const { apiPath } = config
@@ -10,7 +17,7 @@ export function getUnifiedDatum(datum, index, config) {
 
   let unifiedDatum = {
     [getDatumIdKey(datum)]: getDatumIdValue(datum, index),
-    ...datum
+    ...datum,
   }
 
   if (tag) {
@@ -29,7 +36,8 @@ export function getUnifiedData(data, config) {
   const unifyConfig = Object.assign({ data }, config)
 
   const unifiedData = data.map((datum, index) =>
-    getUnifiedDatum(datum, index, unifyConfig))
+    getUnifiedDatum(datum, index, unifyConfig)
+  )
 
   return uniqBy(unifiedData, getDatumIdValue)
 }
