@@ -30,7 +30,7 @@ export function hydratedActivityFrom(activity) {
     ...activity,
     dateCreated: activity.dateCreated || new Date().toISOString(),
     deprecation: null,
-    entityHasBeenModified: false,
+    bothLocalAndRemoteEntityHaveBeenModified: false,
     patch: { ...activity.patch },
     stateKey: stateKeyFrom(activity),
   }

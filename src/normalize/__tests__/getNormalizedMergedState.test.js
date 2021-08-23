@@ -905,4 +905,62 @@ describe('src | getNormalizedMergedState', () => {
       expect(nextState).toStrictEqual(expectedNextState)
     })
   })
+
+  describe('when merging with cacheKey', () => {
+    it('should set a cache for each merged entities', () => {
+      // given
+      const state = {}
+      const patch = {
+        books: [
+          {
+            author: { id: 1, name: 'Edmond Frostan' },
+            authorId: 1,
+            id: 1,
+            title: 'Your empty noise',
+          },
+        ],
+      }
+      const config = {
+        cacheKey: '__remote__',
+        normalizer: {
+          books: {
+            normalizer: {
+              author: 'authors',
+            },
+            stateKey: 'books',
+          },
+        },
+      }
+
+      // when
+      const nextState = getNormalizedMergedState(state, patch, config)
+
+      // then
+      const expectedNextState = {
+        authors: [
+          {
+            id: 1,
+            name: 'Edmond Frostan',
+            __normalizers__: [{ datumKey: 'author' }],
+            __remote__: { id: 1, name: 'Edmond Frostan' },
+          },
+        ],
+        books: [
+          {
+            author: { stateKey: 'authors', type: '__normalizer__' },
+            authorId: 1,
+            id: 1,
+            title: 'Your empty noise',
+            __remote__: {
+              author: { stateKey: 'authors', type: '__normalizer__' },
+              authorId: 1,
+              id: 1,
+              title: 'Your empty noise',
+            },
+          },
+        ],
+      }
+      expect(nextState).toStrictEqual(expectedNextState)
+    })
+  })
 })

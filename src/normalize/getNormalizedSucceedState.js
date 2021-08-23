@@ -1,5 +1,3 @@
-import uniq from 'lodash.uniq'
-
 import getActivateState, {
   dateCreatedAndModifiedsByEntityIdentifierFrom,
   entitiesByActivityIdentifierFrom,
@@ -12,22 +10,30 @@ export const deprecatedActivitiesFrom = activities =>
       !activity.deprecation || Object.keys(activity.deprecation).length === 0
   )
 
-export const diffFrom = (previousEntity, nextEntity) => {
-  const diff = {}
+function intersect(a, b) {
+  const setA = new Set(a)
+  const setB = new Set(b)
+  const intersection = new Set([...setA].filter(x => setB.has(x)))
+  return Array.from(intersection)
+}
+
+export const remoteDiffFrom = (previousEntity, nextEntity) => {
+  const remoteDiff = {}
   const previousEntityRemote = previousEntity.__remote__ || {}
   const nextEntityRemote = nextEntity.__remote__ || {}
-  const sharedKeys = uniq(
-    Object.keys(previousEntityRemote).concat(Object.keys(nextEntityRemote))
+  const sharedKeys = intersect(
+    Object.keys(previousEntityRemote),
+    Object.keys(nextEntityRemote)
   )
   sharedKeys.forEach(key => {
     if (['__remote__', 'dateModified'].includes(key)) return
     const previousRemoteValue = previousEntityRemote[key]
     const nextRemoteValue = nextEntityRemote[key]
     if (previousRemoteValue !== nextRemoteValue) {
-      diff[key] = { previous: previousRemoteValue, next: nextRemoteValue }
+      remoteDiff[key] = { previous: previousRemoteValue, next: nextRemoteValue }
     }
   })
-  return diff
+  return remoteDiff
 }
 
 export const activitiesWithDeprecationInfoFrom = (
@@ -39,7 +45,7 @@ export const activitiesWithDeprecationInfoFrom = (
     const activityWithDeprecationInfo = {
       ...activity,
       deprecation: null,
-      entityHasBeenModified: false,
+      bothLocalAndRemoteEntityHaveBeenModified: false,
     }
     const previousEntity =
       previousEntitiesByActivityIdentifier[activity.entityIdentifier]
@@ -52,12 +58,12 @@ export const activitiesWithDeprecationInfoFrom = (
       nextEntity.__remote__.dateModified &&
       nextEntity.__remote__.dateModified > activity.dateCreated
     ) {
-      activityWithDeprecationInfo.entityHasBeenModified = true
-      const diff = diffFrom(previousEntity, nextEntity)
+      activityWithDeprecationInfo.bothLocalAndRemoteEntityHaveBeenModified = true
+      const remoteDiff = remoteDiffFrom(previousEntity, nextEntity)
       const deprecation = {}
       Object.keys(activity.patch).forEach(key => {
-        if (diff[key]) {
-          deprecation[key] = diff[key]
+        if (remoteDiff[key]) {
+          deprecation[key] = remoteDiff[key]
         }
       })
       if (Object.keys(deprecation).length > 0) {
