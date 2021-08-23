@@ -23,7 +23,7 @@ describe('src | createDataReducer', () => {
             entityIdentifier: 1,
             id: 'AE',
             deprecation: [],
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             localIdentifier: `1/${firstDateCreated}`,
             patch: {
               fromFirstActivity: 1,
@@ -100,21 +100,21 @@ describe('src | createDataReducer', () => {
           {
             ...activities[0],
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             localIdentifier: `1/${secondDateCreated}`,
             stateKey: 'foos',
           },
           {
             ...activities[1],
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             localIdentifier: `2/${secondDateCreated}`,
             stateKey: 'foos',
           },
           {
             ...activities[2],
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             localIdentifier: `1/${thirdDateCreated}`,
             stateKey: 'foos',
           },
@@ -196,7 +196,7 @@ describe('src | createDataReducer', () => {
             dateCreated: firstDateCreated,
             entityIdentifier,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             localIdentifier: `1/${firstDateCreated}`,
             modelName: 'Foo',
             patch: {
@@ -207,7 +207,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: secondDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier,
             localIdentifier: `1/${secondDateCreated}`,
             modelName: 'Foo',
@@ -219,7 +219,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: nextDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier,
             localIdentifier: `1/${nextDateCreated}`,
             modelName: 'Foo',
@@ -285,7 +285,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: activityDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier,
             localIdentifier: `${entityIdentifier}/${activityDateCreated}`,
             modelName: 'Foo',
@@ -316,7 +316,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: firstDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
@@ -369,7 +369,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: firstDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
@@ -384,7 +384,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: secondDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${secondDateCreated}`,
             modelName: 'Foo',
@@ -420,7 +420,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: firstDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
@@ -468,7 +468,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: firstDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
@@ -483,7 +483,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: secondDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${secondDateCreated}`,
             modelName: 'Foo',
@@ -504,7 +504,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: firstDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
@@ -554,7 +554,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: firstDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${firstDateCreated}`,
             modelName: 'Foo',
@@ -569,7 +569,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: secondDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier,
             localIdentifier: `0/${secondDateCreated}`,
             modelName: 'Foo',
@@ -600,7 +600,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: fromFirstActivityDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromFirstActivityDateCreated}`,
             modelName: 'Foo',
@@ -612,7 +612,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: fromSecondActivityDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromSecondActivityDateCreated}`,
             modelName: 'Foo',
@@ -658,7 +658,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: fromFirstActivityDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromFirstActivityDateCreated}`,
             modelName: 'Foo',
@@ -670,7 +670,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: fromSecondActivityDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromSecondActivityDateCreated}`,
             modelName: 'Foo',
@@ -682,7 +682,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: fromThirdActivityDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${fromThirdActivityDateCreated}`,
             modelName: 'Foo',
@@ -920,7 +920,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: dateModified,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             id: 1,
             localIdentifier: `1/${dateModified}`,
@@ -969,7 +969,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: dateModified,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             id: 1,
             localIdentifier: `1/${dateModified}`,
@@ -1013,7 +1013,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: dateModifiedFromLocal,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             id: 1,
             localIdentifier: `1/${dateModifiedFromLocal}`,
@@ -1062,7 +1062,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: dateModifiedFromLocal,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             id: 1,
             localIdentifier: `1/${dateModifiedFromLocal}`,
@@ -1107,7 +1107,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: dateModifiedFromLocal,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             id: 1,
             localIdentifier: `1/${dateModifiedFromLocal}`,
@@ -1169,7 +1169,7 @@ describe('src | createDataReducer', () => {
                 next: valueFromRemoteThatShouldBeConsidered,
               },
             },
-            entityHasBeenModified: true,
+            bothLocalAndRemoteEntityHaveBeenModified: true,
             entityIdentifier: 1,
             id: 1,
             localIdentifier: `1/${dateModifiedFromLocal}`,
@@ -1214,7 +1214,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: dateModifiedFromLocal,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             id: 1,
             localIdentifier: `1/${dateModifiedFromLocal}`,
@@ -1271,7 +1271,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: dateModifiedFromLocal,
             deprecation: null,
-            entityHasBeenModified: true,
+            bothLocalAndRemoteEntityHaveBeenModified: true,
             entityIdentifier: 1,
             id: 1,
             localIdentifier: `1/${dateModifiedFromLocal}`,
@@ -1297,6 +1297,211 @@ describe('src | createDataReducer', () => {
       })
     })
 
+    it('should not overide the local activity for entity.__remote__.dateModified greater than max of activity.dateCreated and items in patch that were just not yet present in previous remote entity', () => {
+      // given
+      const dateCreated = new Date().toISOString()
+      const dateModifiedFromLocal = new Date(
+        new Date(dateCreated).getTime() + 1
+      ).toISOString()
+      const dateModifiedFromRemote = new Date(
+        new Date(dateCreated).getTime() + 2
+      ).toISOString()
+      const valueFromRemoteThatShouldNotCreateDeprecation = 'byebye'
+
+      const oldValueReturnedByRemote = 'old hello'
+      const valueModifiedByActivityThatShouldStayInPlace = 'hello'
+
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            deprecation: null,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
+            entityIdentifier: 1,
+            id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldStayInPlace,
+            },
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromLocal,
+            id: 1,
+            value: valueModifiedByActivityThatShouldStayInPlace,
+            __remote__: {
+              activityIdentifier: 1,
+              dateCreated,
+              dateModified: null,
+              id: 1,
+            },
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const foos = [
+        {
+          activityIdentifier: 1,
+          dateCreated,
+          dateModified: dateModifiedFromRemote,
+          id: 1,
+          moreValue: valueFromRemoteThatShouldNotCreateDeprecation,
+          value: oldValueReturnedByRemote,
+        },
+      ]
+
+      // when
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { apiPath: '/foos', method: 'GET' }
+        )
+      )
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            deprecation: null,
+            bothLocalAndRemoteEntityHaveBeenModified: true,
+            entityIdentifier: 1,
+            id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldStayInPlace,
+            },
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromRemote,
+            id: 1,
+            moreValue: valueFromRemoteThatShouldNotCreateDeprecation,
+            value: valueModifiedByActivityThatShouldStayInPlace,
+            __remote__: foos[0],
+            __tags__: ['/foos'],
+          },
+        ],
+      })
+    })
+
+    it('should not overide the local activity for entity.__remote__.dateModified greater than max of activity.dateCreated and items in patch that are not just present in next remote entity', () => {
+      // given
+      const dateCreated = new Date().toISOString()
+      const dateModifiedFromLocal = new Date(
+        new Date(dateCreated).getTime() + 1
+      ).toISOString()
+      const dateModifiedFromRemote = new Date(
+        new Date(dateCreated).getTime() + 2
+      ).toISOString()
+      const valueFromRemoteThatShouldNotCreateDeprecation = 'byebye'
+
+      const oldValueReturnedByRemote = 'old hello'
+      const valueModifiedByActivityThatShouldStayInPlace = 'hello'
+
+      const initialState = {
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            deprecation: null,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
+            entityIdentifier: 1,
+            id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldStayInPlace,
+            },
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromLocal,
+            id: 1,
+            value: valueModifiedByActivityThatShouldStayInPlace,
+            __remote__: {
+              activityIdentifier: 1,
+              dateCreated,
+              dateModified: null,
+              id: 1,
+              value: oldValueReturnedByRemote,
+            },
+          },
+        ],
+      }
+      const rootReducer = combineReducers({
+        data: createDataReducer(initialState),
+      })
+      const store = createStore(rootReducer)
+      const foos = [
+        {
+          activityIdentifier: 1,
+          dateCreated,
+          dateModified: dateModifiedFromRemote,
+          id: 1,
+          moreValue: valueFromRemoteThatShouldNotCreateDeprecation,
+        },
+      ]
+
+      // when
+      store.dispatch(
+        successData(
+          { data: foos, status: 200 },
+          { apiPath: '/foos', method: 'GET' }
+        )
+      )
+
+      // then
+      expect(store.getState().data).toStrictEqual({
+        __activities__: [
+          {
+            dateCreated: dateModifiedFromLocal,
+            deprecation: null,
+            bothLocalAndRemoteEntityHaveBeenModified: true,
+            entityIdentifier: 1,
+            id: 1,
+            localIdentifier: `1/${dateModifiedFromLocal}`,
+            modelName: 'Foo',
+            patch: {
+              value: valueModifiedByActivityThatShouldStayInPlace,
+            },
+            stateKey: 'foos',
+          },
+        ],
+        foos: [
+          {
+            activityIdentifier: 1,
+            dateCreated,
+            dateModified: dateModifiedFromRemote,
+            id: 1,
+            moreValue: valueFromRemoteThatShouldNotCreateDeprecation,
+            value: valueModifiedByActivityThatShouldStayInPlace,
+            __remote__: {
+              ...foos[0],
+              value: oldValueReturnedByRemote,
+            },
+            __tags__: ['/foos'],
+          },
+        ],
+      })
+    })
+
     it('should overide the local activity for nested entity.__remote__.dateModified greater than max of activity.dateCreated and items in patch that are different from previous entity', () => {
       // given
       const dateCreated = new Date().toISOString()
@@ -1316,7 +1521,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: dateModifiedFromLocal,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             id: 1,
             localIdentifier: `1/${dateModifiedFromLocal}`,
@@ -1402,7 +1607,7 @@ describe('src | createDataReducer', () => {
                 next: valueFromRemoteThatShouldBeConsidered,
               },
             },
-            entityHasBeenModified: true,
+            bothLocalAndRemoteEntityHaveBeenModified: true,
             entityIdentifier: 1,
             id: 1,
             localIdentifier: `1/${dateModifiedFromLocal}`,
@@ -1465,7 +1670,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: dateModifiedFromLocal,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             id: 1,
             localIdentifier: `1/${dateModifiedFromLocal}`,
@@ -1546,7 +1751,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: dateModifiedFromLocal,
             deprecation: null,
-            entityHasBeenModified: true,
+            bothLocalAndRemoteEntityHaveBeenModified: true,
             entityIdentifier: 1,
             id: 1,
             localIdentifier: `1/${dateModifiedFromLocal}`,
@@ -1601,7 +1806,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: firstDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${firstDateCreated}`,
             modelName: 'Foo',
@@ -1613,7 +1818,7 @@ describe('src | createDataReducer', () => {
           {
             dateCreated: secondDateCreated,
             deprecation: null,
-            entityHasBeenModified: false,
+            bothLocalAndRemoteEntityHaveBeenModified: false,
             entityIdentifier: 1,
             localIdentifier: `1/${secondDateCreated}`,
             modelName: 'Foo',
