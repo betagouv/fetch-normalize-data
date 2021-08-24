@@ -74,11 +74,7 @@ export const notDeletedActivitiesFrom = (
 export const deletedActivityIdentifiersByStateKeyFrom = (state, activities) => {
   const deletedActivityIdentifiersByStateKey = {}
   activities
-    .filter(
-      activity =>
-        activity.verb === 'delete' ||
-        (activity.patch && activity.patch.isSoftDeleted)
-    )
+    .filter(activity => activity.verb === 'delete')
     .forEach(activity => {
       const activityIdentifier = activity.entityIdentifier
       const stateKey = activity.stateKey
