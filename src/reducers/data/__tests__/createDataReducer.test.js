@@ -1062,12 +1062,24 @@ describe('src | createDataReducer', () => {
           value: valueFromRemoteThatShouldBeConsidered,
         },
       ]
+      const otherSuccessDatumThahShouldNotMakeLoosePreviousDeprecatedEntities = {
+        id: 'AE',
+      }
 
       // when
       store.dispatch(
         successData(
           { data: foos, status: 200 },
           { apiPath: '/foos', method: 'GET' }
+        )
+      )
+      store.dispatch(
+        successData(
+          {
+            datum: otherSuccessDatumThahShouldNotMakeLoosePreviousDeprecatedEntities,
+            status: 200,
+          },
+          { apiPath: '/users', method: 'GET' }
         )
       )
 
@@ -1103,6 +1115,13 @@ describe('src | createDataReducer', () => {
             value: valueFromRemoteThatShouldBeConsidered,
             __remote__: foos[0],
             __tags__: ['/foos'],
+          },
+        ],
+        users: [
+          {
+            ...otherSuccessDatumThahShouldNotMakeLoosePreviousDeprecatedEntities,
+            __remote__: otherSuccessDatumThahShouldNotMakeLoosePreviousDeprecatedEntities,
+            __tags__: ['/users'],
           },
         ],
       })
