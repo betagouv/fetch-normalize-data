@@ -43,9 +43,9 @@ export const activitiesWithDeprecationInfoFrom = (
 ) =>
   activities.map(activity => {
     const activityWithDeprecationInfo = {
-      ...activity,
       deprecation: null,
       bothLocalAndRemoteEntityHaveBeenModified: false,
+      ...activity,
     }
     const previousEntity =
       previousEntitiesByActivityIdentifier[activity.entityIdentifier]
